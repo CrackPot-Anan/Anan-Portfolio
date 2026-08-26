@@ -1,0 +1,126 @@
+export const skills = [
+  {
+    group: "Delivery",
+    items: [
+      "Scrum & Agile",
+      "Sprint Planning",
+      "Roadmapping",
+      "Risk & Dependency Tracking",
+    ],
+  },
+  {
+    group: "Product",
+    items: [
+      "PRDs & User Stories",
+      "Backlog Grooming",
+      "Stakeholder Alignment",
+      "Release QA",
+    ],
+  },
+  {
+    group: "AI",
+    items: [
+      "LLM Workflows",
+      "Prompt Engineering",
+      "AI Product Discovery",
+      "Automation Design",
+    ],
+  },
+  {
+    group: "Tools",
+    items: ["Jira", "ClickUp", "Notion", "Figma", "GitHub Projects"],
+  },
+];
+
+export const timeline = [
+  {
+    period: "2025 — Present",
+    role: "Software Project Manager",
+    org: "Independent / Client Engagements",
+    detail:
+      "Leading cross-functional delivery for web and AI products: shaping scope, running sprints, unblocking engineering, and keeping stakeholders aligned from discovery to launch.",
+    tags: ["Agile", "Delivery", "Stakeholders"],
+  },
+  {
+    period: "2024 — 2025",
+    role: "Associate Project Coordinator",
+    org: "Product Team",
+    detail:
+      "Prepared PRDs, user stories, and change requests. Coordinated engineering, design, and QA in Jira and ClickUp to keep releases on schedule.",
+    tags: ["Jira", "PRDs", "QA"],
+  },
+  {
+    period: "Education",
+    role: "B.Sc. in Computer Science",
+    org: "University",
+    detail:
+      "Foundation across software engineering, data structures, databases, and machine learning — the technical grounding behind the management work.",
+    tags: ["CS", "ML"],
+  },
+];
+
+export const projects = [
+  {
+    name: "Ops4",
+    kind: "Operations Platform",
+    detail:
+      "Operations management platform — coordinated requirements, sprint delivery, and rollout with cross-functional engineering and SQA teams.",
+    tags: ["Delivery", "Requirements", "SQA"],
+  },
+  {
+    name: "Managerium",
+    kind: "ERP Suite",
+    detail:
+      "Enterprise ERP product at Akij iBOS. Led onboarding and technical training to drive user adoption across HR, CRM, and finance modules.",
+    tags: ["ERP", "Onboarding", "Training"],
+  },
+  {
+    name: "Project Tracker",
+    kind: "Delivery Tooling",
+    detail:
+      "Internal tracker for task visibility, sprint progress, and reporting — built around Jira workflows and Confluence documentation.",
+    tags: ["Jira", "Reporting", "Agile"],
+  },
+  {
+    name: "Peopledesk",
+    kind: "HRIS",
+    detail:
+      "HRIS platform work including optimizing and upgrading the Leave Management module with a frontend, backend, and SQA team.",
+    tags: ["HRIS", "Scrum", "Product"],
+  },
+  {
+    name: "Akij Air",
+    kind: "Travel Tech",
+    detail:
+      "Airline booking business built on GDS integrations — Travelport, Sabre, Amadeus, and BDFare APIs feeding the ticketing flow.",
+    tags: ["GDS", "API", "Integrations"],
+  },
+  {
+    name: "Akij Pharma",
+    kind: "Enterprise Solution",
+    detail:
+      "Pharma distribution and field-force solution — supported implementation, user training, and issue resolution for daily operations.",
+    tags: ["Implementation", "Support", "Adoption"],
+  },
+];
+
+export const products = [
+  {
+    name: "Cadence",
+    status: "Live",
+    detail:
+      "A subscription toolkit for small product teams: sprint templates, retro formats, and stakeholder update generators.",
+  },
+  {
+    name: "The Delivery Notes",
+    status: "Writing",
+    detail:
+      "A newsletter on shipping software without chaos — practical notes on agile, AI tooling, and team flow.",
+  },
+];
+
+export const stats = [
+  { value: "12+", label: "Projects Delivered" },
+  { value: "98%", label: "On-Time Releases" },
+  { value: "5", label: "Teams Coordinated" },
+];
