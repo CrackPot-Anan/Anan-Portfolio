@@ -58,7 +58,7 @@ function Index() {
             href="#top"
             className="font-mono text-sm tracking-tight text-foreground"
           >
-            abrar<span className="text-signal">.</span>raiyan
+            abrar<span className="text-signal">.</span>anan
           </a>
           <nav className="hidden gap-7 md:flex">
             {nav.map(([id, label]) => (
