@@ -43,7 +43,8 @@ export const timeline = [
   },
   {
     period: "2024 — 2025",
-    role: "Associate Project Coordinator",
+    role: "Software Support and Implementation Engineer",
+    period: "Feb 2025 - Nov 2025",
     org: "Product Team",
     detail:
       "Prepared PRDs, user stories, and change requests. Coordinated engineering, design, and QA in Jira and ClickUp to keep releases on schedule.",
