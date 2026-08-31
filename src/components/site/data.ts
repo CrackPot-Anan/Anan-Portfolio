@@ -42,7 +42,6 @@ export const timeline = [
     tags: ["Agile", "Delivery", "Stakeholders"],
   },
   {
-    period: "2024 — 2025",
     role: "Software Support and Implementation Engineer",
     period: "Feb 2025 - Nov 2025",
     org: "Product Team",
@@ -51,22 +50,30 @@ export const timeline = [
     tags: ["Jira", "PRDs", "QA"],
   },
   {
-    period: "Education",
-    role: "B.Sc. in Computer Science",
-    org: "University",
+    period: "Aug 2023 - Jan 2025",
+    role: "Assistant General Secretary, Event Coverage & Post Production",
+    org: "AIUB Computer Club",
     detail:
-      "Foundation across software engineering, data structures, databases, and machine learning — the technical grounding behind the management work.",
-    tags: ["CS", "ML"],
+      "Organized workshops, edited event videos, and led a team of photographers to deliver event coverage and post-production for the club.",
+    tags: ["Event Coverage", "Video Editing", "Leadership"],
+  },
+  {
+    period: "Aug 2022 - Aug 2023",
+    role: "Campus Leader",
+    org: "Applink by Banglalink",
+    detail:
+      "Represented Applink by Banglalink as a campus leader.",
+    tags: ["Campus Leadership", "Community"],
   },
 ];
 
 export const projects = [
   {
     name: "Ops4",
-    kind: "Operations Platform",
+    kind: "HRIS Platform",
     detail:
-      "Operations management platform — coordinated requirements, sprint delivery, and rollout with cross-functional engineering and SQA teams.",
-    tags: ["Delivery", "Requirements", "SQA"],
+      "Centralized HRIS platform for managing employee information, leave, attendance, compensation, performance, and other HR operations.",
+    tags: ["HRIS", "Leave", "Attendance"],
   },
   {
     name: "Managerium",
@@ -107,10 +114,10 @@ export const projects = [
 
 export const products = [
   {
-    name: "Cadence",
+    name: "ZenPTE",
     status: "Live",
     detail:
-      "A subscription toolkit for small product teams: sprint templates, retro formats, and stakeholder update generators.",
+      "A PTE mock-test platform that helps learners practice in a realistic exam-style environment and prepare for the Pearson Test of English.",
   },
   {
     name: "The Delivery Notes",

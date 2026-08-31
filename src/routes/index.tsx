@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 import portrait from "@/assets/raiyan.jpg";
-import resumeUrl from "@/assets/resume.pdf?url";
+import resumeUrl from "@/assets/Abrar Anan Raiyan.pdf?url";
 import { Section, SectionHeading, Tag } from "@/components/site/sections";
 import {
   skills,
