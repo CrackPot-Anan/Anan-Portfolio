@@ -1,15 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  ArrowUpRight,
-  Mail,
-  Github,
-  Linkedin,
-  Instagram,
-  FileText,
-} from "lucide-react";
+import { ArrowUpRight, Mail, FileText } from "lucide-react";
 
 import portrait from "@/assets/raiyan.jpg";
 import resumeUrl from "@/assets/Abrar Anan Raiyan.pdf?url";
+import { SiteHeader } from "@/components/site/header";
+import { SiteFooter } from "@/components/site/footer";
 import { Section, SectionHeading, Tag } from "@/components/site/sections";
 import {
   skills,
@@ -41,48 +36,14 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const nav = [
-  ["about", "About"],
-  ["experience", "Experience"],
-  ["projects", "Projects"],
-  ["products", "Products"],
-  ["contact", "Contact"],
-] as const;
-
 function Index() {
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <a
-            href="#top"
-            className="font-mono text-sm tracking-tight text-foreground"
-          >
-            abrar<span className="text-signal">.</span>anan
-          </a>
-          <nav className="hidden gap-7 md:flex">
-            {nav.map(([id, label]) => (
-              <a
-                key={id}
-                href={`#${id}`}
-                className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
-          <a
-            href="#contact"
-            className="rounded-sm border border-signal px-3 py-1.5 font-mono text-xs uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
-          >
-            Hire me
-          </a>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main id="top">
         {/* Hero */}
-        <section className="grid-lines border-b border-border">
+        <section className="border-b border-border">
           <div className="mx-auto grid w-full max-w-6xl gap-12 px-6 py-20 md:grid-cols-[1.2fr_0.8fr] md:items-center md:py-28">
             <div>
               <p className="label-mono mb-6">
@@ -312,51 +273,7 @@ function Index() {
         </Section>
       </main>
 
-      <footer className="border-t border-border">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-8 md:flex-row md:items-center md:justify-between">
-          <p className="label-mono">
-            © {new Date().getFullYear()} Abrar Anan Raiyan
-          </p>
-          <div className="flex gap-5">
-            <a
-              href="https://github.com/CrackPot-Anan"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="GitHub"
-              className="text-muted-foreground transition-colors hover:text-signal"
-            >
-              <Github className="h-4 w-4" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/abrar-anan-raiyan/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="LinkedIn"
-              className="text-muted-foreground transition-colors hover:text-signal"
-            >
-              <Linkedin className="h-4 w-4" />
-            </a>
-            <a
-              href="https://www.instagram.com/anans_daily_2000/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram"
-              className="text-muted-foreground transition-colors hover:text-signal"
-            >
-              <Instagram className="h-4 w-4" />
-            </a>
-            <a
-              href={resumeUrl}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Resume"
-              className="text-muted-foreground transition-colors hover:text-signal"
-            >
-              <FileText className="h-4 w-4" />
-            </a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

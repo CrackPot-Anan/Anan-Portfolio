@@ -1,29 +1,33 @@
-# Welcome to your Lovable project
+# Anan Portfolio
 
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+Personal portfolio site for Abrar Anan Raiyan — built with TanStack Start, React 19, Tailwind CSS v4, and Vite.
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
 npm i
 npm run dev
 ```
 
-## Built with
+Dev server runs on http://localhost:8080.
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Run ESLint |
+| `npm run format` | Format with Prettier |
+
+## Structure
+
+- `src/routes` — routes (`/`, `/blogs`, `/blogs/$slug`, `/login`, `/admin`)
+- `src/server` — server functions: auth/session, posts storage
+- `src/components/site` — public site components
+- `data/posts.json` — seed blog posts (local dev post storage)
+
+## Admin
+
+Log in at `/login` (credentials in `.env` — gitignored, never commit it). Create posts at `/admin`; they publish to `/blogs`.

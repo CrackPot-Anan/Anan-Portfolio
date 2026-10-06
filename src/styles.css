@@ -116,9 +116,58 @@
   color: var(--muted-foreground);
 }
 
-@utility grid-lines {
-  background-image:
-    linear-gradient(to right, oklch(1 0 0 / 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(1 0 0 / 0.035) 1px, transparent 1px);
-  background-size: 72px 72px;
+@layer components {
+  .hire-btn {
+    position: relative;
+    overflow: hidden;
+    animation: hire-glow 2.6s ease-in-out infinite;
+  }
+
+  .hire-btn:hover {
+    animation-play-state: paused;
+  }
+
+  .hire-btn__shine {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -50%;
+    width: 45%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      oklch(1 0 0 / 0.45),
+      transparent
+    );
+    transform: skewX(-18deg);
+    animation: hire-shine 2.8s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes hire-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 oklch(0.79 0.15 76 / 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 6px oklch(0.79 0.15 76 / 0);
+    }
+  }
+
+  @keyframes hire-shine {
+    0%,
+    45% {
+      left: -50%;
+    }
+    100% {
+      left: 130%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hire-btn,
+  .hire-btn__shine {
+    animation: none;
+  }
 }

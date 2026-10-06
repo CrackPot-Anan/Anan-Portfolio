@@ -61,8 +61,7 @@ export const timeline = [
     period: "Aug 2022 - Aug 2023",
     role: "Campus Leader",
     org: "Applink by Banglalink",
-    detail:
-      "Represented Applink by Banglalink as a campus leader.",
+    detail: "Represented Applink by Banglalink as a campus leader.",
     tags: ["Campus Leadership", "Community"],
   },
 ];
