@@ -10,15 +10,27 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BlogsRouteImport } from './routes/blogs'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as EducationRouteImport } from './routes/education'
+import { Route as ExperienceRouteImport } from './routes/experience'
+import { Route as LeadershipRouteImport } from './routes/leadership'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ProductsRouteImport } from './routes/products'
+import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as BlogsIndexRouteImport } from './routes/blogs.index'
 import { Route as BlogsSlugRouteImport } from './routes/blogs.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -31,9 +43,39 @@ const BlogsRoute = BlogsRouteImport.update({
   path: '/blogs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EducationRoute = EducationRouteImport.update({
+  id: '/education',
+  path: '/education',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExperienceRoute = ExperienceRouteImport.update({
+  id: '/experience',
+  path: '/experience',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeadershipRoute = LeadershipRouteImport.update({
+  id: '/leadership',
+  path: '/leadership',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsRoute = ProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogsIndexRoute = BlogsIndexRouteImport.update({
@@ -49,48 +91,108 @@ const BlogsSlugRoute = BlogsSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/blogs': typeof BlogsRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/education': typeof EducationRoute
+  '/experience': typeof ExperienceRoute
+  '/leadership': typeof LeadershipRoute
   '/login': typeof LoginRoute
+  '/products': typeof ProductsRoute
+  '/projects': typeof ProjectsRoute
   '/blogs/$slug': typeof BlogsSlugRoute
   '/blogs/': typeof BlogsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
+  '/contact': typeof ContactRoute
+  '/education': typeof EducationRoute
+  '/experience': typeof ExperienceRoute
+  '/leadership': typeof LeadershipRoute
   '/login': typeof LoginRoute
+  '/products': typeof ProductsRoute
+  '/projects': typeof ProjectsRoute
   '/blogs/$slug': typeof BlogsSlugRoute
   '/blogs': typeof BlogsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/blogs': typeof BlogsRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/education': typeof EducationRoute
+  '/experience': typeof ExperienceRoute
+  '/leadership': typeof LeadershipRoute
   '/login': typeof LoginRoute
+  '/products': typeof ProductsRoute
+  '/projects': typeof ProjectsRoute
   '/blogs/$slug': typeof BlogsSlugRoute
   '/blogs/': typeof BlogsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/blogs' | '/login' | '/blogs/$slug' | '/blogs/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/blogs'
+    | '/contact'
+    | '/education'
+    | '/experience'
+    | '/leadership'
+    | '/login'
+    | '/products'
+    | '/projects'
+    | '/blogs/$slug'
+    | '/blogs/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/login' | '/blogs/$slug' | '/blogs'
+  to:
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/contact'
+    | '/education'
+    | '/experience'
+    | '/leadership'
+    | '/login'
+    | '/products'
+    | '/projects'
+    | '/blogs/$slug'
+    | '/blogs'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/admin'
     | '/blogs'
+    | '/contact'
+    | '/education'
+    | '/experience'
+    | '/leadership'
     | '/login'
+    | '/products'
+    | '/projects'
     | '/blogs/$slug'
     | '/blogs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
   BlogsRoute: typeof BlogsRouteWithChildren
+  ContactRoute: typeof ContactRoute
+  EducationRoute: typeof EducationRoute
+  ExperienceRoute: typeof ExperienceRoute
+  LeadershipRoute: typeof LeadershipRoute
   LoginRoute: typeof LoginRoute
+  ProductsRoute: typeof ProductsRoute
+  ProjectsRoute: typeof ProjectsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -100,6 +202,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -116,11 +225,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/education': {
+      id: '/education'
+      path: '/education'
+      fullPath: '/education'
+      preLoaderRoute: typeof EducationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/experience': {
+      id: '/experience'
+      path: '/experience'
+      fullPath: '/experience'
+      preLoaderRoute: typeof ExperienceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leadership': {
+      id: '/leadership'
+      path: '/leadership'
+      fullPath: '/leadership'
+      preLoaderRoute: typeof LeadershipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products': {
+      id: '/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blogs/': {
@@ -154,9 +305,16 @@ const BlogsRouteWithChildren = BlogsRoute._addFileChildren(BlogsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
   BlogsRoute: BlogsRouteWithChildren,
+  ContactRoute: ContactRoute,
+  EducationRoute: EducationRoute,
+  ExperienceRoute: ExperienceRoute,
+  LeadershipRoute: LeadershipRoute,
   LoginRoute: LoginRoute,
+  ProductsRoute: ProductsRoute,
+  ProjectsRoute: ProjectsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
