@@ -22,6 +22,7 @@ const MIN_BODY = 30;
 const MAX_TAGS = 8;
 const MAX_TAG_LENGTH = 32;
 const WORDS_PER_MINUTE = 220;
+const MAX_IMAGE_CHARS = 2_100_000;
 
 type NormalizedInput = {
   title: string;
@@ -29,6 +30,7 @@ type NormalizedInput = {
   excerpt: string;
   body: string;
   tags: string[];
+  image?: string;
 };
 
 type NormalizeResult =
@@ -117,11 +119,19 @@ function readTimeFor(body: string): string {
   return `${Math.max(1, Math.ceil(countWords(body) / WORDS_PER_MINUTE))} min read`;
 }
 
+function isAcceptableImage(value: string): boolean {
+  if (/^data:image\/[a-z0-9.+-]+;base64,/i.test(value)) return true;
+  if (/^https?:\/\/\S+$/i.test(value)) return true;
+  if (/^\/\S+$/.test(value)) return true;
+  return false;
+}
+
 function normalizePostInput(input: CreatePostInput): NormalizeResult {
   const title = (input.title ?? "").trim();
   const excerpt = (input.excerpt ?? "").trim();
   const body = (input.body ?? "").trim();
   const category = String(input.category ?? "");
+  const image = typeof input.image === "string" ? input.image.trim() : "";
   const tags = (input.tags ?? [])
     .map((tag) => String(tag).trim())
     .filter((tag) => tag.length > 0)
@@ -164,10 +174,32 @@ function normalizePostInput(input: CreatePostInput): NormalizeResult {
       error: `The post needs at least ${MIN_BODY} characters of content.`,
     };
   }
+  if (image) {
+    if (image.length > MAX_IMAGE_CHARS) {
+      return {
+        ok: false,
+        error: "Cover image is too large. Keep it under 1.5 MB.",
+      };
+    }
+    if (!isAcceptableImage(image)) {
+      return {
+        ok: false,
+        error:
+          "Cover image must be an uploaded image, an http(s) URL, or an /assets path.",
+      };
+    }
+  }
 
   return {
     ok: true,
-    value: { title, category: category as Category, excerpt, body, tags },
+    value: {
+      title,
+      category: category as Category,
+      excerpt,
+      body,
+      tags,
+      image: image || undefined,
+    },
   };
 }
 
@@ -211,6 +243,7 @@ export async function createPost(
     excerpt: value.excerpt,
     body: value.body,
     tags: value.tags,
+    image: value.image,
   };
 
   const error = await persistPost(post, existing);
@@ -247,6 +280,7 @@ export async function updatePost(
     body: value.body,
     tags: value.tags,
     readTime: readTimeFor(value.body),
+    image: value.image,
   };
 
   const error = await persistPost(post, existing);

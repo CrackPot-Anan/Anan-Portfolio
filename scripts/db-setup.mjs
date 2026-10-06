@@ -45,6 +45,23 @@ console.log(
 
 const [, , command, argument] = process.argv;
 
+if (command === "--clear") {
+  await sql`
+    CREATE TABLE IF NOT EXISTS posts (
+      slug text PRIMARY KEY,
+      data jsonb NOT NULL,
+      updated_at timestamptz NOT NULL DEFAULT now()
+    )
+  `;
+  const [{ count: before }] =
+    await sql`SELECT count(*)::int AS count FROM posts`;
+  await sql`DELETE FROM posts`;
+  const [{ count: after }] =
+    await sql`SELECT count(*)::int AS count FROM posts`;
+  console.log(`Removed ${before - after} post(s). Posts in database: ${after}`);
+  process.exit(0);
+}
+
 if (command === "--delete") {
   if (!argument) {
     console.error("Usage: npm run db:setup -- --delete <slug>");

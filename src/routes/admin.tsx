@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   createFileRoute,
   Link,
@@ -10,10 +10,12 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  ImagePlus,
   LogOut,
   Pencil,
   Plus,
   Send,
+  Trash2,
   X,
 } from "lucide-react";
 
@@ -37,6 +39,9 @@ const CATEGORY_HINTS: Record<Category, string> = {
   "Life update": "What is happening in your life",
   Newsletter: "Direct notes for your readers",
 };
+
+const MAX_IMAGE_BYTES = 1_500_000;
+const IMAGE_ACCEPT = "image/png,image/jpeg,image/webp,image/gif,image/avif";
 
 type View = "home" | "form" | "result";
 
@@ -81,6 +86,8 @@ function Admin() {
   const [excerpt, setExcerpt] = useState("");
   const [body, setBody] = useState("");
   const [tags, setTags] = useState("");
+  const [image, setImage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function resetForm() {
     setTitle("");
@@ -88,6 +95,7 @@ function Admin() {
     setExcerpt("");
     setBody("");
     setTags("");
+    setImage("");
     setError(null);
   }
 
@@ -133,12 +141,39 @@ function Admin() {
     setExcerpt(post.excerpt);
     setBody(post.body);
     setTags(post.tags.join(", "));
+    setImage(post.image ?? "");
     setError(null);
     setExpandedSlug(null);
     setEditingSlug(slug);
     setResult(null);
     setView("form");
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function onPickFile(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("Pick an image file — PNG, JPEG, WebP or GIF.");
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      setError("Cover image must be under 1.5 MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result ?? "");
+      if (result.startsWith("data:image/")) {
+        setImage(result);
+        setError(null);
+      } else {
+        setError("That file could not be read as an image.");
+      }
+    };
+    reader.onerror = () => setError("Couldn't read that image. Try again.");
+    reader.readAsDataURL(file);
   }
 
   async function onLogout() {
@@ -168,6 +203,7 @@ function Admin() {
         .split(",")
         .map((tag) => tag.trim())
         .filter(Boolean),
+      image: image.trim() || undefined,
     };
     try {
       const saved = editingSlug
@@ -399,6 +435,74 @@ function Admin() {
                 />
               </div>
 
+              <div>
+                <p className="label-mono mb-3">
+                  Cover image{" "}
+                  <span className="normal-case text-muted-foreground">
+                    (optional)
+                  </span>
+                </p>
+                <div className="rounded-2xl border border-border bg-background p-4">
+                  {image && (
+                    <img
+                      src={image}
+                      alt="Cover preview"
+                      className="mb-4 h-44 w-full rounded-xl border border-border bg-surface object-cover"
+                    />
+                  )}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="inline-flex items-center gap-2 rounded-full border border-signal/60 bg-signal/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
+                    >
+                      <ImagePlus className="h-3.5 w-3.5" />
+                      {image ? "Replace image" : "Choose image"}
+                    </button>
+                    {image && (
+                      <button
+                        type="button"
+                        onClick={() => setImage("")}
+                        className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" /> Remove
+                      </button>
+                    )}
+                    <p className="font-mono text-[11px] text-muted-foreground">
+                      PNG, JPEG, WebP or GIF · up to 1.5 MB
+                    </p>
+                  </div>
+                  <div className="mt-4 border-t border-border pt-4">
+                    <label
+                      htmlFor="image-url"
+                      className="label-mono mb-2 block"
+                    >
+                      …or paste an image URL
+                    </label>
+                    <input
+                      id="image-url"
+                      name="image-url"
+                      type="text"
+                      value={image.startsWith("data:") ? "" : image}
+                      onChange={(event) => setImage(event.target.value)}
+                      placeholder={
+                        image.startsWith("data:")
+                          ? "Uploaded file in use — Remove to paste a URL"
+                          : "https://…/cover.jpg"
+                      }
+                      className="w-full rounded-full border border-border bg-surface px-4 py-3 font-mono text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal"
+                    />
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept={IMAGE_ACCEPT}
+                    onChange={onPickFile}
+                    className="hidden"
+                  />
+                </div>
+              </div>
+
               {error && (
                 <p
                   role="alert"
@@ -517,6 +621,13 @@ function Admin() {
                   >
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div className="min-w-0">
+                        {post.image && (
+                          <img
+                            src={post.image}
+                            alt=""
+                            className="mb-3 h-20 w-full rounded-xl border border-border object-cover"
+                          />
+                        )}
                         <p className="label-mono">{post.category}</p>
                         <h3 className="mt-2 font-display text-xl leading-snug md:text-2xl">
                           {post.title}

@@ -143,7 +143,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-BPUoQD8p.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-DG-c5_Wa.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -165,11 +165,11 @@ async function getStartManifest(matchedRoutes) {
 var manifest = {
 	"0cd1ce8de28e7338710a9b214c551974508d6ec20021e379d074d8c88cc02e82": {
 		functionName: "getPostsFn_createServerFn_handler",
-		importer: () => import("./blog-api-OA5Wvije.mjs")
+		importer: () => import("./blog-api-DDrjuzVG.mjs")
 	},
 	"33471d7595a86a2d742b7782a2da70c3157fcde437a7b3fd66719633206ad5fc": {
 		functionName: "createPostFn_createServerFn_handler",
-		importer: () => import("./blog-api-OA5Wvije.mjs")
+		importer: () => import("./blog-api-DDrjuzVG.mjs")
 	},
 	"64b9781269ed244a99a1cc37b327a4a22d10cefd045a4ef0fc944e906895a303": {
 		functionName: "loginFn_createServerFn_handler",
@@ -185,11 +185,11 @@ var manifest = {
 	},
 	"d5181106c24458fdd6145115b2f6bf8fa9c7c11c5f22431539b1243377444b4c": {
 		functionName: "updatePostFn_createServerFn_handler",
-		importer: () => import("./blog-api-OA5Wvije.mjs")
+		importer: () => import("./blog-api-DDrjuzVG.mjs")
 	},
 	"dee422fe204c1e7699827260c65668fc25833d69bd8f27453198fc0b516e7056": {
 		functionName: "getPostFn_createServerFn_handler",
-		importer: () => import("./blog-api-OA5Wvije.mjs")
+		importer: () => import("./blog-api-DDrjuzVG.mjs")
 	}
 };
 async function getServerFnById(id, access) {
@@ -1594,7 +1594,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-CMoU1jNT.mjs").then((n) => n.t),
+		import("./router-DUI4LIUY.mjs").then((n) => n.t),
 		import("./start-5Z2QO8AU.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);

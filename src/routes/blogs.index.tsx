@@ -81,30 +81,41 @@ function Blogs() {
             <p className="label-mono">{posts.length} posts</p>
           </div>
 
-          <div className="mb-10 flex flex-wrap gap-2">
-            {filters.map((filter) => {
-              const isActive = active === filter;
-              const count =
-                filter === "All" ? posts.length : (counts.get(filter) ?? 0);
-              return (
-                <button
-                  key={filter}
-                  type="button"
-                  onClick={() => setActive(filter)}
-                  className={`rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors ${
-                    isActive
-                      ? "border-signal bg-signal/10 text-signal"
-                      : "border-border text-muted-foreground hover:border-signal hover:text-signal"
-                  }`}
-                >
-                  {filter}
-                  <span className="ml-2 opacity-60">{count}</span>
-                </button>
-              );
-            })}
-          </div>
+          {posts.length > 0 && (
+            <div className="mb-10 flex flex-wrap gap-2">
+              {filters.map((filter) => {
+                const isActive = active === filter;
+                const count =
+                  filter === "All" ? posts.length : (counts.get(filter) ?? 0);
+                return (
+                  <button
+                    key={filter}
+                    type="button"
+                    onClick={() => setActive(filter)}
+                    className={`rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors ${
+                      isActive
+                        ? "border-signal bg-signal/10 text-signal"
+                        : "border-border text-muted-foreground hover:border-signal hover:text-signal"
+                    }`}
+                  >
+                    {filter}
+                    <span className="ml-2 opacity-60">{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
-          {visible.length === 0 ? (
+          {posts.length === 0 ? (
+            <div className="border border-border bg-surface px-6 py-14 text-center">
+              <p className="label-mono mb-4">
+                <span className="text-signal">$</span> ls blog/ — 0 files
+              </p>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                No posts yet. New writing will show up here.
+              </p>
+            </div>
+          ) : visible.length === 0 ? (
             <p className="border border-border bg-surface px-6 py-10 text-center font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
               No posts in this category yet.
             </p>
@@ -116,6 +127,13 @@ function Blogs() {
                   className="grid gap-4 bg-background p-6 transition-colors hover:bg-surface md:grid-cols-[200px_1fr] md:p-8"
                 >
                   <div className="label-mono space-y-2 md:pt-1">
+                    {post.image && (
+                      <img
+                        src={post.image}
+                        alt=""
+                        className="mb-3 aspect-video w-full rounded-xl border border-border bg-surface object-cover"
+                      />
+                    )}
                     <p>{formatPostDate(post.date)}</p>
                     <p className="flex items-center gap-1.5">
                       <Clock className="h-3.5 w-3.5 text-signal" />

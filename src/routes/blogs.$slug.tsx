@@ -18,6 +18,9 @@ export const Route = createFileRoute("/blogs/$slug")({
           { name: "description", content: loaderData.excerpt },
           { property: "og:title", content: loaderData.title },
           { property: "og:description", content: loaderData.excerpt },
+          ...(loaderData.image?.startsWith("http")
+            ? [{ property: "og:image", content: loaderData.image }]
+            : []),
         ]
       : [],
   }),
@@ -56,6 +59,15 @@ function BlogPost() {
                 {post.readTime}
               </span>
             </div>
+            {post.image && (
+              <div className="mt-10 overflow-hidden rounded-2xl border border-border bg-surface">
+                <img
+                  src={post.image}
+                  alt=""
+                  className="aspect-video w-full object-cover"
+                />
+              </div>
+            )}
           </div>
         </header>
 

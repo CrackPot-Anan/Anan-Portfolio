@@ -17,6 +17,7 @@ export type Post = {
   excerpt: string;
   body: string;
   tags: string[];
+  image?: string;
 };
 
 export type CreatePostInput = {
@@ -25,6 +26,7 @@ export type CreatePostInput = {
   excerpt: string;
   body: string;
   tags: string[];
+  image?: string;
 };
 
 export type CreatePostResult =
