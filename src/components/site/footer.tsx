@@ -29,7 +29,7 @@ export function SiteFooter() {
             <Linkedin className="h-4 w-4" />
           </a>
           <a
-            href="https://www.instagram.com/anans_daily_2000/"
+            href="https://www.instagram.com/_anan.raiyan_13/"
             target="_blank"
             rel="noreferrer"
             aria-label="Instagram"
