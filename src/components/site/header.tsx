@@ -7,6 +7,7 @@ import { getSessionFn } from "@/lib/auth";
 const nav = [
   ["about", "About"],
   ["experience", "Experience"],
+  ["leadership", "Leadership"],
   ["projects", "Projects"],
   ["products", "Products"],
   ["contact", "Contact"],

@@ -30,6 +30,8 @@ export type CreatePostInput = {
 export type CreatePostResult =
   { ok: true; slug: string } | { ok: false; error: string };
 
+export type UpdatePostInput = CreatePostInput & { slug: string };
+
 export function isCategory(value: string): value is Category {
   return (CATEGORIES as readonly string[]).includes(value);
 }

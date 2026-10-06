@@ -9,6 +9,7 @@ import { Section, SectionHeading, Tag } from "@/components/site/sections";
 import {
   skills,
   timeline,
+  leadership,
   projects,
   products,
   stats,
@@ -195,10 +196,41 @@ function Index() {
           </div>
         </Section>
 
+        {/* Leadership & Engagement */}
+        <Section id="leadership">
+          <SectionHeading
+            index="03"
+            command="./leadership --roles"
+            title="Leadership & engagement"
+          />
+          <div className="grid gap-px bg-border md:grid-cols-2">
+            {leadership.map((l) => (
+              <article
+                key={l.role}
+                className="bg-background p-7 transition-colors hover:bg-surface md:p-8"
+              >
+                <p className="label-mono">{l.period}</p>
+                <h3 className="mt-4 text-xl text-foreground md:text-2xl">
+                  {l.role}
+                </h3>
+                <p className="mt-1 font-mono text-xs text-signal">{l.org}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  {l.detail}
+                </p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {l.tags.map((tag) => (
+                    <Tag key={tag}>{tag}</Tag>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </Section>
+
         {/* Projects */}
         <Section id="projects">
           <SectionHeading
-            index="03"
+            index="04"
             command="./projects.sh --list"
             title="Selected work"
           />
@@ -229,7 +261,7 @@ function Index() {
         {/* Products */}
         <Section id="products">
           <SectionHeading
-            index="04"
+            index="05"
             command="cat products.json"
             title="Products I own"
           />
@@ -253,7 +285,7 @@ function Index() {
         {/* Contact */}
         <Section id="contact">
           <SectionHeading
-            index="05"
+            index="06"
             command="./contact --open"
             title="Let's build something"
           />

@@ -49,6 +49,9 @@ export const timeline = [
       "Prepared PRDs, user stories, and change requests. Coordinated engineering, design, and QA in Jira and ClickUp to keep releases on schedule.",
     tags: ["Jira", "PRDs", "QA"],
   },
+];
+
+export const leadership = [
   {
     period: "Aug 2023 - Jan 2025",
     role: "Assistant General Secretary, Event Coverage & Post Production",
@@ -59,9 +62,10 @@ export const timeline = [
   },
   {
     period: "Aug 2022 - Aug 2023",
-    role: "Campus Leader",
+    role: "Campus Ambassador",
     org: "Applink by Banglalink",
-    detail: "Represented Applink by Banglalink as a campus leader.",
+    detail:
+      "Represented Applink by Banglalink on campus as a campus ambassador — engaging students, growing the community, and carrying the program into campus events.",
     tags: ["Campus Leadership", "Community"],
   },
 ];

@@ -1,6 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import type { CreatePostInput, CreatePostResult, Post } from "@/lib/blog";
+import type {
+  CreatePostInput,
+  CreatePostResult,
+  Post,
+  UpdatePostInput,
+} from "@/lib/blog";
 
 export const getPostsFn = createServerFn({ method: "GET" }).handler(
   async (): Promise<Post[]> => {
@@ -21,4 +26,11 @@ export const createPostFn = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<CreatePostResult> => {
     const { createPost } = await import("@/server/posts");
     return await createPost(data);
+  });
+
+export const updatePostFn = createServerFn({ method: "POST" })
+  .validator((data: UpdatePostInput) => data)
+  .handler(async ({ data }): Promise<CreatePostResult> => {
+    const { updatePost } = await import("@/server/posts");
+    return await updatePost(data);
   });
