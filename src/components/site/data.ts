@@ -51,6 +51,17 @@ export const timeline = [
   },
 ];
 
+export const education = [
+  {
+    period: "Sept 2021 - May 2025",
+    school: "American International University – Bangladesh",
+    degree: "B.Sc. in Software Engineering",
+    major: "Software Engineering",
+    cgpa: "CGPA 3.71 / 4.00",
+    location: "Dhaka, Bangladesh",
+  },
+];
+
 export const leadership = [
   {
     period: "Aug 2023 - Jan 2025",

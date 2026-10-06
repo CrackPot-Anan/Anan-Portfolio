@@ -9,6 +9,7 @@ import { Section, SectionHeading, Tag } from "@/components/site/sections";
 import {
   skills,
   timeline,
+  education,
   leadership,
   projects,
   products,
@@ -196,10 +197,40 @@ function Index() {
           </div>
         </Section>
 
+        {/* Education */}
+        <Section id="education">
+          <SectionHeading
+            index="03"
+            command="cat education.json"
+            title="Where I studied"
+          />
+          <div className="space-y-px bg-border">
+            {education.map((e) => (
+              <article
+                key={e.school}
+                className="grid gap-4 bg-background p-6 transition-colors hover:bg-surface md:grid-cols-[200px_1fr] md:p-8"
+              >
+                <p className="label-mono pt-1">{e.period}</p>
+                <div>
+                  <h3 className="text-xl text-foreground">{e.school}</h3>
+                  <p className="mt-1 font-mono text-xs text-signal">
+                    {e.degree}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Tag>Major: {e.major}</Tag>
+                    <Tag>{e.cgpa}</Tag>
+                    <Tag>{e.location}</Tag>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </Section>
+
         {/* Leadership & Engagement */}
         <Section id="leadership">
           <SectionHeading
-            index="03"
+            index="04"
             command="./leadership --roles"
             title="Leadership & engagement"
           />
@@ -230,7 +261,7 @@ function Index() {
         {/* Projects */}
         <Section id="projects">
           <SectionHeading
-            index="04"
+            index="05"
             command="./projects.sh --list"
             title="Selected work"
           />
@@ -261,7 +292,7 @@ function Index() {
         {/* Products */}
         <Section id="products">
           <SectionHeading
-            index="05"
+            index="06"
             command="cat products.json"
             title="Products I own"
           />
@@ -285,7 +316,7 @@ function Index() {
         {/* Contact */}
         <Section id="contact">
           <SectionHeading
-            index="06"
+            index="07"
             command="./contact --open"
             title="Let's build something"
           />

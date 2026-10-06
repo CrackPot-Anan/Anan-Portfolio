@@ -285,38 +285,6 @@ var Linkedin = createLucideIcon("linkedin", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var List = createLucideIcon("list", [
-	["path", {
-		d: "M3 5h.01",
-		key: "18ugdj"
-	}],
-	["path", {
-		d: "M3 12h.01",
-		key: "nlz23k"
-	}],
-	["path", {
-		d: "M3 19h.01",
-		key: "noohij"
-	}],
-	["path", {
-		d: "M8 5h13",
-		key: "1pao27"
-	}],
-	["path", {
-		d: "M8 12h13",
-		key: "1za7za"
-	}],
-	["path", {
-		d: "M8 19h13",
-		key: "m83p4d"
-	}]
-]);
-/**
-* @license lucide-react v0.575.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var Lock = createLucideIcon("lock", [["rect", {
 	width: "18",
 	height: "11",
@@ -419,4 +387,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { ArrowUpRight as _, Mail as a, List as c, Github as d, FileText as f, ChevronDown as g, ChevronUp as h, Pencil as i, Linkedin as l, CircleCheck as m, Send as n, LogOut as o, Clock as p, Plus as r, Lock as s, X as t, Instagram as u, ArrowLeft as v };
+export { ArrowLeft as _, Mail as a, Linkedin as c, FileText as d, Clock as f, ArrowUpRight as g, ChevronDown as h, Pencil as i, Instagram as l, ChevronUp as m, Send as n, LogOut as o, CircleCheck as p, Plus as r, Lock as s, X as t, Github as u };
