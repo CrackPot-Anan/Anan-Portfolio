@@ -44,7 +44,7 @@ export function SiteHeader() {
             <span className="hire-btn__shine" aria-hidden="true" />
           </Link>
           <Link
-            to="/blogs"
+            to="/about"
             className="rounded-sm border px-3 py-1.5 font-mono text-xs uppercase tracking-[0.14em] transition-colors"
             activeOptions={{ exact: true }}
             activeProps={{
@@ -56,7 +56,7 @@ export function SiteHeader() {
                 "rounded-sm border border-border px-3 py-1.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-signal hover:text-signal",
             }}
           >
-            Blogs
+            Who's Anan
           </Link>
         </div>
       </div>

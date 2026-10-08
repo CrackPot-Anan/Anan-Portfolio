@@ -7,10 +7,17 @@ import {
   type Category,
   type CreatePostInput,
   type CreatePostResult,
+  type DeletePostResult,
   type Post,
   type UpdatePostInput,
 } from "@/lib/blog";
-import { dbEnabled, readPosts, writePost, writePosts } from "@/server/db";
+import {
+  dbEnabled,
+  deletePostRow,
+  readPosts,
+  writePost,
+  writePosts,
+} from "@/server/db";
 import { readAdminSession } from "@/server/session";
 
 const POSTS_FILE = path.join(process.cwd(), "data", "posts.json");
@@ -286,4 +293,35 @@ export async function updatePost(
   const error = await persistPost(post, existing);
   if (error) return fail(error);
   return { ok: true, slug };
+}
+
+export async function deletePost(slug: string): Promise<DeletePostResult> {
+  const session = await readAdminSession();
+  if (!session) {
+    return {
+      ok: false,
+      error: "You are not signed in any more. Log in again to delete posts.",
+    };
+  }
+
+  const cleanSlug = String(slug ?? "").trim();
+  if (!cleanSlug) return { ok: false, error: "That post could not be found." };
+
+  const existing = await readAll();
+  if (!existing.some((post) => post.slug === cleanSlug)) {
+    return { ok: false, error: "That post no longer exists." };
+  }
+
+  if (dbEnabled()) {
+    if (!(await deletePostRow(cleanSlug))) {
+      return {
+        ok: false,
+        error: "Couldn't delete from the database. Try again later.",
+      };
+    }
+    return { ok: true };
+  }
+
+  await writeFilePosts(existing.filter((post) => post.slug !== cleanSlug));
+  return { ok: true };
 }

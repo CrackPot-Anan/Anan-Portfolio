@@ -1,4 +1,8 @@
-import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 import type { UploadImageResult } from "@/lib/blog";
 import { readAdminSession } from "@/server/session";
@@ -41,7 +45,9 @@ function r2Config(): R2Config {
   if (!bucket) missing.push("R2_BUCKET_NAME");
   if (!publicBaseUrl) missing.push("R2_PUBLIC_BASE_URL");
   if (missing.length > 0) {
-    throw new Error(`Image uploads are not configured. Missing: ${missing.join(", ")}`);
+    throw new Error(
+      `Image uploads are not configured. Missing: ${missing.join(", ")}`,
+    );
   }
 
   return {
@@ -80,7 +86,9 @@ function fail(error: string): UploadImageResult {
 export async function uploadCoverImage(file: File): Promise<UploadImageResult> {
   const session = await readAdminSession();
   if (!session) {
-    return fail("You are not signed in any more. Log in again to upload images.");
+    return fail(
+      "You are not signed in any more. Log in again to upload images.",
+    );
   }
 
   const extension = EXTENSIONS[file.type];
@@ -98,7 +106,11 @@ export async function uploadCoverImage(file: File): Promise<UploadImageResult> {
   try {
     config = r2Config();
   } catch (error) {
-    return fail(error instanceof Error ? error.message : "Image uploads are not configured.");
+    return fail(
+      error instanceof Error
+        ? error.message
+        : "Image uploads are not configured.",
+    );
   }
 
   const day = new Date().toISOString().slice(0, 10);

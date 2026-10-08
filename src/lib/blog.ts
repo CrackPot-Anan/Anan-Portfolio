@@ -32,6 +32,8 @@ export type CreatePostInput = {
 export type CreatePostResult =
   { ok: true; slug: string } | { ok: false; error: string };
 
+export type DeletePostResult = { ok: true } | { ok: false; error: string };
+
 export type UploadImageResult =
   { ok: true; url: string } | { ok: false; error: string };
 

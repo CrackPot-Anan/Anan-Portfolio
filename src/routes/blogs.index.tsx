@@ -3,9 +3,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, Mail, User } from "lucide-react";
 
 import { Tag } from "@/components/site/sections";
-import { hobbies, stories } from "@/components/site/data";
 import { CATEGORIES, formatPostDate, type Category } from "@/lib/blog";
 import { getPostsFn } from "@/lib/blog-api";
+import { getHobbiesFn, getStoriesFn } from "@/lib/content-api";
 
 const TITLE = "Blogs — Abrar Anan Raiyan";
 const DESCRIPTION =
@@ -20,14 +20,21 @@ export const Route = createFileRoute("/blogs/")({
       { property: "og:description", content: DESCRIPTION },
     ],
   }),
-  loader: () => getPostsFn(),
+  loader: async () => {
+    const [posts, hobbies, stories] = await Promise.all([
+      getPostsFn(),
+      getHobbiesFn(),
+      getStoriesFn(),
+    ]);
+    return { posts, hobbies, stories };
+  },
   component: Blogs,
 });
 
 type Filter = "All" | Category;
 
 function Blogs() {
-  const posts = Route.useLoaderData();
+  const { posts, hobbies, stories } = Route.useLoaderData();
   const [active, setActive] = useState<Filter>("All");
 
   const counts = useMemo(() => {

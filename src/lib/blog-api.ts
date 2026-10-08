@@ -3,6 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import type {
   CreatePostInput,
   CreatePostResult,
+  DeletePostResult,
   Post,
   UpdatePostInput,
   UploadImageResult,
@@ -45,4 +46,11 @@ export const uploadImageFn = createServerFn({ method: "POST" })
     }
     const { uploadCoverImage } = await import("@/server/images");
     return await uploadCoverImage(file);
+  });
+
+export const deletePostFn = createServerFn({ method: "POST" })
+  .validator((data: { slug: string }) => data)
+  .handler(async ({ data }): Promise<DeletePostResult> => {
+    const { deletePost } = await import("@/server/posts");
+    return await deletePost(data.slug);
   });

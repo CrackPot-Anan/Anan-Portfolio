@@ -1,3 +1,5 @@
+import type { Hobby, Story } from "@/lib/content";
+
 export const skills = [
   {
     group: "Delivery",
@@ -141,40 +143,47 @@ export const products = [
   },
 ];
 
-export const hobbies = [
+export const hobbies: Hobby[] = [
   {
+    id: "photography",
     name: "Photography",
     detail:
       "Street and event shoots — framing, cutting the clutter, and shipping the shot.",
   },
   {
+    id: "chess",
     name: "Chess",
     detail:
       "Weekend endgame drills. Fewer open tabs than a sprint review, same tension.",
   },
   {
+    id: "music",
     name: "Music",
     detail: "Lo-fi and jazz on loop while writing specs or reviewing PRs.",
   },
   {
+    id: "cricket",
     name: "Cricket",
     detail:
       "Weekend matches — pacing, reading the field, knowing when to accelerate.",
   },
 ];
 
-export const stories = [
+export const stories: Story[] = [
   {
+    id: "the-sprint-that-fixed-itself",
     title: "The Sprint That Fixed Itself",
     excerpt:
       "A retro that changed one habit and quietly removed a whole class of blockers.",
   },
   {
+    id: "two-deadlines-one-team",
     title: "Two Deadlines, One Team",
     excerpt:
       "How scope got cut honestly instead of quietly borrowing from quality.",
   },
   {
+    id: "the-feature-nobody-used",
     title: "The Feature Nobody Used",
     excerpt:
       "Shipping something perfect for the wrong user — and what discovery missed.",

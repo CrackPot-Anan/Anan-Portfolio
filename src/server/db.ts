@@ -46,6 +46,15 @@ async function ensureSchema(
       updated_at timestamptz NOT NULL DEFAULT now()
     )
   `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS content_items (
+      collection text NOT NULL,
+      id text NOT NULL,
+      data jsonb NOT NULL,
+      updated_at timestamptz NOT NULL DEFAULT now(),
+      PRIMARY KEY (collection, id)
+    )
+  `;
   schemaReady = true;
 }
 
@@ -100,6 +109,88 @@ export async function writePosts(posts: Post[]): Promise<boolean> {
     return true;
   } catch (error) {
     console.error("[posts] database seed failed:", describe(error));
+    return false;
+  }
+}
+
+export async function deletePostRow(slug: string): Promise<boolean> {
+  const sql = getSql();
+  if (!sql) return false;
+  try {
+    await ensureSchema(sql);
+    await sql`DELETE FROM posts WHERE slug = ${slug}`;
+    return true;
+  } catch (error) {
+    console.error("[posts] database delete failed:", describe(error));
+    return false;
+  }
+}
+
+export async function readCollection(
+  collection: string,
+): Promise<Array<Record<string, unknown>> | null> {
+  const sql = getSql();
+  if (!sql) return null;
+  try {
+    await ensureSchema(sql);
+    const rows = await sql`
+      SELECT data FROM content_items
+      WHERE collection = ${collection}
+      ORDER BY id
+    `;
+    return rows.map((row) => row.data as Record<string, unknown>);
+  } catch (error) {
+    console.error(
+      `[content] database read failed for ${collection}:`,
+      describe(error),
+    );
+    return null;
+  }
+}
+
+export async function writeCollectionItem(
+  collection: string,
+  id: string,
+  data: unknown,
+): Promise<boolean> {
+  const sql = getSql();
+  if (!sql) return false;
+  try {
+    await ensureSchema(sql);
+    await sql`
+      INSERT INTO content_items (collection, id, data, updated_at)
+      VALUES (${collection}, ${id}, ${JSON.stringify(data)}, now())
+      ON CONFLICT (collection, id)
+      DO UPDATE SET data = EXCLUDED.data, updated_at = now()
+    `;
+    return true;
+  } catch (error) {
+    console.error(
+      `[content] database write failed for ${collection}:`,
+      describe(error),
+    );
+    return false;
+  }
+}
+
+export async function deleteCollectionItem(
+  collection: string,
+  id: string,
+): Promise<boolean> {
+  const sql = getSql();
+  if (!sql) return false;
+  try {
+    await ensureSchema(sql);
+    await sql`
+      DELETE FROM content_items
+      WHERE collection = ${collection} AND id = ${id}
+    `;
+    return true;
+  } catch (error) {
+    console.error(
+      `[content] database delete failed for ${collection}:`,
+      describe(error),
+    );
     return false;
   }
 }
