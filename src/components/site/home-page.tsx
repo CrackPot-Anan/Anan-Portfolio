@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Mail, FileText } from "lucide-react";
+import { ArrowUpRight, FileText } from "lucide-react";
 
 import portrait from "@/assets/raiyan.jpg";
 import resumeUrl from "@/assets/Abrar Anan Raiyan.pdf?url";
@@ -15,6 +15,7 @@ import {
   products,
   stats,
 } from "@/components/site/data";
+import { Credentials } from "@/components/site/credentials";
 
 const PORTRAIT_FALLBACK =
   "data:image/svg+xml," +
@@ -263,26 +264,9 @@ export function Home({ section }: { section?: string }) {
           </div>
         </Section>
 
-        {/* Contact */}
-        <Section id="contact">
-          <SectionHeading
-            index="06"
-            command="./contact --open"
-            title="Let's build something"
-          />
-          <div className="grid gap-10 md:grid-cols-[1fr_auto] md:items-end">
-            <p className="max-w-xl text-base leading-relaxed text-muted-foreground">
-              Have a stalled project, a backlog that needs shape, or an AI idea
-              worth validating? I&apos;m open to project management engagements,
-              product consulting, and collaborations.
-            </p>
-            <a
-              href="mailto:abraranan18@gmail.com"
-              className="inline-flex items-center gap-3 rounded-sm bg-signal px-6 py-4 font-mono text-xs uppercase tracking-[0.14em] text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              <Mail className="h-4 w-4" /> abraranan18@gmail.com
-            </a>
-          </div>
+        {/* Professional Credentials */}
+        <Section id="credentials">
+          <Credentials />
         </Section>
       </main>
 

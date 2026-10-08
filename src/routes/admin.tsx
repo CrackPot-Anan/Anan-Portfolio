@@ -535,20 +535,17 @@ function Admin() {
         ) : view === "home" ? (
           <section className="flex min-h-[calc(100dvh-11rem)] items-center justify-center">
             <div className="w-full max-w-2xl rounded-2xl border border-border bg-surface p-4 md:p-5">
-              <div className="grid gap-3 sm:grid-cols-3">
+              <div className="grid gap-x-8 gap-y-4 sm:grid-cols-3">
                 {ENTITY_CARDS.map((card) => (
                   <div
                     key={card.kind}
-                    className="rounded-xl border border-border bg-background p-4"
+                    className="rounded-xl border border-border bg-background p-5"
                   >
-                    <p className="label-mono">
-                      <span className="text-signal">$</span> {card.command}
-                    </p>
-                    <h2 className="mt-2 text-xl">{card.label}</h2>
-                    <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                    <h2 className="text-2xl">{card.label}</h2>
+                    <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
                       {counts[card.kind]} items
                     </p>
-                    <div className="mt-4 flex flex-wrap gap-2">
+                    <div className="mt-6 flex flex-wrap gap-2">
                       <button
                         type="button"
                         onClick={() => openList(card.kind)}

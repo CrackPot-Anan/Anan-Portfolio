@@ -75,6 +75,7 @@ export default defineConfig(async ({ command, mode }): Promise<UserConfig> => {
           stabilityThreshold: 1000,
           pollInterval: 100,
         },
+        ignored: ["**/Advertising in the Age of Generative AI.jpg"],
       },
     },
   };

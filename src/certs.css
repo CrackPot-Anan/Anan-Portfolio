@@ -1,0 +1,24 @@
+.cred-track {
+  scrollbar-width: none;
+}
+.cred-track::-webkit-scrollbar {
+  display: none;
+}
+
+.cred-track {
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 24px;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.cred-dots {
+  background-image: radial-gradient(
+    circle,
+    oklch(0.79 0.15 76 / 0.12) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+  opacity: 0.25;
+  pointer-events: none;
+}
