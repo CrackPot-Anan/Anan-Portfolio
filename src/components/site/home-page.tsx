@@ -8,7 +8,6 @@ import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
 import { Section, SectionHeading, Tag } from "@/components/site/sections";
 import {
-  skills,
   timeline,
   education,
   leadership,
@@ -115,56 +114,10 @@ export function Home({ section }: { section?: string }) {
           </div>
         </section>
 
-        {/* About */}
-        <Section id="about">
-          <SectionHeading
-            index="01"
-            command="cat about.md"
-            title="Clarity is the deliverable"
-          />
-          <div className="grid gap-12 md:grid-cols-[1fr_0.9fr]">
-            <div className="space-y-5 text-base leading-relaxed text-muted-foreground">
-              <p>
-                Great software rarely fails because of code — it fails because
-                of unclear scope, misaligned expectations, and silence between
-                teams. My job is to remove all three.
-              </p>
-              <p>
-                I step into complex projects, break down chaotic backlogs, and
-                put structure around how work flows: crisp requirements, honest
-                estimates, visible risks, and sprints that actually end with
-                something shipped. I translate business intent for engineers and
-                engineering reality for stakeholders.
-              </p>
-              <p>
-                Alongside delivery, I&apos;m deep in applied AI — using language
-                models to accelerate discovery, documentation, and QA, and
-                exploring how AI features change the way products get scoped and
-                validated.
-              </p>
-            </div>
-            <div className="space-y-6">
-              {skills.map((s) => (
-                <div
-                  key={s.group}
-                  className="border border-border bg-surface p-5"
-                >
-                  <p className="label-mono mb-3">{s.group}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {s.items.map((i) => (
-                      <Tag key={i}>{i}</Tag>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Section>
-
         {/* Experience */}
         <Section id="experience">
           <SectionHeading
-            index="02"
+            index="01"
             command="ls experience/"
             title="Where I've delivered"
           />
@@ -195,7 +148,7 @@ export function Home({ section }: { section?: string }) {
         {/* Education */}
         <Section id="education">
           <SectionHeading
-            index="03"
+            index="02"
             command="cat education.json"
             title="Where I studied"
           />
@@ -227,7 +180,7 @@ export function Home({ section }: { section?: string }) {
         {/* Leadership & Engagement */}
         <Section id="leadership">
           <SectionHeading
-            index="04"
+            index="03"
             command="./leadership --roles"
             title="Leadership & engagement"
           />
@@ -258,7 +211,7 @@ export function Home({ section }: { section?: string }) {
         {/* Projects */}
         <Section id="projects">
           <SectionHeading
-            index="05"
+            index="04"
             command="./projects.sh --list"
             title="Selected work"
           />
@@ -289,7 +242,7 @@ export function Home({ section }: { section?: string }) {
         {/* Products */}
         <Section id="products">
           <SectionHeading
-            index="06"
+            index="05"
             command="cat products.json"
             title="Products I own"
           />
@@ -313,7 +266,7 @@ export function Home({ section }: { section?: string }) {
         {/* Contact */}
         <Section id="contact">
           <SectionHeading
-            index="07"
+            index="06"
             command="./contact --open"
             title="Let's build something"
           />

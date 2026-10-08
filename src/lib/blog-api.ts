@@ -5,6 +5,7 @@ import type {
   CreatePostResult,
   Post,
   UpdatePostInput,
+  UploadImageResult,
 } from "@/lib/blog";
 
 export const getPostsFn = createServerFn({ method: "GET" }).handler(
@@ -33,4 +34,15 @@ export const updatePostFn = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<CreatePostResult> => {
     const { updatePost } = await import("@/server/posts");
     return await updatePost(data);
+  });
+
+export const uploadImageFn = createServerFn({ method: "POST" })
+  .validator((data: FormData) => data)
+  .handler(async ({ data }): Promise<UploadImageResult> => {
+    const file = data.get("file");
+    if (!(file instanceof File)) {
+      return { ok: false, error: "No image file was received. Try again." };
+    }
+    const { uploadCoverImage } = await import("@/server/images");
+    return await uploadCoverImage(file);
   });

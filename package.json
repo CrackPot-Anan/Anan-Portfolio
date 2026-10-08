@@ -13,6 +13,7 @@
     "db:setup": "node scripts/db-setup.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1147.0",
     "@hookform/resolvers": "^5.2.2",
     "@neondatabase/serverless": "^1.2.0",
     "@radix-ui/react-accordion": "^1.2.12",

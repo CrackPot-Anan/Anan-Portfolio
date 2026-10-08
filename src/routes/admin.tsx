@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
   ImagePlus,
+  Loader2,
   LogOut,
   Pencil,
   Plus,
@@ -27,7 +28,12 @@ import {
   type CreatePostInput,
   type Post,
 } from "@/lib/blog";
-import { createPostFn, getPostsFn, updatePostFn } from "@/lib/blog-api";
+import {
+  createPostFn,
+  getPostsFn,
+  updatePostFn,
+  uploadImageFn,
+} from "@/lib/blog-api";
 
 const TITLE = "Create blog — Abrar Anan Raiyan";
 const DESCRIPTION = "Private publishing console.";
@@ -87,6 +93,7 @@ function Admin() {
   const [body, setBody] = useState("");
   const [tags, setTags] = useState("");
   const [image, setImage] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function resetForm() {
@@ -150,7 +157,7 @@ function Admin() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function onPickFile(event: React.ChangeEvent<HTMLInputElement>) {
+  async function onPickFile(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
@@ -162,18 +169,22 @@ function Admin() {
       setError("Cover image must be under 1.5 MB.");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = String(reader.result ?? "");
-      if (result.startsWith("data:image/")) {
-        setImage(result);
-        setError(null);
+    setUploadingImage(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.set("file", file, file.name);
+      const uploaded = await uploadImageFn({ data: formData });
+      if (uploaded.ok) {
+        setImage(uploaded.url);
       } else {
-        setError("That file could not be read as an image.");
+        setError(uploaded.error);
       }
-    };
-    reader.onerror = () => setError("Couldn't read that image. Try again.");
-    reader.readAsDataURL(file);
+    } catch {
+      setError("Couldn't upload the image. Check your connection and try again.");
+    } finally {
+      setUploadingImage(false);
+    }
   }
 
   async function onLogout() {
@@ -454,16 +465,26 @@ function Admin() {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="inline-flex items-center gap-2 rounded-full border border-signal/60 bg-signal/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
+                      disabled={uploadingImage}
+                      className="inline-flex items-center gap-2 rounded-full border border-signal/60 bg-signal/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                      <ImagePlus className="h-3.5 w-3.5" />
-                      {image ? "Replace image" : "Choose image"}
+                      {uploadingImage ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <ImagePlus className="h-3.5 w-3.5" />
+                      )}
+                      {uploadingImage
+                        ? "Uploading…"
+                        : image
+                          ? "Replace image"
+                          : "Choose image"}
                     </button>
                     {image && (
                       <button
                         type="button"
                         onClick={() => setImage("")}
-                        className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
+                        disabled={uploadingImage}
+                        className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-destructive hover:text-destructive disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         <Trash2 className="h-3.5 w-3.5" /> Remove
                       </button>

@@ -315,6 +315,16 @@ var Linkedin = createLucideIcon("linkedin", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var LoaderCircle = createLucideIcon("loader-circle", [["path", {
+	d: "M21 12a9 9 0 1 1-6.219-8.56",
+	key: "13zald"
+}]]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var LogOut = createLucideIcon("log-out", [
 	["path", {
 		d: "m16 17 5-5-5-5",
@@ -427,4 +437,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { ArrowUpRight as _, Pencil as a, Linkedin as c, Github as d, FileText as f, ChevronDown as g, ChevronUp as h, Plus as i, Instagram as l, CircleCheck as m, Trash2 as n, Mail as o, Clock as p, Send as r, LogOut as s, X as t, ImagePlus as u, ArrowLeft as v };
+export { ChevronDown as _, Pencil as a, LoaderCircle as c, ImagePlus as d, Github as f, ChevronUp as g, CircleCheck as h, Plus as i, Linkedin as l, Clock as m, Trash2 as n, Mail as o, FileText as p, Send as r, LogOut as s, X as t, Instagram as u, ArrowUpRight as v, ArrowLeft as y };

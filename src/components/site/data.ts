@@ -141,6 +141,46 @@ export const products = [
   },
 ];
 
+export const hobbies = [
+  {
+    name: "Photography",
+    detail:
+      "Street and event shoots — framing, cutting the clutter, and shipping the shot.",
+  },
+  {
+    name: "Chess",
+    detail:
+      "Weekend endgame drills. Fewer open tabs than a sprint review, same tension.",
+  },
+  {
+    name: "Music",
+    detail: "Lo-fi and jazz on loop while writing specs or reviewing PRs.",
+  },
+  {
+    name: "Cricket",
+    detail:
+      "Weekend matches — pacing, reading the field, knowing when to accelerate.",
+  },
+];
+
+export const stories = [
+  {
+    title: "The Sprint That Fixed Itself",
+    excerpt:
+      "A retro that changed one habit and quietly removed a whole class of blockers.",
+  },
+  {
+    title: "Two Deadlines, One Team",
+    excerpt:
+      "How scope got cut honestly instead of quietly borrowing from quality.",
+  },
+  {
+    title: "The Feature Nobody Used",
+    excerpt:
+      "Shipping something perfect for the wrong user — and what discovery missed.",
+  },
+];
+
 export const stats = [
   { value: "12+", label: "Projects Delivered" },
   { value: "98%", label: "On-Time Releases" },
