@@ -1,13 +1,12 @@
 import { Link } from "@tanstack/react-router";
 
 const nav = [
-  ["/about", "About"],
-  ["/experience", "Experience"],
-  ["/education", "Education"],
-  ["/leadership", "Leadership"],
-  ["/projects", "Projects"],
-  ["/products", "Products"],
-  ["/contact", "Contact"],
+  ["experience", "Experience"],
+  ["education", "Education"],
+  ["leadership", "Leadership"],
+  ["projects", "Projects"],
+  ["products", "Products"],
+  ["contact", "Contact"],
 ] as const;
 
 export function SiteHeader() {
@@ -21,10 +20,12 @@ export function SiteHeader() {
           abrar<span className="text-signal">.</span>anan
         </Link>
         <nav className="hidden gap-7 md:flex">
-          {nav.map(([to, label]) => (
+          {nav.map(([id, label]) => (
             <Link
-              key={to}
-              to={to}
+              key={id}
+              to="/"
+              hash={id}
+              hashScrollIntoView={{ behavior: "smooth", block: "start" }}
               className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground"
               activeProps={{
                 className:
@@ -37,7 +38,9 @@ export function SiteHeader() {
         </nav>
         <div className="flex items-center gap-2">
           <Link
-            to="/contact"
+            to="/"
+            hash="contact"
+            hashScrollIntoView={{ behavior: "smooth", block: "start" }}
             className="hire-btn rounded-sm border border-signal px-3 py-1.5 font-mono text-xs uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
           >
             <span className="relative z-[1]">Hire me</span>

@@ -70,25 +70,21 @@ const ENTITY_CARDS: Array<{
   kind: EntityType;
   label: string;
   command: string;
-  blurb: string;
 }> = [
   {
     kind: "blogs",
     label: "Blogs",
     command: "ls blogs/",
-    blurb: "Long-form writing — categories, tags, cover images and read time.",
   },
   {
     kind: "stories",
     label: "Stories",
     command: "cat stories.md",
-    blurb: "Short narratives shown in the Stories panel on the blogs page.",
   },
   {
     kind: "hobbies",
     label: "Hobbies",
     command: "cat hobbies.md",
-    blurb: "Personal interests shown in the Hobbies panel on the blogs page.",
   },
 ];
 
@@ -537,58 +533,48 @@ function Admin() {
             </div>
           </section>
         ) : view === "home" ? (
-          <section className="rounded-2xl border border-border bg-surface p-8 md:p-12">
-            <p className="label-mono mb-5">Publishing console</p>
-            <h1 className="text-4xl leading-[1.05] md:text-5xl">
-              Manage your <span className="text-signal">content</span>.
-            </h1>
-            <p className="mt-5 max-w-lg text-sm leading-relaxed text-muted-foreground">
-              Three collections power the site. Create, read, update or delete
-              items from any card — changes show up on the live pages right
-              away.
-            </p>
-            <div className="mt-9 grid gap-4 md:grid-cols-3">
-              {ENTITY_CARDS.map((card) => (
-                <div
-                  key={card.kind}
-                  className="flex flex-col rounded-2xl border border-border bg-background p-5"
-                >
-                  <p className="label-mono">
-                    <span className="text-signal">$</span> {card.command}
-                  </p>
-                  <h2 className="mt-3 text-2xl">{card.label}</h2>
-                  <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                    {counts[card.kind]} items
-                  </p>
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-                    {card.blurb}
-                  </p>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => openList(card.kind)}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-signal/60 bg-signal/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
-                    >
-                      Manage
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        startCreate(
-                          card.kind === "blogs"
-                            ? "blog"
-                            : card.kind === "stories"
-                              ? "story"
-                              : "hobby",
-                        )
-                      }
-                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-signal hover:text-signal"
-                    >
-                      <Plus className="h-3.5 w-3.5" /> New
-                    </button>
+          <section className="flex min-h-[calc(100dvh-11rem)] items-center justify-center">
+            <div className="w-full max-w-2xl rounded-2xl border border-border bg-surface p-4 md:p-5">
+              <div className="grid gap-3 sm:grid-cols-3">
+                {ENTITY_CARDS.map((card) => (
+                  <div
+                    key={card.kind}
+                    className="rounded-xl border border-border bg-background p-4"
+                  >
+                    <p className="label-mono">
+                      <span className="text-signal">$</span> {card.command}
+                    </p>
+                    <h2 className="mt-2 text-xl">{card.label}</h2>
+                    <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                      {counts[card.kind]} items
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => openList(card.kind)}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-signal/60 bg-signal/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
+                      >
+                        Manage
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          startCreate(
+                            card.kind === "blogs"
+                              ? "blog"
+                              : card.kind === "stories"
+                                ? "story"
+                                : "hobby",
+                          )
+                        }
+                        className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-signal hover:text-signal"
+                      >
+                        <Plus className="h-3.5 w-3.5" /> New
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </section>
         ) : view === "list" ? (
