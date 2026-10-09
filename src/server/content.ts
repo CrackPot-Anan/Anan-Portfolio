@@ -4,6 +4,7 @@ import path from "node:path";
 import {
   hobbies as seedHobbies,
   stories as seedStories,
+  travels as seedTravels,
 } from "@/components/site/data";
 import type {
   DeleteResult,
@@ -12,8 +13,11 @@ import type {
   SaveResult,
   Story,
   StoryInput,
+  Travel,
+  TravelInput,
   UpdateHobbyInput,
   UpdateStoryInput,
+  UpdateTravelInput,
 } from "@/lib/content";
 import {
   dbEnabled,
@@ -23,12 +27,15 @@ import {
 } from "@/server/db";
 import { readAdminSession } from "@/server/session";
 
-type Collection = "hobbies" | "stories";
+type Collection = "hobbies" | "stories" | "travel";
 
 const MIN_NAME = 3;
 const MAX_NAME = 80;
 const MIN_TEXT = 10;
 const MAX_TEXT = 400;
+const MAX_DESCRIPTION = 800;
+const MAX_URL = 500;
+const MAX_ALT = 200;
 
 function contentFile(collection: Collection): string {
   return path.join(process.cwd(), "data", `${collection}.json`);
@@ -160,6 +167,31 @@ export async function listStories(): Promise<Story[]> {
   return readAll("stories", seedStories);
 }
 
+export async function listTravels(): Promise<Travel[]> {
+  return readAll("travel", seedTravels);
+}
+
+export async function getHobby(id: string): Promise<Hobby | null> {
+  const cleanId = String(id ?? "").trim();
+  if (!cleanId) return null;
+  const hobbies = await listHobbies();
+  return hobbies.find((hobby) => hobby.id === cleanId) ?? null;
+}
+
+export async function getStory(id: string): Promise<Story | null> {
+  const cleanId = String(id ?? "").trim();
+  if (!cleanId) return null;
+  const stories = await listStories();
+  return stories.find((story) => story.id === cleanId) ?? null;
+}
+
+export async function getTravel(id: string): Promise<Travel | null> {
+  const cleanId = String(id ?? "").trim();
+  if (!cleanId) return null;
+  const travels = await listTravels();
+  return travels.find((travel) => travel.id === cleanId) ?? null;
+}
+
 function normalizeName(value: string, label: string): string {
   const name = value.trim();
   if (name.length < MIN_NAME) {
@@ -182,15 +214,51 @@ function normalizeText(value: string, label: string): string {
   return text;
 }
 
+function normalizeBody(value: string): string {
+  return String(value ?? "").trim();
+}
+
+function normalizeDescription(value: string): string {
+  const text = String(value ?? "").trim();
+  if (text.length < MIN_TEXT) {
+    throw new Error(`Description needs at least ${MIN_TEXT} characters.`);
+  }
+  if (text.length > MAX_DESCRIPTION) {
+    throw new Error(
+      `Description must stay under ${MAX_DESCRIPTION} characters.`,
+    );
+  }
+  return text;
+}
+
+function normalizeUrl(value: string): string {
+  const url = String(value ?? "").trim();
+  if (url.length === 0) throw new Error("Add a URL to link this item to.");
+  if (url.length > MAX_URL) {
+    throw new Error(`URL must stay under ${MAX_URL} characters.`);
+  }
+  if (!/^https?:\/\//i.test(url) && !url.startsWith("/")) {
+    throw new Error("URL must start with http://, https://, or /.");
+  }
+  return url;
+}
+
+function normalizeAlt(value: string | undefined): string | undefined {
+  const alt = String(value ?? "").trim();
+  if (!alt) return undefined;
+  return alt.slice(0, MAX_ALT);
+}
+
 export async function createHobby(input: HobbyInput): Promise<SaveResult> {
   const authError = await requireSession();
   if (authError) return { ok: false, error: authError };
   try {
     const name = normalizeName(input.name, "Name");
     const detail = normalizeText(input.detail, "Detail");
+    const body = normalizeBody(input.body);
     const existing = await listHobbies();
     const id = uniqueId(existing, slugify(name));
-    const hobby: Hobby = { id, name, detail };
+    const hobby: Hobby = { id, name, detail, body };
     const error = await saveItem("hobbies", hobby);
     if (error) return { ok: false, error };
     return { ok: true, id };
@@ -217,7 +285,8 @@ export async function updateHobby(
     }
     const name = normalizeName(input.name, "Name");
     const detail = normalizeText(input.detail, "Detail");
-    const error = await saveItem("hobbies", { id, name, detail });
+    const body = normalizeBody(input.body);
+    const error = await saveItem("hobbies", { id, name, detail, body });
     if (error) return { ok: false, error };
     return { ok: true, id };
   } catch (error) {
@@ -248,9 +317,10 @@ export async function createStory(input: StoryInput): Promise<SaveResult> {
   try {
     const title = normalizeName(input.title, "Title");
     const excerpt = normalizeText(input.excerpt, "Excerpt");
+    const body = normalizeBody(input.body);
     const existing = await listStories();
     const id = uniqueId(existing, slugify(title));
-    const story: Story = { id, title, excerpt };
+    const story: Story = { id, title, excerpt, body };
     const error = await saveItem("stories", story);
     if (error) return { ok: false, error };
     return { ok: true, id };
@@ -277,7 +347,8 @@ export async function updateStory(
     }
     const title = normalizeName(input.title, "Title");
     const excerpt = normalizeText(input.excerpt, "Excerpt");
-    const error = await saveItem("stories", { id, title, excerpt });
+    const body = normalizeBody(input.body);
+    const error = await saveItem("stories", { id, title, excerpt, body });
     if (error) return { ok: false, error };
     return { ok: true, id };
   } catch (error) {
@@ -299,5 +370,80 @@ export async function deleteStory(id: string): Promise<DeleteResult> {
     return { ok: false, error: "That story no longer exists." };
   }
   const error = await removeItem("stories", cleanId);
+  return error ? { ok: false, error } : { ok: true };
+}
+
+export async function createTravel(input: TravelInput): Promise<SaveResult> {
+  const authError = await requireSession();
+  if (authError) return { ok: false, error: authError };
+  try {
+    const title = normalizeName(input.title, "Title");
+    const description = normalizeDescription(input.description);
+    const url = normalizeUrl(input.url);
+    const image = String(input.image ?? "").trim() || undefined;
+    const alt = normalizeAlt(input.alt);
+    const existing = await listTravels();
+    const id = uniqueId(existing, slugify(title));
+    const travel: Travel = { id, title, description, url, image, alt };
+    const error = await saveItem("travel", travel);
+    if (error) return { ok: false, error };
+    return { ok: true, id };
+  } catch (error) {
+    return {
+      ok: false,
+      error:
+        error instanceof Error ? error.message : "Couldn't save the travel item.",
+    };
+  }
+}
+
+export async function updateTravel(
+  input: UpdateTravelInput,
+): Promise<SaveResult> {
+  const authError = await requireSession();
+  if (authError) return { ok: false, error: authError };
+  const id = String(input.id ?? "").trim();
+  if (!id) return { ok: false, error: "That travel item could not be found." };
+  try {
+    const existing = await listTravels();
+    if (!existing.some((travel) => travel.id === id)) {
+      return { ok: false, error: "That travel item no longer exists." };
+    }
+    const title = normalizeName(input.title, "Title");
+    const description = normalizeDescription(input.description);
+    const url = normalizeUrl(input.url);
+    const image = String(input.image ?? "").trim() || undefined;
+    const alt = normalizeAlt(input.alt);
+    const error = await saveItem("travel", {
+      id,
+      title,
+      description,
+      url,
+      image,
+      alt,
+    });
+    if (error) return { ok: false, error };
+    return { ok: true, id };
+  } catch (error) {
+    return {
+      ok: false,
+      error:
+        error instanceof Error ? error.message : "Couldn't save the travel item.",
+    };
+  }
+}
+
+export async function deleteTravel(id: string): Promise<DeleteResult> {
+  const authError = await requireSession();
+  if (authError) return { ok: false, error: authError };
+  const cleanId = String(id ?? "").trim();
+  if (!cleanId) {
+    return { ok: false, error: "That travel item could not be found." };
+  }
+  const existing = await listTravels();
+  if (!existing.some((travel) => travel.id === cleanId)) {
+    return { ok: false, error: "That travel item no longer exists." };
+  }
+  const error = await removeItem("travel", cleanId);
   return error ? { ok: false, error } : { ok: true };
 }

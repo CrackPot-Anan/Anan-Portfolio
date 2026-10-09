@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { Home } from "@/components/site/home-page";
+import { AboutPage } from "@/components/site/about-page";
 
 const TITLE = "About — Abrar Anan Raiyan";
 const DESCRIPTION =
@@ -14,5 +14,5 @@ export const Route = createFileRoute("/about")({
       { name: "robots", content: "noindex" },
     ],
   }),
-  component: () => <Home section="about" />,
+  component: AboutPage,
 });

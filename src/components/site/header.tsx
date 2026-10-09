@@ -51,7 +51,7 @@ export function SiteHeader() {
                 "rounded-sm border border-border px-2 py-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:border-signal hover:text-signal lg:px-2.5 lg:text-[11px] lg:tracking-[0.11em]",
             }}
           >
-            Who's Anan
+            Who&apos;s Anan
           </Link>
         </div>
       </div>

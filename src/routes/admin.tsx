@@ -36,16 +36,20 @@ import {
   updatePostFn,
   uploadImageFn,
 } from "@/lib/blog-api";
-import type { Hobby, Story } from "@/lib/content";
+import type { Hobby, Story, Travel } from "@/lib/content";
 import {
   createHobbyFn,
   createStoryFn,
+  createTravelFn,
   deleteHobbyFn,
   deleteStoryFn,
+  deleteTravelFn,
   getHobbiesFn,
   getStoriesFn,
+  getTravelsFn,
   updateHobbyFn,
   updateStoryFn,
+  updateTravelFn,
 } from "@/lib/content-api";
 
 const TITLE = "Content admin — Abrar Anan Raiyan";
@@ -62,8 +66,8 @@ const CATEGORY_HINTS: Record<Category, string> = {
 const MAX_IMAGE_BYTES = 1_500_000;
 const IMAGE_ACCEPT = "image/png,image/jpeg,image/webp,image/gif,image/avif";
 
-type EntityType = "blogs" | "stories" | "hobbies";
-type FormKind = "blog" | "story" | "hobby";
+type EntityType = "blogs" | "stories" | "hobbies" | "travel";
+type FormKind = "blog" | "story" | "hobby" | "travel";
 type View = "home" | "list" | "form" | "result";
 
 const ENTITY_CARDS: Array<{
@@ -86,12 +90,18 @@ const ENTITY_CARDS: Array<{
     label: "Hobbies",
     command: "cat hobbies.md",
   },
+  {
+    kind: "travel",
+    label: "Travel",
+    command: "cat travel.json",
+  },
 ];
 
 const LIST_TITLES: Record<EntityType, string> = {
   blogs: "All posts",
   stories: "All stories",
   hobbies: "All hobbies",
+  travel: "All travel",
 };
 
 export const Route = createFileRoute("/admin")({
@@ -121,9 +131,11 @@ function Admin() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
   const [hobbies, setHobbies] = useState<Hobby[]>([]);
+  const [travels, setTravels] = useState<Travel[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [loadingStories, setLoadingStories] = useState(true);
   const [loadingHobbies, setLoadingHobbies] = useState(true);
+  const [loadingTravels, setLoadingTravels] = useState(true);
   const [listError, setListError] = useState<string | null>(null);
   const [expandedSlug, setExpandedSlug] = useState<string | null>(null);
 
@@ -155,8 +167,18 @@ function Admin() {
 
   const [storyTitle, setStoryTitle] = useState("");
   const [storyExcerpt, setStoryExcerpt] = useState("");
+  const [storyBody, setStoryBody] = useState("");
   const [hobbyName, setHobbyName] = useState("");
   const [hobbyDetail, setHobbyDetail] = useState("");
+  const [hobbyBody, setHobbyBody] = useState("");
+
+  const [travelTitle, setTravelTitle] = useState("");
+  const [travelDescription, setTravelDescription] = useState("");
+  const [travelUrl, setTravelUrl] = useState("");
+  const [travelImage, setTravelImage] = useState("");
+  const [travelAlt, setTravelAlt] = useState("");
+  const [uploadingTravelImage, setUploadingTravelImage] = useState(false);
+  const travelFileInputRef = useRef<HTMLInputElement>(null);
 
   function resetBlogForm() {
     setTitle("");
@@ -204,9 +226,25 @@ function Admin() {
     }
   }, []);
 
+  const loadTravels = useCallback(async () => {
+    setLoadingTravels(true);
+    try {
+      setTravels(await getTravelsFn());
+    } catch {
+      setListError("Couldn't load your travel entries. Try again.");
+    } finally {
+      setLoadingTravels(false);
+    }
+  }, []);
+
   const loadAll = useCallback(async () => {
-    await Promise.all([loadPosts(), loadStories(), loadHobbies()]);
-  }, [loadPosts, loadStories, loadHobbies]);
+    await Promise.all([
+      loadPosts(),
+      loadStories(),
+      loadHobbies(),
+      loadTravels(),
+    ]);
+  }, [loadPosts, loadStories, loadHobbies, loadTravels]);
 
   useEffect(() => {
     void loadAll();
@@ -234,21 +272,34 @@ function Admin() {
     scrollToTop();
   }
 
+  function reloadEntity(kind: EntityType) {
+    void (kind === "blogs"
+      ? loadPosts()
+      : kind === "stories"
+        ? loadStories()
+        : kind === "hobbies"
+          ? loadHobbies()
+          : loadTravels());
+  }
+
   function backToList() {
     openList(entity);
-    void (entity === "blogs"
-      ? loadPosts()
-      : entity === "stories"
-        ? loadStories()
-        : loadHobbies());
+    reloadEntity(entity);
   }
 
   function startCreate(kind: FormKind) {
     resetBlogForm();
     setStoryTitle("");
     setStoryExcerpt("");
+    setStoryBody("");
     setHobbyName("");
     setHobbyDetail("");
+    setHobbyBody("");
+    setTravelTitle("");
+    setTravelDescription("");
+    setTravelUrl("");
+    setTravelImage("");
+    setTravelAlt("");
     setEditingSlug(null);
     setEditingId(null);
     setResult(null);
@@ -256,7 +307,13 @@ function Admin() {
     setError(null);
     setFormKind(kind);
     setEntity(
-      kind === "blog" ? "blogs" : kind === "story" ? "stories" : "hobbies",
+      kind === "blog"
+        ? "blogs"
+        : kind === "story"
+          ? "stories"
+          : kind === "hobby"
+            ? "hobbies"
+            : "travel",
     );
     setView("form");
     scrollToTop();
@@ -295,6 +352,7 @@ function Admin() {
     }
     setStoryTitle(story.title);
     setStoryExcerpt(story.excerpt);
+    setStoryBody(story.body ?? "");
     setEditingId(id);
     setEditingSlug(null);
     setError(null);
@@ -312,11 +370,32 @@ function Admin() {
     }
     setHobbyName(hobby.name);
     setHobbyDetail(hobby.detail);
+    setHobbyBody(hobby.body ?? "");
     setEditingId(id);
     setEditingSlug(null);
     setError(null);
     setFormKind("hobby");
     setEntity("hobbies");
+    setView("form");
+    scrollToTop();
+  }
+
+  function startEditingTravel(id: string) {
+    const travel = travels.find((entry) => entry.id === id);
+    if (!travel) {
+      void loadTravels();
+      return;
+    }
+    setTravelTitle(travel.title);
+    setTravelDescription(travel.description);
+    setTravelUrl(travel.url);
+    setTravelImage(travel.image ?? "");
+    setTravelAlt(travel.alt ?? "");
+    setEditingId(id);
+    setEditingSlug(null);
+    setError(null);
+    setFormKind("travel");
+    setEntity("travel");
     setView("form");
     scrollToTop();
   }
@@ -353,6 +432,40 @@ function Admin() {
     }
   }
 
+  async function onPickTravelFile(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("Pick an image file — PNG, JPEG, WebP or GIF.");
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      setError("Photo must be under 1.5 MB.");
+      return;
+    }
+    setUploadingTravelImage(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.set("file", file, file.name);
+      const uploaded = await uploadImageFn({ data: formData });
+      if (uploaded.ok) {
+        setTravelImage(uploaded.url);
+      } else {
+        setError(uploaded.error);
+      }
+    } catch {
+      setError(
+        "Couldn't upload the photo. Check your connection and try again.",
+      );
+    } finally {
+      setUploadingTravelImage(false);
+    }
+  }
+
   async function onLogout() {
     setLoggingOut(true);
     try {
@@ -374,7 +487,9 @@ function Admin() {
           ? await deletePostFn({ data: { slug: target.id } })
           : target.entity === "stories"
             ? await deleteStoryFn({ data: { id: target.id } })
-            : await deleteHobbyFn({ data: { id: target.id } });
+            : target.entity === "hobbies"
+              ? await deleteHobbyFn({ data: { id: target.id } })
+              : await deleteTravelFn({ data: { id: target.id } });
       if (!response.ok) setError(response.error);
     } catch {
       setError("Couldn't delete that item. Try again.");
@@ -392,7 +507,11 @@ function Admin() {
 
     try {
       if (formKind === "story") {
-        const input = { title: storyTitle, excerpt: storyExcerpt };
+        const input = {
+          title: storyTitle,
+          excerpt: storyExcerpt,
+          body: storyBody,
+        };
         const saved = editingId
           ? await updateStoryFn({ data: { ...input, id: editingId } })
           : await createStoryFn({ data: input });
@@ -402,6 +521,7 @@ function Admin() {
         }
         setStoryTitle("");
         setStoryExcerpt("");
+        setStoryBody("");
         setEditingId(null);
         await loadStories();
         openList("stories");
@@ -409,7 +529,11 @@ function Admin() {
       }
 
       if (formKind === "hobby") {
-        const input = { name: hobbyName, detail: hobbyDetail };
+        const input = {
+          name: hobbyName,
+          detail: hobbyDetail,
+          body: hobbyBody,
+        };
         const saved = editingId
           ? await updateHobbyFn({ data: { ...input, id: editingId } })
           : await createHobbyFn({ data: input });
@@ -419,9 +543,36 @@ function Admin() {
         }
         setHobbyName("");
         setHobbyDetail("");
+        setHobbyBody("");
         setEditingId(null);
         await loadHobbies();
         openList("hobbies");
+        return;
+      }
+
+      if (formKind === "travel") {
+        const input = {
+          title: travelTitle,
+          description: travelDescription,
+          url: travelUrl,
+          image: travelImage.trim() || undefined,
+          alt: travelAlt.trim() || undefined,
+        };
+        const saved = editingId
+          ? await updateTravelFn({ data: { ...input, id: editingId } })
+          : await createTravelFn({ data: input });
+        if (!saved.ok) {
+          setError(saved.error);
+          return;
+        }
+        setTravelTitle("");
+        setTravelDescription("");
+        setTravelUrl("");
+        setTravelImage("");
+        setTravelAlt("");
+        setEditingId(null);
+        await loadTravels();
+        openList("travel");
         return;
       }
 

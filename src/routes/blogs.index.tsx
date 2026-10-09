@@ -179,13 +179,21 @@ function Blogs() {
                 <ul className="mt-6 space-y-5">
                   {hobbies.map((hobby) => (
                     <li
-                      key={hobby.name}
+                      key={hobby.id}
                       className="border-t border-border pt-5 first:border-t-0 first:pt-0"
                     >
-                      <p className="text-base">{hobby.name}</p>
-                      <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                        {hobby.detail}
-                      </p>
+                      <Link
+                        to="/hobbies/$id"
+                        params={{ id: hobby.id }}
+                        className="group block"
+                      >
+                        <p className="text-base transition-colors group-hover:text-signal">
+                          {hobby.name}
+                        </p>
+                        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                          {hobby.detail}
+                        </p>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -199,13 +207,21 @@ function Blogs() {
                 <ul className="mt-6 space-y-5">
                   {stories.map((story) => (
                     <li
-                      key={story.title}
+                      key={story.id}
                       className="border-t border-border pt-5 first:border-t-0 first:pt-0"
                     >
-                      <p className="text-base">{story.title}</p>
-                      <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                        {story.excerpt}
-                      </p>
+                      <Link
+                        to="/stories/$id"
+                        params={{ id: story.id }}
+                        className="group block"
+                      >
+                        <p className="text-base transition-colors group-hover:text-signal">
+                          {story.title}
+                        </p>
+                        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                          {story.excerpt}
+                        </p>
+                      </Link>
                     </li>
                   ))}
                 </ul>

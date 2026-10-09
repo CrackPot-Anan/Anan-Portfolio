@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Mail, FileText } from "lucide-react";
 
-import portrait from "@/assets/raiyan.jpg";
+import portrait from "@/assets/raiyan-about.jpg";
 import resumeUrl from "@/assets/Abrar Anan Raiyan.pdf?url";
 import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
@@ -97,8 +97,9 @@ export function Home({ section }: { section?: string }) {
               <img
                 src={portrait}
                 alt="Portrait of Abrar Anan Raiyan"
-                width={1440}
-                height={1920}
+                width={720}
+                height={960}
+                decoding="async"
                 className="relative w-full object-cover grayscale-[25%]"
                 onError={(e) => {
                   e.currentTarget.src = PORTRAIT_FALLBACK;

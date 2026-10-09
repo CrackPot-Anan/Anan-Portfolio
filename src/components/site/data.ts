@@ -1,4 +1,4 @@
-import type { Hobby, Story } from "@/lib/content";
+import type { Hobby, Story, Travel } from "@/lib/content";
 
 export const skills = [
   {
@@ -158,23 +158,27 @@ export const hobbies: Hobby[] = [
     name: "Photography",
     detail:
       "Street and event shoots — framing, cutting the clutter, and shipping the shot.",
+    body: "Photography started as a way to slow down. A street scene only works once you strip everything that does not belong in the frame.\n\nI shoot events, portraits, and whatever catches the light on a walk. The discipline of composing a shot — deciding what stays and what goes — turns out to be the same discipline I bring to scoping a product.",
   },
   {
     id: "chess",
     name: "Chess",
     detail:
       "Weekend endgame drills. Fewer open tabs than a sprint review, same tension.",
+    body: "Chess is the quiet version of the same problem I solve all week: limited resources, incomplete information, and a clock.\n\nI spend most of my practice on endgames. Fewer pieces, clearer ideas — you learn that the plan matters more than the move.",
   },
   {
     id: "music",
     name: "Music",
     detail: "Lo-fi and jazz on loop while writing specs or reviewing PRs.",
+    body: "There is almost always something playing while I work — lo-fi, jazz, or a long ambient mix when the work needs deep focus.\n\nMusic has no backlog. It is the one place where I am just listening.",
   },
   {
     id: "cricket",
     name: "Cricket",
     detail:
       "Weekend matches — pacing, reading the field, knowing when to accelerate.",
+    body: "Weekend cricket taught me pacing before any course did. You cannot swing at every ball, and you cannot sit on the back foot forever.\n\nReading the field, knowing when to defend and when to accelerate — it is a lot like managing a release.",
   },
 ];
 
@@ -184,20 +188,25 @@ export const stories: Story[] = [
     title: "The Sprint That Fixed Itself",
     excerpt:
       "A retro that changed one habit and quietly removed a whole class of blockers.",
+    body: "We had a run of sprints that kept slipping — never by much, but always by something. The retro was the usual: estimates were off, QA was a bottleneck, dependencies came in late.\n\nThen someone asked a smaller question: what did we do at the end of every stand-up? The answer was nothing. We just dispersed. So we changed one habit — the last five minutes became a blocker pass, and blockers got an owner before anyone left the room.\n\nThe slipping stopped. Not because we got better at estimating, but because the work that was stuck now had somewhere to go.",
   },
   {
     id: "two-deadlines-one-team",
     title: "Two Deadlines, One Team",
     excerpt:
       "How scope got cut honestly instead of quietly borrowing from quality.",
+    body: "Two deadlines landed in the same window and there was no version of the plan where both shipped at full scope. The easy move is to say yes to both and let quality absorb the cost.\n\nWe did it the honest way instead. We wrote down what each deadline actually needed, ranked the work by what a user would notice, and cut the rest in the open.\n\nBoth shipped. One shipped with fewer features, and everybody knew exactly which ones.",
   },
   {
     id: "the-feature-nobody-used",
     title: "The Feature Nobody Used",
     excerpt:
       "Shipping something perfect for the wrong user — and what discovery missed.",
+    body: "We built a feature that was genuinely well made. Clean, fast, exactly what the request said. Adoption was near zero.\n\nThe request came from one loud voice. Discovery never checked whether that voice spoke for anyone else. We found the real workflow later, and it looked nothing like what we shipped.\n\nThe lesson stuck: a requirement is a hypothesis about a user, not a fact about one.",
   },
 ];
+
+export const travels: Travel[] = [];
 
 export const stats = [
   { value: "12+", label: "Projects Delivered" },
