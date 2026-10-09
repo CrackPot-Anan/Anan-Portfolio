@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, FileText } from "lucide-react";
+import { ArrowUpRight, Mail, FileText } from "lucide-react";
 
 import portrait from "@/assets/raiyan.jpg";
 import resumeUrl from "@/assets/Abrar Anan Raiyan.pdf?url";
 import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
-import { Section, SectionHeading, Tag } from "@/components/site/sections";
+import { Section, SectionHeading, Tag, Logo } from "@/components/site/sections";
 import {
   timeline,
   education,
@@ -41,12 +41,8 @@ export function Home({ section }: { section?: string }) {
       <main id="top">
         {/* Hero */}
         <section className="border-b border-border">
-          <div className="mx-auto grid w-full max-w-6xl gap-12 px-6 py-20 md:grid-cols-[1.2fr_0.8fr] md:items-center md:py-28">
+          <div className="mx-auto grid w-full max-w-6xl gap-12 px-6 py-24 md:grid-cols-[1.2fr_0.8fr] md:items-center md:py-36">
             <div>
-              <p className="label-mono mb-6">
-                <span className="text-signal">$</span> software project manager
-                · ai enthusiast
-              </p>
               <h1 className="text-5xl leading-[0.95] md:text-7xl">
                 I turn scattered
                 <br />
@@ -117,18 +113,19 @@ export function Home({ section }: { section?: string }) {
 
         {/* Experience */}
         <Section id="experience">
-          <SectionHeading
-            index="01"
-            command="ls experience/"
-            title="Where I've delivered"
-          />
+          <SectionHeading title="Where I've delivered" />
           <div className="space-y-px bg-border">
             {timeline.map((t) => (
               <article
                 key={t.role}
                 className="grid gap-4 bg-background p-6 transition-colors hover:bg-surface md:grid-cols-[200px_1fr] md:p-8"
               >
-                <p className="label-mono pt-1">{t.period}</p>
+                <div>
+                  <p className="label-mono">{t.period}</p>
+                  {t.logo ? (
+                    <Logo src={t.logo} alt={`${t.org} logo`} className="mt-3" />
+                  ) : null}
+                </div>
                 <div>
                   <h3 className="text-xl text-foreground">{t.role}</h3>
                   <p className="mt-1 font-mono text-xs text-signal">{t.org}</p>
@@ -148,11 +145,7 @@ export function Home({ section }: { section?: string }) {
 
         {/* Education */}
         <Section id="education">
-          <SectionHeading
-            index="02"
-            command="cat education.json"
-            title="Where I studied"
-          />
+          <SectionHeading title="Where I studied" />
           <div className="space-y-px bg-border">
             {education.map((e) => (
               <article
@@ -180,11 +173,7 @@ export function Home({ section }: { section?: string }) {
 
         {/* Leadership & Engagement */}
         <Section id="leadership">
-          <SectionHeading
-            index="03"
-            command="./leadership --roles"
-            title="Leadership & engagement"
-          />
+          <SectionHeading title="Leadership & engagement" />
           <div className="grid gap-px bg-border md:grid-cols-2">
             {leadership.map((l) => (
               <article
@@ -211,18 +200,17 @@ export function Home({ section }: { section?: string }) {
 
         {/* Projects */}
         <Section id="projects">
-          <SectionHeading
-            index="04"
-            command="./projects.sh --list"
-            title="Selected work"
-          />
+          <SectionHeading title="Selected work" />
           <div className="grid gap-px bg-border md:grid-cols-3">
             {projects.map((p) => (
               <article
                 key={p.name}
                 className="group bg-background p-7 transition-colors hover:bg-surface"
               >
-                <p className="label-mono">{p.kind}</p>
+                <div className="flex items-start justify-between gap-4">
+                  <p className="label-mono">{p.kind}</p>
+                  {p.logo ? <Logo src={p.logo} alt={`${p.name} logo`} /> : null}
+                </div>
                 <h3 className="mt-4 flex items-center gap-2 text-2xl text-foreground">
                   {p.name}
                   <ArrowUpRight className="h-4 w-4 text-signal opacity-0 transition-opacity group-hover:opacity-100" />
@@ -250,6 +238,9 @@ export function Home({ section }: { section?: string }) {
           <div className="grid gap-px bg-border md:grid-cols-2">
             {products.map((p) => (
               <article key={p.name} className="bg-background p-8">
+                {p.logo ? (
+                  <Logo src={p.logo} alt={`${p.name} logo`} className="mb-5" />
+                ) : null}
                 <div className="flex items-center justify-between">
                   <h3 className="text-2xl text-foreground">{p.name}</h3>
                   <span className="rounded-sm border border-signal/40 px-2 py-1 font-mono text-[11px] uppercase tracking-[0.14em] text-signal">
@@ -266,7 +257,29 @@ export function Home({ section }: { section?: string }) {
 
         {/* Professional Credentials */}
         <Section id="credentials">
-          <Credentials />
+          <Credentials index="06" />
+        </Section>
+
+        {/* Contact */}
+        <Section id="contact">
+          <SectionHeading
+            index="07"
+            command="./contact --open"
+            title="Let's build something"
+          />
+          <div className="grid gap-10 md:grid-cols-[1fr_auto] md:items-end">
+            <p className="max-w-xl text-base leading-relaxed text-muted-foreground">
+              Have a stalled project, a backlog that needs shape, or an AI idea
+              worth validating? I&apos;m open to project management engagements,
+              product consulting, and collaborations.
+            </p>
+            <a
+              href="mailto:abraranan18@gmail.com"
+              className="inline-flex items-center gap-3 rounded-sm bg-signal px-6 py-4 font-mono text-xs uppercase tracking-[0.14em] text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              <Mail className="h-4 w-4" /> abraranan18@gmail.com
+            </a>
+          </div>
         </Section>
       </main>
 

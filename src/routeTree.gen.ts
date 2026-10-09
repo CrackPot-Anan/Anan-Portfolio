@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BlogsRouteImport } from './routes/blogs'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CredentialsRouteImport } from './routes/credentials'
 import { Route as EducationRouteImport } from './routes/education'
 import { Route as ExperienceRouteImport } from './routes/experience'
 import { Route as LeadershipRouteImport } from './routes/leadership'
@@ -46,6 +47,11 @@ const BlogsRoute = BlogsRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CredentialsRoute = CredentialsRouteImport.update({
+  id: '/credentials',
+  path: '/credentials',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EducationRoute = EducationRouteImport.update({
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/blogs': typeof BlogsRouteWithChildren
   '/contact': typeof ContactRoute
+  '/credentials': typeof CredentialsRoute
   '/education': typeof EducationRoute
   '/experience': typeof ExperienceRoute
   '/leadership': typeof LeadershipRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
+  '/credentials': typeof CredentialsRoute
   '/education': typeof EducationRoute
   '/experience': typeof ExperienceRoute
   '/leadership': typeof LeadershipRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/blogs': typeof BlogsRouteWithChildren
   '/contact': typeof ContactRoute
+  '/credentials': typeof CredentialsRoute
   '/education': typeof EducationRoute
   '/experience': typeof ExperienceRoute
   '/leadership': typeof LeadershipRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blogs'
     | '/contact'
+    | '/credentials'
     | '/education'
     | '/experience'
     | '/leadership'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/contact'
+    | '/credentials'
     | '/education'
     | '/experience'
     | '/leadership'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blogs'
     | '/contact'
+    | '/credentials'
     | '/education'
     | '/experience'
     | '/leadership'
@@ -187,6 +199,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   BlogsRoute: typeof BlogsRouteWithChildren
   ContactRoute: typeof ContactRoute
+  CredentialsRoute: typeof CredentialsRoute
   EducationRoute: typeof EducationRoute
   ExperienceRoute: typeof ExperienceRoute
   LeadershipRoute: typeof LeadershipRoute
@@ -230,6 +243,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/credentials': {
+      id: '/credentials'
+      path: '/credentials'
+      fullPath: '/credentials'
+      preLoaderRoute: typeof CredentialsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/education': {
@@ -309,6 +329,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   BlogsRoute: BlogsRouteWithChildren,
   ContactRoute: ContactRoute,
+  CredentialsRoute: CredentialsRoute,
   EducationRoute: EducationRoute,
   ExperienceRoute: ExperienceRoute,
   LeadershipRoute: LeadershipRoute,

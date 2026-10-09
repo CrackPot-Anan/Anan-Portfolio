@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Home } from "@/components/site/home-page";
 
 const TITLE = "Products — Abrar Anan Raiyan";
-const DESCRIPTION = "Products I own — ZenPTE and The Delivery Notes.";
+const DESCRIPTION = "Products I own — ZenPTE and Career Koi.";
 
 export const Route = createFileRoute("/products")({
   head: () => ({

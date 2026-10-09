@@ -38,7 +38,8 @@ export const timeline = [
   {
     period: "2025 — Present",
     role: "Software Project Manager",
-    org: "Independent / Client Engagements",
+    org: "6Sense HQ Ltd",
+    logo: "https://assets.abrarananraiyan.space/logos/6sense-hq.png",
     detail:
       "Leading cross-functional delivery for web and AI products: shaping scope, running sprints, unblocking engineering, and keeping stakeholders aligned from discovery to launch.",
     tags: ["Agile", "Delivery", "Stakeholders"],
@@ -46,7 +47,8 @@ export const timeline = [
   {
     role: "Software Support and Implementation Engineer",
     period: "Feb 2025 - Nov 2025",
-    org: "Product Team",
+    org: "Akij iBOS Ltd",
+    logo: "https://assets.abrarananraiyan.space/logos/akij-ibos.png",
     detail:
       "Prepared PRDs, user stories, and change requests. Coordinated engineering, design, and QA in Jira and ClickUp to keep releases on schedule.",
     tags: ["Jira", "PRDs", "QA"],
@@ -86,6 +88,7 @@ export const leadership = [
 export const projects = [
   {
     name: "Ops4",
+    logo: "https://assets.abrarananraiyan.space/logos/ops4.png",
     kind: "HRIS Platform",
     detail:
       "Centralized HRIS platform for managing employee information, leave, attendance, compensation, performance, and other HR operations.",
@@ -93,6 +96,7 @@ export const projects = [
   },
   {
     name: "Managerium",
+    logo: "https://assets.abrarananraiyan.space/logos/managerium-v2.png",
     kind: "ERP Suite",
     detail:
       "Enterprise ERP product at Akij iBOS. Led onboarding and technical training to drive user adoption across HR, CRM, and finance modules.",
@@ -107,6 +111,7 @@ export const projects = [
   },
   {
     name: "Peopledesk",
+    logo: "https://assets.abrarananraiyan.space/logos/peopledesk-v2.png",
     kind: "HRIS",
     detail:
       "HRIS platform work including optimizing and upgrading the Leave Management module with a frontend, backend, and SQA team.",
@@ -114,6 +119,7 @@ export const projects = [
   },
   {
     name: "Akij Air",
+    logo: "https://assets.abrarananraiyan.space/logos/akij-air.png",
     kind: "Travel Tech",
     detail:
       "Airline booking business built on GDS integrations — Travelport, Sabre, Amadeus, and BDFare APIs feeding the ticketing flow.",
@@ -121,6 +127,7 @@ export const projects = [
   },
   {
     name: "Akij Pharma",
+    logo: "https://assets.abrarananraiyan.space/logos/akij-pharmacy.png",
     kind: "Enterprise Solution",
     detail:
       "Pharma distribution and field-force solution — supported implementation, user training, and issue resolution for daily operations.",
@@ -131,15 +138,17 @@ export const projects = [
 export const products = [
   {
     name: "ZenPTE",
+    logo: "https://assets.abrarananraiyan.space/logos/zenpte-portfolio.png",
     status: "Live",
     detail:
       "A PTE mock-test platform that helps learners practice in a realistic exam-style environment and prepare for the Pearson Test of English.",
   },
   {
-    name: "The Delivery Notes",
-    status: "Writing",
+    name: "Career Koi",
+    logo: "https://assets.abrarananraiyan.space/logos/career-koi-port.png",
+    status: "Live",
     detail:
-      "A newsletter on shipping software without chaos — practical notes on agile, AI tooling, and team flow.",
+      "A career guidance and job-search product helping people find direction and land better opportunities.",
   },
 ];
 

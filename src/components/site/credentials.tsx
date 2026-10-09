@@ -13,7 +13,7 @@ function formatIssued(raw?: string): string | null {
   return `Issued ${month} ${match[1]}`;
 }
 
-export function Credentials() {
+export function Credentials({ index = "06" }: { index?: string }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
@@ -62,7 +62,7 @@ export function Credentials() {
       <header className="mb-10 flex flex-col gap-6 border-b border-border pb-6 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="label-mono mb-3">
-            03 <span className="text-signal">/</span> ls certifications/
+            {index} <span className="text-signal">/</span> ls certifications/
           </p>
           <h2 className="text-3xl leading-none md:text-5xl">
             Professional Credentials
@@ -73,6 +73,9 @@ export function Credentials() {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <span className="label-mono rounded-full border border-border px-3 py-1.5 text-muted-foreground">
+            {credentials.length} certifications
+          </span>
           <button
             type="button"
             onClick={() => scrollByCard(-1)}

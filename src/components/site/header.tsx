@@ -1,36 +1,36 @@
 import { Link } from "@tanstack/react-router";
 
 const nav = [
-  ["experience", "Experience"],
-  ["education", "Education"],
-  ["leadership", "Leadership"],
-  ["projects", "Projects"],
-  ["products", "Products"],
-  ["credentials", "Credentials"],
-  ["contact", "Contact"],
+  ["/experience", "Experience"],
+  ["/education", "Education"],
+  ["/leadership", "Leadership"],
+  ["/projects", "Projects"],
+  ["/products", "Products"],
+  ["/credentials", "Credentials"],
+  ["/contact", "Contact"],
 ] as const;
+
+const navItemBase =
+  "font-mono text-[10px] uppercase tracking-[0.06em] transition-colors lg:text-[11px] lg:tracking-[0.11em]";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-3 px-6 py-4">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-4 py-3.5 md:px-5">
         <Link
           to="/"
           className="font-mono text-sm tracking-tight text-foreground"
         >
           abrar<span className="text-signal">.</span>anan
         </Link>
-        <nav className="hidden gap-7 md:flex">
-          {nav.map(([id, label]) => (
+        <nav className="hidden items-center gap-2 md:flex lg:gap-6">
+          {nav.map(([to, label]) => (
             <Link
-              key={id}
-              to="/"
-              hash={id}
-              hashScrollIntoView={{ behavior: "smooth", block: "start" }}
-              className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground"
+              key={to}
+              to={to}
+              className={`${navItemBase} text-muted-foreground hover:text-foreground`}
               activeProps={{
-                className:
-                  "font-mono text-xs uppercase tracking-[0.16em] text-signal transition-colors",
+                className: `${navItemBase} text-signal`,
               }}
             >
               {label}
@@ -39,25 +39,16 @@ export function SiteHeader() {
         </nav>
         <div className="flex items-center gap-2">
           <Link
-            to="/"
-            hash="contact"
-            hashScrollIntoView={{ behavior: "smooth", block: "start" }}
-            className="hire-btn rounded-sm border border-signal px-3 py-1.5 font-mono text-xs uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
-          >
-            <span className="relative z-[1]">Hire me</span>
-            <span className="hire-btn__shine" aria-hidden="true" />
-          </Link>
-          <Link
-            to="/about"
-            className="rounded-sm border px-3 py-1.5 font-mono text-xs uppercase tracking-[0.14em] transition-colors"
+            to="/blogs"
+            className="rounded-sm border px-2 py-1.5 font-mono text-[10px] uppercase tracking-[0.06em] transition-colors lg:px-2.5 lg:text-[11px] lg:tracking-[0.11em]"
             activeOptions={{ exact: true }}
             activeProps={{
               className:
-                "rounded-sm border border-signal bg-signal/10 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.14em] text-signal transition-colors",
+                "rounded-sm border border-signal bg-signal/10 px-2 py-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-signal transition-colors lg:px-2.5 lg:text-[11px] lg:tracking-[0.11em]",
             }}
             inactiveProps={{
               className:
-                "rounded-sm border border-border px-3 py-1.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-signal hover:text-signal",
+                "rounded-sm border border-border px-2 py-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground transition-colors hover:border-signal hover:text-signal lg:px-2.5 lg:text-[11px] lg:tracking-[0.11em]",
             }}
           >
             Who's Anan

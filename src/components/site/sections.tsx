@@ -5,16 +5,18 @@ export function SectionHeading({
   command,
   title,
 }: {
-  index: string;
-  command: string;
+  index?: string;
+  command?: string;
   title: string;
 }) {
   return (
     <div className="mb-12 flex flex-col gap-3 border-b border-border pb-6 md:flex-row md:items-end md:justify-between">
       <div>
-        <p className="label-mono mb-3">
-          {index} <span className="text-signal">/</span> {command}
-        </p>
+        {index || command ? (
+          <p className="label-mono mb-3">
+            {index} <span className="text-signal">/</span> {command}
+          </p>
+        ) : null}
         <h2 className="text-3xl leading-none md:text-5xl">{title}</h2>
       </div>
     </div>
@@ -37,5 +39,24 @@ export function Tag({ children }: { children: ReactNode }) {
     <span className="rounded-sm border border-border bg-secondary px-2.5 py-1 font-mono text-[11px] tracking-wide text-muted-foreground">
       {children}
     </span>
+  );
+}
+
+export function Logo({
+  src,
+  alt,
+  className = "",
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+}) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      className={`h-10 w-28 rounded border border-border object-contain ${className}`}
+    />
   );
 }
