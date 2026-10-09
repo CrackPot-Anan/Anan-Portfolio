@@ -432,9 +432,7 @@ function Admin() {
     }
   }
 
-  async function onPickTravelFile(
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) {
+  async function onPickTravelFile(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
@@ -630,6 +628,7 @@ function Admin() {
     blogs: loadingPosts ? "…" : `${posts.length}`,
     stories: loadingStories ? "…" : `${stories.length}`,
     hobbies: loadingHobbies ? "…" : `${hobbies.length}`,
+    travel: loadingTravels ? "…" : `${travels.length}`,
   };
 
   const slugPreview = title
@@ -645,6 +644,7 @@ function Admin() {
     blog: { creating: "New post", editing: `Edit · ${editingSlug ?? ""}` },
     story: { creating: "New story", editing: "Edit story" },
     hobby: { creating: "New hobby", editing: "Edit hobby" },
+    travel: { creating: "New travel entry", editing: "Edit travel entry" },
   };
 
   return (
@@ -677,7 +677,8 @@ function Admin() {
 
       <main
         className={
-          (view === "list" && entity === "blogs") || view === "home"
+          (view === "list" && (entity === "blogs" || entity === "travel")) ||
+          view === "home"
             ? "w-full px-6 pt-6 pb-16"
             : "mx-auto w-full max-w-3xl px-6 py-14 md:py-20"
         }
@@ -740,7 +741,9 @@ function Admin() {
                             ? "blog"
                             : card.kind === "stories"
                               ? "story"
-                              : "hobby",
+                              : card.kind === "hobbies"
+                                ? "hobby"
+                                : "travel",
                         )
                       }
                       className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-signal hover:text-signal"
@@ -793,19 +796,34 @@ function Admin() {
                       ? loadingStories
                         ? "Loading…"
                         : `${stories.length} ${stories.length === 1 ? "story" : "stories"}`
-                      : loadingHobbies
-                        ? "Loading…"
-                        : `${hobbies.length} ${hobbies.length === 1 ? "hobby" : "hobbies"}`}
+                      : entity === "hobbies"
+                        ? loadingHobbies
+                          ? "Loading…"
+                          : `${hobbies.length} ${hobbies.length === 1 ? "hobby" : "hobbies"}`
+                        : loadingTravels
+                          ? "Loading…"
+                          : `${travels.length} ${travels.length === 1 ? "travel entry" : "travel entries"}`}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() =>
-                    startCreate(entity === "stories" ? "story" : "hobby")
+                    startCreate(
+                      entity === "stories"
+                        ? "story"
+                        : entity === "hobbies"
+                          ? "hobby"
+                          : "travel",
+                    )
                   }
                   className="inline-flex items-center gap-2 rounded-full border border-signal px-5 py-3 font-mono text-xs uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
                 >
-                  <Plus className="h-4 w-4" /> New {entity.slice(0, -1)}
+                  <Plus className="h-4 w-4" /> New{" "}
+                  {entity === "stories"
+                    ? "story"
+                    : entity === "hobbies"
+                      ? "hobby"
+                      : "travel entry"}
                 </button>
               </div>
             )}
@@ -1093,6 +1111,133 @@ function Admin() {
                 )}
               </>
             )}
+
+            {entity === "travel" && (
+              <>
+                {!listError && loadingTravels && travels.length === 0 && (
+                  <ul
+                    className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+                    aria-hidden="true"
+                  >
+                    {[0, 1, 2].map((index) => (
+                      <li
+                        key={index}
+                        className="aspect-[4/5] animate-pulse rounded-2xl border border-border bg-surface"
+                      />
+                    ))}
+                  </ul>
+                )}
+
+                {!listError && !loadingTravels && travels.length === 0 && (
+                  <div className="mt-8 rounded-2xl border border-border bg-surface p-8 text-center">
+                    <p className="text-sm text-muted-foreground">
+                      Nothing here yet. Add your first travel entry and it will
+                      show up in this list.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => startCreate("travel")}
+                      className="hire-btn mt-6 inline-flex items-center gap-2 rounded-full bg-signal px-6 py-3.5 font-mono text-xs uppercase tracking-[0.16em] text-primary-foreground"
+                    >
+                      <span className="relative z-[1] inline-flex items-center gap-2">
+                        <Plus className="h-4 w-4" /> Add travel entry
+                      </span>
+                      <span className="hire-btn__shine" aria-hidden="true" />
+                    </button>
+                  </div>
+                )}
+
+                {!listError && travels.length > 0 && (
+                  <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {travels.map((travel) => {
+                      const deleting =
+                        pendingDelete?.entity === "travel" &&
+                        pendingDelete.id === travel.id;
+                      return (
+                        <li
+                          key={travel.id}
+                          className="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface"
+                        >
+                          {travel.image ? (
+                            <img
+                              src={travel.image}
+                              alt={travel.alt ?? ""}
+                              className="aspect-square w-full border-b border-border object-cover"
+                            />
+                          ) : (
+                            <div className="aspect-square w-full border-b border-border bg-background" />
+                          )}
+                          <div className="flex flex-1 flex-col p-5 md:p-6">
+                            <p className="label-mono">Travel</p>
+                            <h3 className="mt-2 font-display text-xl leading-snug md:text-2xl">
+                              {travel.title}
+                            </h3>
+                            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                              {travel.description}
+                            </p>
+                            <p className="mt-2 truncate font-mono text-[11px] text-signal">
+                              {travel.url}
+                            </p>
+                            <div className="mt-5 flex flex-wrap items-center gap-2">
+                              {travel.url && (
+                                <a
+                                  href={travel.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-flex items-center gap-1.5 rounded-full border border-signal/60 bg-signal/10 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
+                                >
+                                  Visit <ArrowUpRight className="h-3.5 w-3.5" />
+                                </a>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => startEditingTravel(travel.id)}
+                                className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-signal hover:text-signal"
+                              >
+                                Edit <Pencil className="h-3.5 w-3.5" />
+                              </button>
+                              {deleting ? (
+                                <>
+                                  <button
+                                    type="button"
+                                    onClick={() => void confirmDelete()}
+                                    disabled={pending}
+                                    className="inline-flex items-center gap-1.5 rounded-full border border-destructive bg-destructive/15 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-destructive transition-colors disabled:opacity-60"
+                                  >
+                                    {pending ? "Deleting…" : "Confirm?"}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setPendingDelete(null)}
+                                    disabled={pending}
+                                    className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground disabled:opacity-60"
+                                  >
+                                    Cancel
+                                  </button>
+                                </>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setPendingDelete({
+                                      entity: "travel",
+                                      id: travel.id,
+                                    })
+                                  }
+                                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
+                                >
+                                  Delete <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </>
+            )}
           </section>
         ) : (
           <form
@@ -1364,6 +1509,28 @@ function Admin() {
                       className="w-full resize-y rounded-xl border border-border bg-background px-4 py-3 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal"
                     />
                   </div>
+                  <div>
+                    <label
+                      htmlFor="story-body"
+                      className="label-mono mb-2 block"
+                    >
+                      Story{" "}
+                      <span className="normal-case text-muted-foreground">
+                        (the full story)
+                      </span>
+                    </label>
+                    <textarea
+                      id="story-body"
+                      name="story-body"
+                      rows={8}
+                      value={storyBody}
+                      onChange={(event) => setStoryBody(event.target.value)}
+                      placeholder={
+                        "Write the story.\n\nSeparate paragraphs with a blank line."
+                      }
+                      className="w-full resize-y rounded-xl border border-border bg-background px-4 py-3 font-mono text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal"
+                    />
+                  </div>
                 </>
               )}
 
@@ -1404,6 +1571,169 @@ function Admin() {
                       placeholder="What you do and why you enjoy it."
                       className="w-full resize-y rounded-xl border border-border bg-background px-4 py-3 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal"
                     />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="hobby-body"
+                      className="label-mono mb-2 block"
+                    >
+                      Detail{" "}
+                      <span className="normal-case text-muted-foreground">
+                        (full description)
+                      </span>
+                    </label>
+                    <textarea
+                      id="hobby-body"
+                      name="hobby-body"
+                      rows={8}
+                      value={hobbyBody}
+                      onChange={(event) => setHobbyBody(event.target.value)}
+                      placeholder={
+                        "Write the full description here.\n\nSeparate paragraphs with a blank line."
+                      }
+                      className="w-full resize-y rounded-xl border border-border bg-background px-4 py-3 font-mono text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal"
+                    />
+                  </div>
+                </>
+              )}
+
+              {formKind === "travel" && (
+                <>
+                  <div>
+                    <label
+                      htmlFor="travel-title"
+                      className="label-mono mb-2 block"
+                    >
+                      Title
+                    </label>
+                    <input
+                      id="travel-title"
+                      name="travel-title"
+                      type="text"
+                      required
+                      value={travelTitle}
+                      onChange={(event) => setTravelTitle(event.target.value)}
+                      placeholder="Sylhet in the rains"
+                      className="w-full rounded-full border border-border bg-background px-4 py-3 font-display text-lg text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="travel-description"
+                      className="label-mono mb-2 block"
+                    >
+                      Description
+                    </label>
+                    <textarea
+                      id="travel-description"
+                      name="travel-description"
+                      required
+                      rows={5}
+                      value={travelDescription}
+                      onChange={(event) =>
+                        setTravelDescription(event.target.value)
+                      }
+                      placeholder="Where you went, what it was like, what stayed with you."
+                      className="w-full resize-y rounded-xl border border-border bg-background px-4 py-3 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="travel-url"
+                      className="label-mono mb-2 block"
+                    >
+                      URL{" "}
+                      <span className="normal-case text-muted-foreground">
+                        (where this entry links to)
+                      </span>
+                    </label>
+                    <input
+                      id="travel-url"
+                      name="travel-url"
+                      type="text"
+                      required
+                      value={travelUrl}
+                      onChange={(event) => setTravelUrl(event.target.value)}
+                      placeholder="https://example.com/sylhet-in-the-rains"
+                      className="w-full rounded-full border border-border bg-background px-4 py-3 font-mono text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal"
+                    />
+                  </div>
+                  <div>
+                    <p className="label-mono mb-3">
+                      Photo{" "}
+                      <span className="normal-case text-muted-foreground">
+                        (optional)
+                      </span>
+                    </p>
+                    <div className="rounded-2xl border border-border bg-background p-4">
+                      {travelImage && (
+                        <img
+                          src={travelImage}
+                          alt={travelAlt.trim() || "Photo preview"}
+                          className="mb-4 h-44 w-full rounded-xl border border-border bg-surface object-cover"
+                        />
+                      )}
+                      <div className="flex flex-wrap items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => travelFileInputRef.current?.click()}
+                          disabled={uploadingTravelImage}
+                          className="inline-flex items-center gap-2 rounded-full border border-signal/60 bg-signal/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {uploadingTravelImage ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : (
+                            <ImagePlus className="h-3.5 w-3.5" />
+                          )}
+                          {uploadingTravelImage
+                            ? "Uploading…"
+                            : travelImage
+                              ? "Replace photo"
+                              : "Choose photo"}
+                        </button>
+                        {travelImage && (
+                          <button
+                            type="button"
+                            onClick={() => setTravelImage("")}
+                            disabled={uploadingTravelImage}
+                            className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-destructive hover:text-destructive disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" /> Remove
+                          </button>
+                        )}
+                        <p className="font-mono text-[11px] text-muted-foreground">
+                          PNG, JPEG, WebP or GIF · up to 1.5 MB
+                        </p>
+                      </div>
+                      <div className="mt-4 border-t border-border pt-4">
+                        <label
+                          htmlFor="travel-alt"
+                          className="label-mono mb-2 block"
+                        >
+                          Alt text{" "}
+                          <span className="normal-case text-muted-foreground">
+                            (describe the photo for screen readers &amp; SEO)
+                          </span>
+                        </label>
+                        <input
+                          id="travel-alt"
+                          name="travel-alt"
+                          type="text"
+                          value={travelAlt}
+                          onChange={(event) => setTravelAlt(event.target.value)}
+                          maxLength={200}
+                          placeholder="Tea gardens rolling toward the horizon in the rain"
+                          className="w-full rounded-full border border-border bg-surface px-4 py-3 font-mono text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal"
+                        />
+                      </div>
+                      <input
+                        ref={travelFileInputRef}
+                        type="file"
+                        accept={IMAGE_ACCEPT}
+                        onChange={onPickTravelFile}
+                        className="hidden"
+                      />
+                    </div>
                   </div>
                 </>
               )}

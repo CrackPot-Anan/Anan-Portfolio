@@ -392,7 +392,9 @@ export async function createTravel(input: TravelInput): Promise<SaveResult> {
     return {
       ok: false,
       error:
-        error instanceof Error ? error.message : "Couldn't save the travel item.",
+        error instanceof Error
+          ? error.message
+          : "Couldn't save the travel item.",
     };
   }
 }
@@ -428,7 +430,9 @@ export async function updateTravel(
     return {
       ok: false,
       error:
-        error instanceof Error ? error.message : "Couldn't save the travel item.",
+        error instanceof Error
+          ? error.message
+          : "Couldn't save the travel item.",
     };
   }
 }
