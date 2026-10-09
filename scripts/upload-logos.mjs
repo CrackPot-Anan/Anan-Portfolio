@@ -51,13 +51,13 @@ function required() {
 function slugify(name) {
   return name
     .toLowerCase()
-    .replace(/\.(jpe?g|png|webp|gif|svg)$/i, "")
+    .replace(/\.(jpe?g|png|webp|gif|svg|ico)$/i, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
 const files = readdirSync(LOGOS_DIR)
-  .filter((name) => /\.(jpe?g|png|webp|gif|svg)$/i.test(name))
+  .filter((name) => /\.(jpe?g|png|webp|gif|svg|ico)$/i.test(name))
   .sort((a, b) => a.localeCompare(b));
 
 if (files.length === 0) {
@@ -84,6 +84,7 @@ const contentTypeByExt = {
   webp: "image/webp",
   gif: "image/gif",
   svg: "image/svg+xml",
+  ico: "image/x-icon",
 };
 
 for (const name of files) {

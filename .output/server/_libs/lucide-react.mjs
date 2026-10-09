@@ -128,6 +128,19 @@ var ArrowLeft = createLucideIcon("arrow-left", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var ArrowRight = createLucideIcon("arrow-right", [["path", {
+	d: "M5 12h14",
+	key: "1ays0h"
+}], ["path", {
+	d: "m12 5 7 7-7 7",
+	key: "xquz4c"
+}]]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var ArrowUpRight = createLucideIcon("arrow-up-right", [["path", {
 	d: "M7 7h10v10",
 	key: "1tivn9"
@@ -429,6 +442,21 @@ var Trash2 = createLucideIcon("trash-2", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var User = createLucideIcon("user", [["path", {
+	d: "M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2",
+	key: "975kel"
+}], ["circle", {
+	cx: "12",
+	cy: "7",
+	r: "4",
+	key: "17ys0d"
+}]]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var X = createLucideIcon("x", [["path", {
 	d: "M18 6 6 18",
 	key: "1bl5f8"
@@ -437,4 +465,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { ChevronDown as _, Pencil as a, LoaderCircle as c, ImagePlus as d, Github as f, ChevronUp as g, CircleCheck as h, Plus as i, Linkedin as l, Clock as m, Trash2 as n, Mail as o, FileText as p, Send as r, LogOut as s, X as t, Instagram as u, ArrowUpRight as v, ArrowLeft as y };
+export { ChevronUp as _, Plus as a, ArrowRight as b, LogOut as c, Instagram as d, ImagePlus as f, CircleCheck as g, Clock as h, Send as i, LoaderCircle as l, FileText as m, User as n, Pencil as o, Github as p, Trash2 as r, Mail as s, X as t, Linkedin as u, ChevronDown as v, ArrowLeft as x, ArrowUpRight as y };

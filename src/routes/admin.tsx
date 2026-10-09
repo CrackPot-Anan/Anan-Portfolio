@@ -143,11 +143,13 @@ function Admin() {
   const [error, setError] = useState<string | null>(null);
 
   const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
   const [category, setCategory] = useState<Category | null>(null);
   const [excerpt, setExcerpt] = useState("");
   const [body, setBody] = useState("");
   const [tags, setTags] = useState("");
   const [image, setImage] = useState("");
+  const [alt, setAlt] = useState("");
   const [uploadingImage, setUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -158,11 +160,13 @@ function Admin() {
 
   function resetBlogForm() {
     setTitle("");
+    setSlug("");
     setCategory(null);
     setExcerpt("");
     setBody("");
     setTags("");
     setImage("");
+    setAlt("");
   }
 
   const loadPosts = useCallback(async () => {
@@ -265,11 +269,13 @@ function Admin() {
       return;
     }
     setTitle(post.title);
+    setSlug(post.slug);
     setCategory(post.category);
     setExcerpt(post.excerpt);
     setBody(post.body);
     setTags(post.tags.join(", "));
     setImage(post.image ?? "");
+    setAlt(post.alt ?? "");
     setError(null);
     setExpandedSlug(null);
     setEditingSlug(slug);
@@ -433,9 +439,17 @@ function Admin() {
           .map((tag) => tag.trim())
           .filter(Boolean),
         image: image.trim() || undefined,
+        alt: alt.trim() || undefined,
+        slug: slug.trim() || undefined,
       };
       const saved = editingSlug
-        ? await updatePostFn({ data: { ...input, slug: editingSlug } })
+        ? await updatePostFn({
+            data: {
+              ...input,
+              slug: editingSlug,
+              newSlug: slug.trim() || undefined,
+            },
+          })
         : await createPostFn({ data: input });
       if (saved.ok) {
         setResult({
@@ -466,6 +480,15 @@ function Admin() {
     stories: loadingStories ? "…" : `${stories.length}`,
     hobbies: loadingHobbies ? "…" : `${hobbies.length}`,
   };
+
+  const slugPreview = title
+    .toLowerCase()
+    .trim()
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80)
+    .replace(/-+$/g, "");
 
   const formLabels: Record<FormKind, { creating: string; editing: string }> = {
     blog: { creating: "New post", editing: `Edit · ${editingSlug ?? ""}` },
@@ -501,7 +524,13 @@ function Admin() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-3xl px-6 py-14 md:py-20">
+      <main
+        className={
+          (view === "list" && entity === "blogs") || view === "home"
+            ? "w-full px-6 pt-6 pb-16"
+            : "mx-auto w-full max-w-3xl px-6 py-14 md:py-20"
+        }
+      >
         {view === "result" && result ? (
           <section className="rounded-2xl border border-signal/50 bg-surface p-8 md:p-10">
             <div className="flex items-center gap-3 text-signal">
@@ -533,96 +562,102 @@ function Admin() {
             </div>
           </section>
         ) : view === "home" ? (
-          <section className="flex min-h-[calc(100dvh-11rem)] items-center justify-center">
-            <div className="w-full max-w-2xl rounded-2xl border border-border bg-surface p-4 md:p-5">
-              <div className="grid gap-x-8 gap-y-4 sm:grid-cols-3">
-                {ENTITY_CARDS.map((card) => (
-                  <div
-                    key={card.kind}
-                    className="rounded-xl border border-border bg-background p-5"
-                  >
-                    <h2 className="text-2xl">{card.label}</h2>
-                    <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                      {counts[card.kind]} items
-                    </p>
-                    <div className="mt-6 flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openList(card.kind)}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-signal/60 bg-signal/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
-                      >
-                        Manage
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          startCreate(
-                            card.kind === "blogs"
-                              ? "blog"
-                              : card.kind === "stories"
-                                ? "story"
-                                : "hobby",
-                          )
-                        }
-                        className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-signal hover:text-signal"
-                      >
-                        <Plus className="h-3.5 w-3.5" /> New
-                      </button>
-                    </div>
+          <section>
+            <div className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {ENTITY_CARDS.map((card) => (
+                <div
+                  key={card.kind}
+                  className="flex min-h-[13rem] flex-col rounded-2xl border border-border bg-surface p-6 md:p-8"
+                >
+                  <h2 className="text-3xl md:text-4xl">{card.label}</h2>
+                  <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                    {counts[card.kind]} items
+                  </p>
+                  <div className="mt-auto flex flex-wrap gap-2 pt-8">
+                    <button
+                      type="button"
+                      onClick={() => openList(card.kind)}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-signal/60 bg-signal/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
+                    >
+                      Manage
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        startCreate(
+                          card.kind === "blogs"
+                            ? "blog"
+                            : card.kind === "stories"
+                              ? "story"
+                              : "hobby",
+                        )
+                      }
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-signal hover:text-signal"
+                    >
+                      <Plus className="h-3.5 w-3.5" /> New
+                    </button>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </section>
         ) : view === "list" ? (
           <section>
-            <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
-              <div>
+            {entity === "blogs" ? (
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <button
                   type="button"
                   onClick={showHome}
-                  className="mb-4 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
+                  className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" /> All collections
                 </button>
-                <p className="label-mono mb-3">
-                  <span className="text-signal">$</span>{" "}
-                  {ENTITY_CARDS.find((card) => card.kind === entity)?.command}
-                </p>
-                <h1 className="text-3xl leading-none md:text-4xl">
-                  {LIST_TITLES[entity]}
-                </h1>
-                <p className="mt-3 font-mono text-xs text-muted-foreground">
-                  {entity === "blogs"
-                    ? loadingPosts
-                      ? "Loading…"
-                      : `${posts.length} ${posts.length === 1 ? "post" : "posts"}`
-                    : entity === "stories"
+                <button
+                  type="button"
+                  onClick={() => startCreate("blog")}
+                  className="inline-flex items-center gap-2 rounded-full border border-signal px-5 py-3 font-mono text-xs uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
+                >
+                  <Plus className="h-4 w-4" /> New post
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
+                <div>
+                  <button
+                    type="button"
+                    onClick={showHome}
+                    className="mb-4 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
+                  >
+                    <ArrowLeft className="h-3.5 w-3.5" /> All collections
+                  </button>
+                  <p className="label-mono mb-3">
+                    <span className="text-signal">$</span>{" "}
+                    {ENTITY_CARDS.find((card) => card.kind === entity)?.command}
+                  </p>
+                  <h1 className="text-3xl leading-none md:text-4xl">
+                    {LIST_TITLES[entity]}
+                  </h1>
+                  <p className="mt-3 font-mono text-xs text-muted-foreground">
+                    {entity === "stories"
                       ? loadingStories
                         ? "Loading…"
                         : `${stories.length} ${stories.length === 1 ? "story" : "stories"}`
                       : loadingHobbies
                         ? "Loading…"
                         : `${hobbies.length} ${hobbies.length === 1 ? "hobby" : "hobbies"}`}
-                </p>
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    startCreate(entity === "stories" ? "story" : "hobby")
+                  }
+                  className="inline-flex items-center gap-2 rounded-full border border-signal px-5 py-3 font-mono text-xs uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
+                >
+                  <Plus className="h-4 w-4" /> New {entity.slice(0, -1)}
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() =>
-                  startCreate(
-                    entity === "blogs"
-                      ? "blog"
-                      : entity === "stories"
-                        ? "story"
-                        : "hobby",
-                  )
-                }
-                className="inline-flex items-center gap-2 rounded-full border border-signal px-5 py-3 font-mono text-xs uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
-              >
-                <Plus className="h-4 w-4" /> New{" "}
-                {entity === "blogs" ? "post" : entity.slice(0, -1)}
-              </button>
-            </div>
+            )}
 
             {error && (
               <div className="mt-6 rounded-xl border border-destructive/50 bg-destructive/10 px-4 py-3">
@@ -648,11 +683,14 @@ function Admin() {
             {entity === "blogs" && (
               <>
                 {!listError && loadingPosts && posts.length === 0 && (
-                  <ul className="mt-8 space-y-4" aria-hidden="true">
-                    {[0, 1, 2].map((index) => (
+                  <ul
+                    className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+                    aria-hidden="true"
+                  >
+                    {[0, 1, 2, 3, 4, 5].map((index) => (
                       <li
                         key={index}
-                        className="h-28 animate-pulse rounded-2xl border border-border bg-surface"
+                        className="aspect-[4/5] animate-pulse rounded-2xl border border-border bg-surface"
                       />
                     ))}
                   </ul>
@@ -678,7 +716,7 @@ function Admin() {
                 )}
 
                 {!listError && posts.length > 0 && (
-                  <ul className="mt-8 space-y-4">
+                  <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {posts.map((post) => {
                       const expanded = expandedSlug === post.slug;
                       const deleting =
@@ -687,34 +725,32 @@ function Admin() {
                       return (
                         <li
                           key={post.slug}
-                          className="rounded-2xl border border-border bg-surface p-5 md:p-6"
+                          className="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface"
                         >
-                          <div className="flex flex-wrap items-start justify-between gap-4">
-                            <div className="min-w-0">
-                              {post.image && (
-                                <img
-                                  src={post.image}
-                                  alt=""
-                                  className="mb-3 h-20 w-full rounded-xl border border-border object-cover"
-                                />
-                              )}
-                              <p className="label-mono">{post.category}</p>
-                              <h3 className="mt-2 font-display text-xl leading-snug md:text-2xl">
-                                {post.title}
-                              </h3>
-                              <p className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                                {formatPostDate(post.date)} · {post.readTime}
+                          {post.image && (
+                            <img
+                              src={post.image}
+                              alt={post.alt ?? ""}
+                              className="aspect-square w-full border-b border-border object-cover"
+                            />
+                          )}
+                          <div className="flex flex-1 flex-col p-5 md:p-6">
+                            <p className="label-mono">{post.category}</p>
+                            <h3 className="mt-2 font-display text-xl leading-snug md:text-2xl">
+                              {post.title}
+                            </h3>
+                            <p className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                              {formatPostDate(post.date)} · {post.readTime}
+                            </p>
+                            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                              {post.excerpt}
+                            </p>
+                            {post.tags.length > 0 && (
+                              <p className="mt-2 font-mono text-[11px] text-muted-foreground/80">
+                                {post.tags.join(" · ")}
                               </p>
-                              <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                                {post.excerpt}
-                              </p>
-                              {post.tags.length > 0 && (
-                                <p className="mt-2 font-mono text-[11px] text-muted-foreground/80">
-                                  {post.tags.join(" · ")}
-                                </p>
-                              )}
-                            </div>
-                            <div className="flex shrink-0 flex-wrap items-center gap-2">
+                            )}
+                            <div className="mt-5 flex flex-wrap items-center gap-2">
                               <Link
                                 to="/blogs/$slug"
                                 params={{ slug: post.slug }}
@@ -782,7 +818,7 @@ function Admin() {
                             </div>
                           </div>
                           {expanded && (
-                            <div className="mt-5 border-t border-border pt-5">
+                            <div className="border-t border-border p-5 md:p-6">
                               <p className="label-mono mb-3">Content</p>
                               <div className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">
                                 {post.body}
@@ -813,7 +849,7 @@ function Admin() {
 
                 {!(entity === "stories" ? loadingStories : loadingHobbies) &&
                   (entity === "stories" ? stories : hobbies).length === 0 && (
-                    <div className="mt-8 rounded-2xl border border-border bg-surface p-8 text-center">
+                    <div className="mt-6 rounded-2xl border border-border bg-surface p-8 text-center">
                       <p className="text-sm text-muted-foreground">
                         Nothing here yet. Create the first{" "}
                         {entity === "stories" ? "story" : "hobby"} and it will
@@ -946,6 +982,34 @@ function Admin() {
                     />
                   </div>
 
+                  <div>
+                    <label
+                      htmlFor="post-slug"
+                      className="label-mono mb-2 block"
+                    >
+                      URL
+                    </label>
+                    <div className="flex items-stretch overflow-hidden rounded-full border border-border bg-background transition-colors focus-within:border-signal">
+                      <span className="flex select-none items-center border-r border-border bg-surface px-4 font-mono text-xs text-muted-foreground">
+                        /blogs/
+                      </span>
+                      <input
+                        id="post-slug"
+                        name="post-slug"
+                        type="text"
+                        value={slug}
+                        onChange={(event) => setSlug(event.target.value)}
+                        placeholder={slugPreview || "auto-generated-from-title"}
+                        className="w-full bg-transparent px-4 py-3 font-mono text-sm text-foreground outline-none placeholder:text-muted-foreground/60"
+                      />
+                    </div>
+                    <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+                      {editingSlug
+                        ? "This is the post's link. Edit it to rename the URL."
+                        : "Leave blank to generate the link from the title."}
+                    </p>
+                  </div>
+
                   <fieldset>
                     <legend className="label-mono mb-3">
                       Category <span className="text-signal">*</span>
@@ -1042,7 +1106,7 @@ function Admin() {
                       {image && (
                         <img
                           src={image}
-                          alt="Cover preview"
+                          alt={alt.trim() || "Cover preview"}
                           className="mb-4 h-44 w-full rounded-xl border border-border bg-surface object-cover"
                         />
                       )}
@@ -1080,22 +1144,22 @@ function Admin() {
                       </div>
                       <div className="mt-4 border-t border-border pt-4">
                         <label
-                          htmlFor="image-url"
+                          htmlFor="image-alt"
                           className="label-mono mb-2 block"
                         >
-                          …or paste an image URL
+                          Alt text{" "}
+                          <span className="normal-case text-muted-foreground">
+                            (describe the image for screen readers &amp; SEO)
+                          </span>
                         </label>
                         <input
-                          id="image-url"
-                          name="image-url"
+                          id="image-alt"
+                          name="image-alt"
                           type="text"
-                          value={image.startsWith("data:") ? "" : image}
-                          onChange={(event) => setImage(event.target.value)}
-                          placeholder={
-                            image.startsWith("data:")
-                              ? "Uploaded file in use — Remove to paste a URL"
-                              : "https://…/cover.jpg"
-                          }
+                          value={alt}
+                          onChange={(event) => setAlt(event.target.value)}
+                          maxLength={200}
+                          placeholder="A team reviewing a sprint board in Jira"
                           className="w-full rounded-full border border-border bg-surface px-4 py-3 font-mono text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal"
                         />
                       </div>

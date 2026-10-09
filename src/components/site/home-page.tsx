@@ -7,6 +7,7 @@ import resumeUrl from "@/assets/Abrar Anan Raiyan.pdf?url";
 import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
 import { Section, SectionHeading, Tag, Logo } from "@/components/site/sections";
+import { Approach } from "@/components/site/approach";
 import {
   timeline,
   education,
@@ -200,7 +201,7 @@ export function Home({ section }: { section?: string }) {
 
         {/* Projects */}
         <Section id="projects">
-          <SectionHeading title="Selected work" />
+          <SectionHeading title="Products I have worked on" />
           <div className="grid gap-px bg-border md:grid-cols-3">
             {projects.map((p) => (
               <article
@@ -259,6 +260,9 @@ export function Home({ section }: { section?: string }) {
         <Section id="credentials">
           <Credentials index="06" />
         </Section>
+
+        {/* My Approach & Tools */}
+        <Approach />
 
         {/* Contact */}
         <Section id="contact">

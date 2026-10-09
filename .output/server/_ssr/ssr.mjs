@@ -143,7 +143,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-Bj5zPB4i.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-_DPPfX90.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -165,11 +165,23 @@ async function getStartManifest(matchedRoutes) {
 var manifest = {
 	"0cd1ce8de28e7338710a9b214c551974508d6ec20021e379d074d8c88cc02e82": {
 		functionName: "getPostsFn_createServerFn_handler",
-		importer: () => import("./blog-api-BVYANhBT.mjs")
+		importer: () => import("./blog-api-Cia-tPPk.mjs")
+	},
+	"24d81342a470db10529002d49e2f52aa5de9df5a6ded07ce295be943c29c0c82": {
+		functionName: "updateStoryFn_createServerFn_handler",
+		importer: () => import("./content-api-Cs5wfeBi.mjs")
+	},
+	"28b553ce71d455dddf3716aac0765b587f1ba016b50dfebaf3f7a95e76aa6f9d": {
+		functionName: "updateHobbyFn_createServerFn_handler",
+		importer: () => import("./content-api-Cs5wfeBi.mjs")
 	},
 	"33471d7595a86a2d742b7782a2da70c3157fcde437a7b3fd66719633206ad5fc": {
 		functionName: "createPostFn_createServerFn_handler",
-		importer: () => import("./blog-api-BVYANhBT.mjs")
+		importer: () => import("./blog-api-Cia-tPPk.mjs")
+	},
+	"60a8dc675fdb6d6c46d39c2a5f4002739734a3e5269fb5682ddb16312cba158f": {
+		functionName: "createHobbyFn_createServerFn_handler",
+		importer: () => import("./content-api-Cs5wfeBi.mjs")
 	},
 	"64b9781269ed244a99a1cc37b327a4a22d10cefd045a4ef0fc944e906895a303": {
 		functionName: "loginFn_createServerFn_handler",
@@ -179,21 +191,45 @@ var manifest = {
 		functionName: "logoutFn_createServerFn_handler",
 		importer: () => import("./auth-DcE9TQPn.mjs")
 	},
+	"76f08eca0666365ae8aa59f8f15c960fa2f6e0c47da6e7c9013759655b7a270d": {
+		functionName: "deleteStoryFn_createServerFn_handler",
+		importer: () => import("./content-api-Cs5wfeBi.mjs")
+	},
+	"9afaa3bd24bb0ec54a65570461be9d1b7f3c38804bb31858d2c0b6231e7a39cc": {
+		functionName: "createStoryFn_createServerFn_handler",
+		importer: () => import("./content-api-Cs5wfeBi.mjs")
+	},
+	"a3020f9d77739e82169a7c2dc02a1ff8efcffec09ed3fad547acbcd0965d7c5d": {
+		functionName: "deleteHobbyFn_createServerFn_handler",
+		importer: () => import("./content-api-Cs5wfeBi.mjs")
+	},
 	"ae7ca68514630d024b5350a26db5d8170dc7b4a5b44c504ff755a0853362b0c3": {
 		functionName: "getSessionFn_createServerFn_handler",
 		importer: () => import("./auth-DcE9TQPn.mjs")
 	},
 	"bad004fd6e8d5decdcbd7ae0e73ec08fe1a5c81bcf3e7f685f539d6035225901": {
 		functionName: "uploadImageFn_createServerFn_handler",
-		importer: () => import("./blog-api-BVYANhBT.mjs")
+		importer: () => import("./blog-api-Cia-tPPk.mjs")
+	},
+	"c7cc9bb5c425128f9d8b5b1fdd77c44129f6ffbd8a7eae98f75cf6b6abc15197": {
+		functionName: "getHobbiesFn_createServerFn_handler",
+		importer: () => import("./content-api-Cs5wfeBi.mjs")
+	},
+	"d2d10ce101676fea3a0ee68de6aba37879749dc603095360c00410d4a14b9c70": {
+		functionName: "deletePostFn_createServerFn_handler",
+		importer: () => import("./blog-api-Cia-tPPk.mjs")
 	},
 	"d5181106c24458fdd6145115b2f6bf8fa9c7c11c5f22431539b1243377444b4c": {
 		functionName: "updatePostFn_createServerFn_handler",
-		importer: () => import("./blog-api-BVYANhBT.mjs")
+		importer: () => import("./blog-api-Cia-tPPk.mjs")
+	},
+	"deb04dde7aaac5f7a717581ff137ff1be8cefc2651d3fd965b0a9e0ade454537": {
+		functionName: "getStoriesFn_createServerFn_handler",
+		importer: () => import("./content-api-Cs5wfeBi.mjs")
 	},
 	"dee422fe204c1e7699827260c65668fc25833d69bd8f27453198fc0b516e7056": {
 		functionName: "getPostFn_createServerFn_handler",
-		importer: () => import("./blog-api-BVYANhBT.mjs")
+		importer: () => import("./blog-api-Cia-tPPk.mjs")
 	}
 };
 async function getServerFnById(id, access) {
@@ -1598,7 +1634,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-BUTxeLl8.mjs").then((n) => n.t),
+		import("./router-DDfIrk3f.mjs").then((n) => n.t),
 		import("./start-5Z2QO8AU.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);

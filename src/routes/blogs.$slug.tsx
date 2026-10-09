@@ -63,7 +63,7 @@ function BlogPost() {
               <div className="mt-10 overflow-hidden rounded-2xl border border-border bg-surface">
                 <img
                   src={post.image}
-                  alt=""
+                  alt={post.alt ?? ""}
                   className="aspect-video w-full object-cover"
                 />
               </div>

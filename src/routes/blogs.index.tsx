@@ -130,7 +130,7 @@ function Blogs() {
                         {post.image && (
                           <img
                             src={post.image}
-                            alt=""
+                            alt={post.alt ?? ""}
                             className="mb-3 aspect-video w-full rounded-xl border border-border bg-surface object-cover"
                           />
                         )}

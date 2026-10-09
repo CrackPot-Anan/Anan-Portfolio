@@ -4,7 +4,7 @@ import { Home } from "@/components/site/home-page";
 
 const TITLE = "Projects — Abrar Anan Raiyan";
 const DESCRIPTION =
-  "Selected work — HRIS, ERP, travel tech, delivery tooling, and enterprise platforms.";
+  "Products I have worked on — HRIS, ERP, travel tech, delivery tooling, and enterprise platforms.";
 
 export const Route = createFileRoute("/projects")({
   head: () => ({

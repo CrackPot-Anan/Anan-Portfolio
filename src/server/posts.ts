@@ -30,6 +30,7 @@ const MAX_TAGS = 8;
 const MAX_TAG_LENGTH = 32;
 const WORDS_PER_MINUTE = 220;
 const MAX_IMAGE_CHARS = 2_100_000;
+const MAX_ALT_LENGTH = 200;
 
 type NormalizedInput = {
   title: string;
@@ -38,6 +39,7 @@ type NormalizedInput = {
   body: string;
   tags: string[];
   image?: string;
+  alt?: string;
 };
 
 type NormalizeResult =
@@ -88,15 +90,20 @@ async function readAll(): Promise<Post[]> {
 async function persistPost(
   post: Post,
   snapshot: Post[],
+  previousSlug: string = post.slug,
 ): Promise<string | null> {
   if (dbEnabled()) {
+    if (previousSlug !== post.slug) {
+      await deletePostRow(previousSlug);
+    }
     return (await writePost(post))
       ? null
       : "Couldn't save to the database. Check POSTGRES_URL / DATABASE_URL.";
   }
-  const next = snapshot.some((entry) => entry.slug === post.slug)
-    ? snapshot.map((entry) => (entry.slug === post.slug ? post : entry))
-    : [post, ...snapshot];
+  const withoutOld = snapshot.filter((entry) => entry.slug !== previousSlug);
+  const next = withoutOld.some((entry) => entry.slug === post.slug)
+    ? withoutOld.map((entry) => (entry.slug === post.slug ? post : entry))
+    : [post, ...withoutOld];
   await writeFilePosts(next);
   return null;
 }
@@ -106,8 +113,8 @@ function byNewest(a: Post, b: Post): number {
   return a.date < b.date ? 1 : -1;
 }
 
-function slugify(input: string): string {
-  const slug = input
+function normalizeSlug(input: string): string {
+  return input
     .toLowerCase()
     .trim()
     .replace(/['’]/g, "")
@@ -115,6 +122,10 @@ function slugify(input: string): string {
     .replace(/^-+|-+$/g, "")
     .slice(0, 80)
     .replace(/-+$/g, "");
+}
+
+function slugify(input: string): string {
+  const slug = normalizeSlug(input);
   return slug.length > 0 ? slug : "post";
 }
 
@@ -139,6 +150,10 @@ function normalizePostInput(input: CreatePostInput): NormalizeResult {
   const body = (input.body ?? "").trim();
   const category = String(input.category ?? "");
   const image = typeof input.image === "string" ? input.image.trim() : "";
+  const alt =
+    typeof input.alt === "string"
+      ? input.alt.trim().slice(0, MAX_ALT_LENGTH)
+      : "";
   const tags = (input.tags ?? [])
     .map((tag) => String(tag).trim())
     .filter((tag) => tag.length > 0)
@@ -206,6 +221,7 @@ function normalizePostInput(input: CreatePostInput): NormalizeResult {
       body,
       tags,
       image: image || undefined,
+      alt: alt || undefined,
     },
   };
 }
@@ -233,12 +249,27 @@ export async function createPost(
   const value = normalized.value;
 
   const existing = await readAll();
-  const base = slugify(value.title);
-  let slug = base;
-  let suffix = 2;
-  while (existing.some((post) => post.slug === slug)) {
-    slug = `${base}-${suffix}`;
-    suffix += 1;
+  const requestedSlug = typeof input.slug === "string" ? input.slug.trim() : "";
+  let slug: string;
+  if (requestedSlug) {
+    const custom = normalizeSlug(requestedSlug);
+    if (custom.length === 0) {
+      return fail(
+        "That URL isn't valid. Use letters, numbers and hyphens only.",
+      );
+    }
+    if (existing.some((post) => post.slug === custom)) {
+      return fail(`The URL "/blogs/${custom}" is already taken.`);
+    }
+    slug = custom;
+  } else {
+    const base = slugify(value.title);
+    slug = base;
+    let suffix = 2;
+    while (existing.some((post) => post.slug === slug)) {
+      slug = `${base}-${suffix}`;
+      suffix += 1;
+    }
   }
 
   const post: Post = {
@@ -251,6 +282,7 @@ export async function createPost(
     body: value.body,
     tags: value.tags,
     image: value.image,
+    alt: value.alt,
   };
 
   const error = await persistPost(post, existing);
@@ -279,8 +311,25 @@ export async function updatePost(
   const current = existing.find((post) => post.slug === slug);
   if (!current) return fail("That post no longer exists.");
 
+  const requestedSlug =
+    typeof input.newSlug === "string" ? input.newSlug.trim() : "";
+  let nextSlug = slug;
+  if (requestedSlug) {
+    const custom = normalizeSlug(requestedSlug);
+    if (custom.length === 0) {
+      return fail(
+        "That URL isn't valid. Use letters, numbers and hyphens only.",
+      );
+    }
+    if (custom !== slug && existing.some((post) => post.slug === custom)) {
+      return fail(`The URL "/blogs/${custom}" is already taken.`);
+    }
+    nextSlug = custom;
+  }
+
   const post: Post = {
     ...current,
+    slug: nextSlug,
     title: value.title,
     category: value.category,
     excerpt: value.excerpt,
@@ -288,11 +337,12 @@ export async function updatePost(
     tags: value.tags,
     readTime: readTimeFor(value.body),
     image: value.image,
+    alt: value.alt,
   };
 
-  const error = await persistPost(post, existing);
+  const error = await persistPost(post, existing, slug);
   if (error) return fail(error);
-  return { ok: true, slug };
+  return { ok: true, slug: nextSlug };
 }
 
 export async function deletePost(slug: string): Promise<DeletePostResult> {

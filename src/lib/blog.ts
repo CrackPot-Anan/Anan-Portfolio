@@ -18,6 +18,7 @@ export type Post = {
   body: string;
   tags: string[];
   image?: string;
+  alt?: string;
 };
 
 export type CreatePostInput = {
@@ -27,6 +28,8 @@ export type CreatePostInput = {
   body: string;
   tags: string[];
   image?: string;
+  alt?: string;
+  slug?: string;
 };
 
 export type CreatePostResult =
@@ -37,7 +40,10 @@ export type DeletePostResult = { ok: true } | { ok: false; error: string };
 export type UploadImageResult =
   { ok: true; url: string } | { ok: false; error: string };
 
-export type UpdatePostInput = CreatePostInput & { slug: string };
+export type UpdatePostInput = Omit<CreatePostInput, "slug"> & {
+  slug: string;
+  newSlug?: string;
+};
 
 export function isCategory(value: string): value is Category {
   return (CATEGORIES as readonly string[]).includes(value);
