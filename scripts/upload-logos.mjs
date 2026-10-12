@@ -56,8 +56,17 @@ function slugify(name) {
     .replace(/^-+|-+$/g, "");
 }
 
+const deleteFlagIndex = process.argv.indexOf("--delete");
+const uploadArgs =
+  deleteFlagIndex === -1 ? process.argv.slice(2) : process.argv.slice(2, deleteFlagIndex);
+const filterArgs = uploadArgs.map((arg) => arg.toLowerCase());
+
 const files = readdirSync(LOGOS_DIR)
   .filter((name) => /\.(jpe?g|png|webp|gif|svg|ico)$/i.test(name))
+  .filter(
+    (name) =>
+      filterArgs.length === 0 || filterArgs.includes(name.toLowerCase()),
+  )
   .sort((a, b) => a.localeCompare(b));
 
 if (files.length === 0) {
@@ -106,9 +115,8 @@ for (const name of files) {
   console.log(`${name} -> ${publicBaseUrl}/${key}`);
 }
 
-const deleteFlag = process.argv.indexOf("--delete");
-if (deleteFlag !== -1) {
-  for (const key of process.argv.slice(deleteFlag + 1)) {
+if (deleteFlagIndex !== -1) {
+  for (const key of process.argv.slice(deleteFlagIndex + 1)) {
     await client.send(
       new DeleteObjectCommand({ Bucket: cfg.R2_BUCKET_NAME, Key: key }),
     );
