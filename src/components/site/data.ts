@@ -57,9 +57,19 @@ export const timeline = [
 
 export const education = [
   {
+    period: "Jan 2018 - Feb 2020",
+    school: "Police Lines School and College, Rangpur",
+    degree: "Higher Secondary Certificate",
+    majorLabel: "Group",
+    major: "Science",
+    cgpa: "GPA 5.00 / 5.00",
+    location: "Rangpur, Bangladesh",
+  },
+  {
     period: "Sept 2021 - May 2025",
     school: "American International University – Bangladesh",
     degree: "B.Sc. in Computer Science & Engineering",
+    majorLabel: "Major",
     major: "Software Engineering",
     cgpa: "CGPA 3.71 / 4.00",
     location: "Dhaka, Bangladesh",
@@ -71,16 +81,36 @@ export const leadership = [
     period: "Aug 2023 - Jan 2025",
     role: "Assistant General Secretary, Event Coverage & Post Production",
     org: "AIUB Computer Club",
+    logo: "https://assets.abrarananraiyan.space/logos/aiub-computer-club.png",
     detail:
       "Organized workshops, edited event videos, and led a team of photographers to deliver event coverage and post-production for the club.",
     tags: ["Event Coverage", "Video Editing", "Leadership"],
   },
   {
-    period: "Aug 2022 - Aug 2023",
-    role: "Campus Ambassador",
-    org: "Applink by Banglalink",
+    period: "Jun 2023 - Jan 2025",
+    role: "Logistic Peer",
+    org: "Firefox Club, AIUB",
+    logo: "https://assets.abrarananraiyan.space/logos/firefox.png",
     detail:
-      "Represented Applink by Banglalink on campus as a campus ambassador — engaging students, growing the community, and carrying the program into campus events.",
+      "Supported logistics for Firefox Club events at AIUB — coordinating venues, equipment, and on-ground operations to keep club activities running smoothly.",
+    tags: ["Logistics", "Event Operations"],
+  },
+  {
+    period: "Aug 2022 - Aug 2023",
+    role: "Campus Lead",
+    org: "Applink by Banglalink",
+    logo: "https://assets.abrarananraiyan.space/logos/applink.png",
+    detail:
+      "Represented Applink by Banglalink on campus as a campus lead — engaging students, growing the community, and carrying the program into campus events.",
+    tags: ["Campus Leadership", "Community"],
+  },
+  {
+    period: "Jun 2022 - Jun 2023",
+    role: "Campus Ambassador",
+    org: "Genex Infosys",
+    logo: "https://assets.abrarananraiyan.space/logos/genex-infosys.png",
+    detail:
+      "Represented Genex Infosys on campus as a campus ambassador — promoting programs, engaging students, and strengthening the company's presence across campus activities.",
     tags: ["Campus Leadership", "Community"],
   },
 ];

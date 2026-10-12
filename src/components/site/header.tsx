@@ -21,7 +21,7 @@ export function SiteHeader() {
           to="/"
           className="font-mono text-sm tracking-tight text-foreground"
         >
-          abrar<span className="text-signal">.</span>anan
+          Abrar<span className="text-signal">.</span>Anan
         </Link>
         <nav className="hidden items-center gap-2 md:flex lg:gap-6">
           {nav.map(([to, label]) => (

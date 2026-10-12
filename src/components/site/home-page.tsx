@@ -164,7 +164,9 @@ export function Home({ section }: { section?: string }) {
                     {e.degree}
                   </p>
                   <div className="mt-4 flex flex-wrap items-center gap-2">
-                    <Tag>Major: {e.major}</Tag>
+                    <Tag>
+                      {e.majorLabel}: {e.major}
+                    </Tag>
                     <span className="rounded-sm border border-signal/50 bg-signal/10 px-2.5 py-1 font-mono text-[11px] font-medium tracking-wide text-signal">
                       {e.cgpa}
                     </span>
@@ -185,7 +187,10 @@ export function Home({ section }: { section?: string }) {
                 key={l.role}
                 className="bg-background p-7 transition-colors hover:bg-surface md:p-8"
               >
-                <p className="label-mono">{l.period}</p>
+                <div className="flex items-start justify-between gap-4">
+                  <p className="label-mono">{l.period}</p>
+                  {l.logo ? <Logo src={l.logo} alt={`${l.org} logo`} /> : null}
+                </div>
                 <h3 className="mt-4 text-xl text-foreground md:text-2xl">
                   {l.role}
                 </h3>
