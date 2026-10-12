@@ -16,13 +16,7 @@ const navItemBase =
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-4 py-3.5 md:px-5">
-        <Link
-          to="/"
-          className="font-mono text-sm tracking-tight text-foreground"
-        >
-          Abrar<span className="text-signal">.</span>Anan
-        </Link>
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-2 px-4 py-3.5 md:px-5">
         <nav className="hidden items-center gap-2 md:flex lg:gap-6">
           {nav.map(([to, label]) => (
             <Link

@@ -52,7 +52,7 @@ function Login() {
     <div className="min-h-screen bg-background">
       <SiteHeader />
 
-      <main className="mx-auto flex w-full max-w-6xl flex-col justify-center px-6 py-20 md:py-28">
+      <main className="mx-auto flex w-full max-w-7xl flex-col justify-center px-6 py-20 md:py-28">
         <div className="max-w-md border border-border bg-surface p-7 md:p-9">
           <p className="label-mono mb-6">
             <span className="text-signal">$</span> auth --login

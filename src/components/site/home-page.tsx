@@ -45,21 +45,23 @@ export function Home({ section }: { section?: string }) {
       <main id="top">
         {/* Hero */}
         <section className="border-b border-border">
-          <div className="mx-auto grid w-full max-w-6xl gap-12 px-6 py-24 md:grid-cols-[1.2fr_0.8fr] md:items-center md:py-36">
+          <div className="mx-auto grid w-full max-w-7xl gap-12 px-6 py-24 md:grid-cols-[1.2fr_0.8fr] md:items-center md:py-32">
             <div>
-              <h1 className="hero-reveal hero-reveal-1 text-5xl leading-[0.95] md:text-7xl">
-                I turn scattered
+              <h1 className="hero-reveal hero-reveal-1 whitespace-nowrap font-display text-6xl leading-[0.95] text-foreground sm:text-7xl md:text-7xl lg:text-8xl xl:text-9xl">
+                Abrar Anan
                 <br />
-                ideas into
-                <br />
-                <span className="text-signal">shipped software.</span>
+                Raiyan
               </h1>
-              <p className="hero-reveal hero-reveal-2 mt-8 max-w-xl text-base leading-relaxed text-muted-foreground">
-                I&apos;m Abrar Anan Raiyan. I lead agile teams, shape products
-                end to end, and build AI-assisted workflows that remove the
-                busywork between an idea and a release.
+              <p className="hero-reveal hero-reveal-2 mt-2 max-w-2xl font-display text-xl leading-snug text-muted-foreground md:mt-3 md:text-3xl">
+                I turn scattered ideas into{" "}
+                <span className="text-signal">shipped software.</span>
               </p>
-              <div className="hero-reveal hero-reveal-3 mt-9 flex flex-wrap items-center gap-3">
+              <p className="hero-reveal hero-reveal-3 mt-8 max-w-xl text-base leading-relaxed text-muted-foreground">
+                I lead agile teams, shape products end to end, and build
+                AI-assisted workflows that remove the busywork between an idea
+                and a release.
+              </p>
+              <div className="hero-reveal hero-reveal-4 mt-9 flex flex-wrap items-center gap-3">
                 <Link
                   to="/projects"
                   className="inline-flex items-center gap-2 rounded-sm bg-signal px-5 py-3 font-mono text-xs uppercase tracking-[0.14em] text-primary-foreground transition-opacity hover:opacity-90"
@@ -81,7 +83,7 @@ export function Home({ section }: { section?: string }) {
                   Let&apos;s connect
                 </Link>
               </div>
-              <div className="hero-reveal hero-reveal-4 mt-12 flex flex-wrap gap-10 border-t border-border pt-8">
+              <div className="hero-reveal hero-reveal-5 mt-12 flex flex-wrap gap-10 border-t border-border pt-8">
                 {stats.map((s) => (
                   <div key={s.label}>
                     <p className="font-display text-3xl text-foreground">

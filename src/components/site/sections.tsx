@@ -29,7 +29,7 @@ export function Section({ id, children }: { id: string; children: ReactNode }) {
       id={id}
       className="scroll-mt-24 border-t border-border py-20 md:py-28"
     >
-      <div className="mx-auto w-full max-w-6xl px-6">{children}</div>
+      <div className="mx-auto w-full max-w-7xl px-6">{children}</div>
     </section>
   );
 }

@@ -149,6 +149,10 @@
   animation-delay: 450ms;
 }
 
+.hero-reveal-5 {
+  animation-delay: 600ms;
+}
+
 @keyframes hero-fade-up {
   from {
     opacity: 0;

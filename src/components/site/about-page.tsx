@@ -17,7 +17,7 @@ export function AboutPage() {
       <main id="top">
         {/* Intro */}
         <section className="border-b border-border">
-          <div className="mx-auto grid w-full max-w-6xl gap-12 px-6 py-20 md:grid-cols-[1.2fr_0.8fr] md:items-center md:py-28">
+          <div className="mx-auto grid w-full max-w-7xl gap-12 px-6 py-20 md:grid-cols-[1.2fr_0.8fr] md:items-center md:py-28">
             <div>
               <p className="label-mono mb-4">
                 <span className="text-signal">$</span> whoami

@@ -56,7 +56,7 @@ function Blogs() {
   return (
     <main id="top">
       <section className="border-b border-border py-14 md:py-20">
-        <div className="mx-auto w-full max-w-6xl px-6">
+        <div className="mx-auto w-full max-w-7xl px-6">
           <div className="grid gap-12 lg:grid-cols-[3fr_2fr] lg:gap-0">
             <div className="lg:border-r lg:border-border lg:pr-10">
               <div className="mb-8 flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
@@ -232,7 +232,7 @@ function Blogs() {
       </section>
 
       <section className="border-t border-border py-20 md:py-28">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 md:flex-row md:items-end md:justify-between">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="label-mono mb-3">
               04 <span className="text-signal">/</span> ./contact --open
