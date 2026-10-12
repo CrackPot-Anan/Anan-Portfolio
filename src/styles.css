@@ -54,32 +54,34 @@
 
 :root {
   --radius: 0.25rem;
-  --background: oklch(0.16 0.008 60);
-  --foreground: oklch(0.95 0.008 80);
-  --surface: oklch(0.21 0.009 60);
-  --surface-foreground: oklch(0.95 0.008 80);
-  --card: oklch(0.2 0.009 60);
-  --card-foreground: oklch(0.95 0.008 80);
-  --popover: oklch(0.2 0.009 60);
-  --popover-foreground: oklch(0.95 0.008 80);
-  --primary: oklch(0.79 0.15 76);
-  --primary-foreground: oklch(0.18 0.02 70);
-  --secondary: oklch(0.26 0.01 60);
-  --secondary-foreground: oklch(0.95 0.008 80);
-  --muted: oklch(0.24 0.008 60);
-  --muted-foreground: oklch(0.68 0.012 70);
-  --accent: oklch(0.28 0.02 70);
-  --accent-foreground: oklch(0.95 0.008 80);
+  /* Charcoal Black palette */
+  --background: oklch(0.1822 0 0); /* #121212 */
+  --foreground: oklch(0.9702 0 0); /* #F5F5F5 */
+  --surface: oklch(0.2178 0 0); /* #1A1A1A */
+  --surface-foreground: oklch(0.9702 0 0); /* #F5F5F5 */
+  --card: oklch(0.2178 0 0); /* #1A1A1A */
+  --card-foreground: oklch(0.9702 0 0); /* #F5F5F5 */
+  --popover: oklch(0.252 0 0); /* #222222 */
+  --popover-foreground: oklch(0.9702 0 0); /* #F5F5F5 */
+  --primary: oklch(1 0 0); /* #FFFFFF */
+  --primary-foreground: oklch(0.1822 0 0); /* #121212 */
+  --secondary: oklch(0.252 0 0); /* #222222 */
+  --secondary-foreground: oklch(0.9702 0 0); /* #F5F5F5 */
+  --muted: oklch(0.252 0 0); /* #222222 */
+  --muted-foreground: oklch(0.7668 0 0); /* #B3B3B3 */
+  --accent: oklch(0.285 0 0); /* #2A2A2A */
+  --accent-foreground: oklch(0.9702 0 0); /* #F5F5F5 */
   --destructive: oklch(0.6 0.2 27);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.3 0.01 65);
-  --input: oklch(0.3 0.01 65);
-  --ring: oklch(0.79 0.15 76);
-  --signal: oklch(0.79 0.15 76);
+  --destructive-foreground: oklch(0.9702 0 0); /* #F5F5F5 */
+  --border: oklch(0.3092 0 0); /* #303030 */
+  --input: oklch(0.3092 0 0); /* #303030 */
+  --ring: oklch(1 0 0); /* #FFFFFF */
+  --signal: oklch(1 0 0); /* #FFFFFF */
   --gradient-signal: linear-gradient(
-    120deg,
-    oklch(0.79 0.15 76),
-    oklch(0.86 0.11 96)
+    135deg,
+    oklch(0.1822 0 0) 0%,
+    oklch(0.2178 0 0) 50%,
+    oklch(0.252 0 0) 100%
   );
   --shadow-lift: 0 24px 60px -30px oklch(0 0 0 / 0.85);
 }
@@ -117,6 +119,47 @@
   color: var(--muted-foreground);
 }
 
+/*
+ * Hero typography reveal.
+ *
+ * Kept unlayered (outside @layer components) so Tailwind's @layer utilities
+ * can never out-rank it and drop the animation. Uses transform + opacity only,
+ * so it is GPU-friendly and causes no layout shift.
+ */
+.hero-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: hero-fade-up 1000ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform;
+}
+
+.hero-reveal-1 {
+  animation-delay: 0ms;
+}
+
+.hero-reveal-2 {
+  animation-delay: 150ms;
+}
+
+.hero-reveal-3 {
+  animation-delay: 300ms;
+}
+
+.hero-reveal-4 {
+  animation-delay: 450ms;
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @layer components {
   .hire-btn {
     position: relative;
@@ -148,10 +191,10 @@
   @keyframes hire-glow {
     0%,
     100% {
-      box-shadow: 0 0 0 0 oklch(0.79 0.15 76 / 0.4);
+      box-shadow: 0 0 0 0 oklch(1 0 0 / 0.35);
     }
     50% {
-      box-shadow: 0 0 0 6px oklch(0.79 0.15 76 / 0);
+      box-shadow: 0 0 0 6px oklch(1 0 0 / 0);
     }
   }
 
@@ -169,6 +212,12 @@
 @media (prefers-reduced-motion: reduce) {
   .hire-btn,
   .hire-btn__shine {
+    animation: none;
+  }
+
+  .hero-reveal {
+    opacity: 1;
+    transform: none;
     animation: none;
   }
 }

@@ -15,7 +15,7 @@
 .cred-dots {
   background-image: radial-gradient(
     circle,
-    oklch(0.79 0.15 76 / 0.12) 1px,
+    oklch(1 0 0 / 0.12) 1px,
     transparent 1px
   );
   background-size: 24px 24px;

@@ -13,7 +13,7 @@ function formatIssued(raw?: string): string | null {
   return `Issued ${month} ${match[1]}`;
 }
 
-export function Credentials({ index = "06" }: { index?: string }) {
+export function Credentials() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
@@ -61,9 +61,6 @@ export function Credentials({ index = "06" }: { index?: string }) {
 
       <header className="mb-10 flex flex-col gap-6 border-b border-border pb-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="label-mono mb-3">
-            {index} <span className="text-signal">/</span> ls certifications/
-          </p>
           <h2 className="text-3xl leading-none md:text-5xl">
             Professional Credentials
           </h2>

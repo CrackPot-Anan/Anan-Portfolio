@@ -209,7 +209,7 @@ export const stories: Story[] = [
 export const travels: Travel[] = [];
 
 export const stats = [
-  { value: "12+", label: "Projects Delivered" },
+  { value: "7", label: "Projects Delivered" },
   { value: "98%", label: "On-Time Releases" },
-  { value: "5", label: "Teams Coordinated" },
+  { value: "2", label: "Teams Coordinated" },
 ];
