@@ -41,8 +41,8 @@ export const timeline = [
     org: "6Sense HQ Ltd",
     logo: "https://assets.abrarananraiyan.space/logos/6sense-hq.png",
     detail:
-      "Leading cross-functional delivery for web and AI products: shaping scope, running sprints, unblocking engineering, and keeping stakeholders aligned from discovery to launch.",
-    tags: ["Agile", "Delivery", "Stakeholders"],
+      "Leading cross-functional delivery for web and AI products with Agile and Scrum: facilitating daily planning, shaping scope, unblocking engineering, and keeping stakeholders aligned from discovery to launch.",
+    tags: ["Agile", "Scrum", "Daily Planning", "Stakeholder Management", "Jira"],
   },
   {
     role: "Software Support and Implementation Engineer",
@@ -50,8 +50,8 @@ export const timeline = [
     org: "Akij iBOS Ltd",
     logo: "https://assets.abrarananraiyan.space/logos/akij-ibos.png",
     detail:
-      "Prepared PRDs, user stories, and change requests. Coordinated engineering, design, and QA in Jira and ClickUp to keep releases on schedule.",
-    tags: ["Jira", "PRDs", "QA"],
+      "Drove business analysis and software implementation for client rollouts — gathering requirements, coordinating engineering, design, and QA in Jira, and supporting go-live and post-release stability.",
+    tags: ["Business Analysis", "Implementation", "Go-Live", "Jira"],
   },
 ];
 
@@ -84,7 +84,7 @@ export const leadership = [
     logo: "https://assets.abrarananraiyan.space/logos/aiub-computer-club.png",
     detail:
       "Organized workshops, edited event videos, and led a team of photographers to deliver event coverage and post-production for the club.",
-    tags: ["Event Coverage", "Video Editing", "Leadership"],
+    tags: ["Video Editing", "Photographer Lead", "Event Management"],
   },
   {
     period: "Jun 2023 - Jan 2025",
@@ -122,7 +122,7 @@ export const projects = [
     kind: "HRIS Platform",
     detail:
       "Centralized HRIS platform for managing employee information, leave, attendance, compensation, performance, and other HR operations.",
-    tags: ["HRIS", "Leave", "Attendance"],
+    tags: ["HRIS", "Stakeholder Management", "Daily Scrum", "SRS", "Business Analysis"],
   },
   {
     name: "Managerium",
@@ -191,24 +191,23 @@ export const hobbies: Hobby[] = [
     body: "Photography started as a way to slow down. A street scene only works once you strip everything that does not belong in the frame.\n\nI shoot events, portraits, and whatever catches the light on a walk. The discipline of composing a shot — deciding what stays and what goes — turns out to be the same discipline I bring to scoping a product.",
   },
   {
-    id: "chess",
-    name: "Chess",
+    id: "reading",
+    name: "Reading Books",
     detail:
-      "Weekend endgame drills. Fewer open tabs than a sprint review, same tension.",
-    body: "Chess is the quiet version of the same problem I solve all week: limited resources, incomplete information, and a clock.\n\nI spend most of my practice on endgames. Fewer pieces, clearer ideas — you learn that the plan matters more than the move.",
+      "Sci-fi, product essays, and whatever the shelf recommends next.",
+    body: "Reading is where most of my thinking happens off the clock. I move between science fiction, product essays, and the occasional memoir.\n\nHalf of what I know about scoping and narrative I picked up from books, not tickets — a good chapter is just a well-sequenced backlog.",
   },
   {
-    id: "music",
-    name: "Music",
-    detail: "Lo-fi and jazz on loop while writing specs or reviewing PRs.",
-    body: "There is almost always something playing while I work — lo-fi, jazz, or a long ambient mix when the work needs deep focus.\n\nMusic has no backlog. It is the one place where I am just listening.",
+    id: "movies",
+    name: "Watching Movies",
+    detail: "Films and series — sci-fi, thrillers, and the slow dramas.",
+    body: "There is usually a film or a series running somewhere in my week — science fiction, thrillers, and the slow dramas that reward patience.\n\nGood storytelling is a masterclass in pacing: what to reveal, what to hold back, and when the payoff lands. I steal that instinct for demos and updates.",
   },
   {
-    id: "cricket",
-    name: "Cricket",
-    detail:
-      "Weekend matches — pacing, reading the field, knowing when to accelerate.",
-    body: "Weekend cricket taught me pacing before any course did. You cannot swing at every ball, and you cannot sit on the back foot forever.\n\nReading the field, knowing when to defend and when to accelerate — it is a lot like managing a release.",
+    id: "roaming",
+    name: "Roaming Around",
+    detail: "Long walks with no route — a city reads differently on foot.",
+    body: "I like to roam — no map, no destination, just walking until something interesting shows up.\n\nA city reads differently on foot: the details you miss in transit, the small shops, the quiet corners. It clears the head and resets the week better than any break.",
   },
 ];
 
