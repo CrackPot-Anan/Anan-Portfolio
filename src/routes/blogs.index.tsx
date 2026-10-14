@@ -3,6 +3,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, Mail } from "lucide-react";
 
 import { Tag } from "@/components/site/sections";
+import { LanguageToggle } from "@/components/site/language";
+import {
+  categoryLabel,
+  useLanguage,
+  useTranslated,
+} from "@/components/site/language-context";
 import { CATEGORIES, formatPostDate, type Category } from "@/lib/blog";
 import { getPublicPostsFn } from "@/lib/blog-api";
 import { getHobbiesFn, getStoriesFn } from "@/lib/content-api";
@@ -36,6 +42,7 @@ type Filter = "All" | Category;
 function Blogs() {
   const { posts, hobbies, stories } = Route.useLoaderData();
   const [active, setActive] = useState<Filter>("All");
+  const { lang } = useLanguage();
 
   const counts = useMemo(() => {
     const map = new Map<string, number>();
@@ -48,6 +55,9 @@ function Blogs() {
   const visible =
     active === "All" ? posts : posts.filter((post) => post.category === active);
 
+  const titles = useTranslated(visible.map((post) => post.title));
+  const excerpts = useTranslated(visible.map((post) => post.excerpt));
+
   const filters: Filter[] = [
     "All",
     ...CATEGORIES.filter((category) => counts.has(category)),
@@ -59,7 +69,7 @@ function Blogs() {
         <div className="mx-auto w-full max-w-7xl px-6">
           <div className="grid gap-12 lg:grid-cols-[3fr_2fr] lg:gap-0">
             <div className="lg:border-r lg:border-border lg:pr-10">
-              <div className="mb-8 flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+              <div className="mb-8 flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <p className="label-mono mb-3">
                     01 <span className="text-signal">/</span> ls blog/
@@ -69,6 +79,7 @@ function Blogs() {
                   </h1>
                 </div>
                 <div className="flex flex-col items-start gap-3 sm:items-end">
+                  <LanguageToggle />
                   <p className="label-mono">{posts.length} posts</p>
                 </div>
               </div>
@@ -115,7 +126,7 @@ function Blogs() {
                 </p>
               ) : (
                 <div className="space-y-px bg-border">
-                  {visible.map((post) => (
+                  {visible.map((post, index) => (
                     <article
                       key={post.slug}
                       className="grid gap-4 bg-background p-6 transition-colors hover:bg-surface md:grid-cols-[160px_1fr] md:p-7"
@@ -136,7 +147,7 @@ function Blogs() {
                       </div>
                       <div>
                         <p className="label-mono mb-2 text-signal">
-                          {post.category}
+                          {categoryLabel(post.category, lang)}
                         </p>
                         <h2 className="text-xl md:text-2xl">
                           <Link
@@ -144,11 +155,11 @@ function Blogs() {
                             params={{ slug: post.slug }}
                             className="transition-colors hover:text-signal"
                           >
-                            {post.title}
+                            {titles[index] ?? post.title}
                           </Link>
                         </h2>
                         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                          {post.excerpt}
+                          {excerpts[index] ?? post.excerpt}
                         </p>
                         {post.tags.length > 0 && (
                           <div className="mt-4 flex flex-wrap gap-2">

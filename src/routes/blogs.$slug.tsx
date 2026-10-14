@@ -2,6 +2,12 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Clock } from "lucide-react";
 
 import { Tag } from "@/components/site/sections";
+import { LanguageToggle } from "@/components/site/language";
+import {
+  categoryLabel,
+  useLanguage,
+  useTranslated,
+} from "@/components/site/language-context";
 import { formatPostDate } from "@/lib/blog";
 import { getPostFn } from "@/lib/blog-api";
 
@@ -30,27 +36,34 @@ export const Route = createFileRoute("/blogs/$slug")({
 
 function BlogPost() {
   const post = Route.useLoaderData();
+  const { lang } = useLanguage();
   const paragraphs = post.body
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.trim())
     .filter(Boolean);
+
+  const [title, excerpt] = useTranslated([post.title, post.excerpt]);
+  const translatedParagraphs = useTranslated(paragraphs);
 
   return (
     <main id="top">
       <article>
         <header className="border-b border-border">
           <div className="mx-auto w-full max-w-3xl px-6 py-16 md:py-24">
-            <Link
-              to="/blogs"
-              className="label-mono inline-flex items-center gap-2 transition-colors hover:text-signal"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" /> All posts
-            </Link>
+            <div className="flex items-center justify-between gap-4">
+              <Link
+                to="/blogs"
+                className="label-mono inline-flex items-center gap-2 transition-colors hover:text-signal"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" /> All posts
+              </Link>
+              <LanguageToggle />
+            </div>
             <p className="mt-9 font-mono text-xs uppercase tracking-[0.18em] text-signal">
-              {post.category}
+              {categoryLabel(post.category, lang)}
             </p>
             <h1 className="mt-4 text-4xl leading-[1.05] md:text-6xl">
-              {post.title}
+              {title ?? post.title}
             </h1>
             <div className="label-mono mt-7 flex flex-wrap items-center gap-x-6 gap-y-2">
               <span>{formatPostDate(post.date)}</span>
@@ -73,12 +86,12 @@ function BlogPost() {
 
         <div className="mx-auto w-full max-w-3xl px-6 py-14 md:py-20">
           <p className="border-l-2 border-signal pl-5 text-base leading-relaxed text-muted-foreground md:text-lg">
-            {post.excerpt}
+            {excerpt ?? post.excerpt}
           </p>
 
           <div className="mt-10 space-y-6 text-base leading-8 md:text-lg">
-            {paragraphs.map((paragraph) => (
-              <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+            {translatedParagraphs.map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
             ))}
           </div>
 

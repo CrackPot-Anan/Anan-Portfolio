@@ -143,7 +143,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-BZRdnDV2.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-D2BbgNYX.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -165,27 +165,31 @@ async function getStartManifest(matchedRoutes) {
 var manifest = {
 	"0cd1ce8de28e7338710a9b214c551974508d6ec20021e379d074d8c88cc02e82": {
 		functionName: "getPostsFn_createServerFn_handler",
-		importer: () => import("./blog-api-Cia-tPPk.mjs")
+		importer: () => import("./blog-api-TvKl1eIU.mjs")
+	},
+	"1efb30f32a83550aa2c34e3a0cfadf12112bff60ebec8b075d0f82af687f5205": {
+		functionName: "getPublicPostsFn_createServerFn_handler",
+		importer: () => import("./blog-api-TvKl1eIU.mjs")
 	},
 	"24d81342a470db10529002d49e2f52aa5de9df5a6ded07ce295be943c29c0c82": {
 		functionName: "updateStoryFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"28b553ce71d455dddf3716aac0765b587f1ba016b50dfebaf3f7a95e76aa6f9d": {
 		functionName: "updateHobbyFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"33471d7595a86a2d742b7782a2da70c3157fcde437a7b3fd66719633206ad5fc": {
 		functionName: "createPostFn_createServerFn_handler",
-		importer: () => import("./blog-api-Cia-tPPk.mjs")
+		importer: () => import("./blog-api-TvKl1eIU.mjs")
 	},
 	"3d0ef1ad9f308c9ca65f628b3ea9afa66074bddd6948e0a7005776d058537747": {
 		functionName: "getTravelFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"60a8dc675fdb6d6c46d39c2a5f4002739734a3e5269fb5682ddb16312cba158f": {
 		functionName: "createHobbyFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"64b9781269ed244a99a1cc37b327a4a22d10cefd045a4ef0fc944e906895a303": {
 		functionName: "loginFn_createServerFn_handler",
@@ -197,31 +201,31 @@ var manifest = {
 	},
 	"76f08eca0666365ae8aa59f8f15c960fa2f6e0c47da6e7c9013759655b7a270d": {
 		functionName: "deleteStoryFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"85b6ba27e50336af2b36e89feb38fca2a1aba0999a5f4e9ade68ee816a107d6a": {
 		functionName: "getHobbyFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"88ac721a0fd62e449b5974159c7d75c539aeace87ba4b205eab2997b94f0ef64": {
 		functionName: "getTravelsFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"9afaa3bd24bb0ec54a65570461be9d1b7f3c38804bb31858d2c0b6231e7a39cc": {
 		functionName: "createStoryFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"a3020f9d77739e82169a7c2dc02a1ff8efcffec09ed3fad547acbcd0965d7c5d": {
 		functionName: "deleteHobbyFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"a511601aafe73fbebb459900549bec759cac17548cf0bb703d648046557ae4a4": {
 		functionName: "getStoryFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"aded786390dfae26327026b49819b9785ad884ac1d33cebac36a4dc94970af52": {
 		functionName: "updateTravelFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"ae7ca68514630d024b5350a26db5d8170dc7b4a5b44c504ff755a0853362b0c3": {
 		functionName: "getSessionFn_createServerFn_handler",
@@ -229,35 +233,43 @@ var manifest = {
 	},
 	"bad004fd6e8d5decdcbd7ae0e73ec08fe1a5c81bcf3e7f685f539d6035225901": {
 		functionName: "uploadImageFn_createServerFn_handler",
-		importer: () => import("./blog-api-Cia-tPPk.mjs")
+		importer: () => import("./blog-api-TvKl1eIU.mjs")
 	},
 	"c5ef56eff5da77f8a4717f9877c95055494c41aee7e4e07e8e6586a1ebe7e5de": {
 		functionName: "deleteTravelFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"c7cc9bb5c425128f9d8b5b1fdd77c44129f6ffbd8a7eae98f75cf6b6abc15197": {
 		functionName: "getHobbiesFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"d2d10ce101676fea3a0ee68de6aba37879749dc603095360c00410d4a14b9c70": {
 		functionName: "deletePostFn_createServerFn_handler",
-		importer: () => import("./blog-api-Cia-tPPk.mjs")
+		importer: () => import("./blog-api-TvKl1eIU.mjs")
 	},
 	"d4dfcd58588ac7f217fceeec19cc31b8326b2d89ad89205ac0823ce7055850da": {
 		functionName: "createTravelFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"d5181106c24458fdd6145115b2f6bf8fa9c7c11c5f22431539b1243377444b4c": {
 		functionName: "updatePostFn_createServerFn_handler",
-		importer: () => import("./blog-api-Cia-tPPk.mjs")
+		importer: () => import("./blog-api-TvKl1eIU.mjs")
 	},
 	"deb04dde7aaac5f7a717581ff137ff1be8cefc2651d3fd965b0a9e0ade454537": {
 		functionName: "getStoriesFn_createServerFn_handler",
-		importer: () => import("./content-api-BdoznBTq.mjs")
+		importer: () => import("./content-api-Bi7_bKoD.mjs")
 	},
 	"dee422fe204c1e7699827260c65668fc25833d69bd8f27453198fc0b516e7056": {
 		functionName: "getPostFn_createServerFn_handler",
-		importer: () => import("./blog-api-Cia-tPPk.mjs")
+		importer: () => import("./blog-api-TvKl1eIU.mjs")
+	},
+	"f3a83a1f35e7385dd8b219c5bb208668ac67d969076b8ac3c020fa18e4f33a82": {
+		functionName: "translateFn_createServerFn_handler",
+		importer: () => import("./translate-api-Dg38Wocd.mjs")
+	},
+	"ffc0b5b3764599aa1cf11f3e946071c09093d8fa3be62dac9f39dd3e8257049e": {
+		functionName: "setPostVisibilityFn_createServerFn_handler",
+		importer: () => import("./blog-api-TvKl1eIU.mjs")
 	}
 };
 async function getServerFnById(id, access) {
@@ -1662,7 +1674,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-CETLr2S0.mjs").then((n) => n.t),
+		import("./router-Dzl2S4V0.mjs").then((n) => n.t),
 		import("./start-5Z2QO8AU.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);
