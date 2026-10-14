@@ -7,12 +7,20 @@ import type {
   Post,
   UpdatePostInput,
   UploadImageResult,
+  VisibilityResult,
 } from "@/lib/blog";
 
 export const getPostsFn = createServerFn({ method: "GET" }).handler(
   async (): Promise<Post[]> => {
     const { listPosts } = await import("@/server/posts");
     return await listPosts();
+  },
+);
+
+export const getPublicPostsFn = createServerFn({ method: "GET" }).handler(
+  async (): Promise<Post[]> => {
+    const { listPublishedPosts } = await import("@/server/posts");
+    return await listPublishedPosts();
   },
 );
 
@@ -53,4 +61,11 @@ export const deletePostFn = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<DeletePostResult> => {
     const { deletePost } = await import("@/server/posts");
     return await deletePost(data.slug);
+  });
+
+export const setPostVisibilityFn = createServerFn({ method: "POST" })
+  .validator((data: { slug: string; hidden: boolean }) => data)
+  .handler(async ({ data }): Promise<VisibilityResult> => {
+    const { setPostVisibility } = await import("@/server/posts");
+    return await setPostVisibility(data.slug, data.hidden);
   });

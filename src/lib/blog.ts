@@ -19,6 +19,7 @@ export type Post = {
   tags: string[];
   image?: string;
   alt?: string;
+  hidden?: boolean;
 };
 
 export type CreatePostInput = {
@@ -30,12 +31,15 @@ export type CreatePostInput = {
   image?: string;
   alt?: string;
   slug?: string;
+  hidden?: boolean;
 };
 
 export type CreatePostResult =
   { ok: true; slug: string } | { ok: false; error: string };
 
 export type DeletePostResult = { ok: true } | { ok: false; error: string };
+
+export type VisibilityResult = { ok: true } | { ok: false; error: string };
 
 export type UploadImageResult =
   { ok: true; url: string } | { ok: false; error: string };

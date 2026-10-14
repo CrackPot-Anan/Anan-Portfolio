@@ -10,6 +10,7 @@ import {
   type DeletePostResult,
   type Post,
   type UpdatePostInput,
+  type VisibilityResult,
 } from "@/lib/blog";
 import {
   dbEnabled,
@@ -40,6 +41,7 @@ type NormalizedInput = {
   tags: string[];
   image?: string;
   alt?: string;
+  hidden: boolean;
 };
 
 type NormalizeResult =
@@ -159,6 +161,7 @@ function normalizePostInput(input: CreatePostInput): NormalizeResult {
     .filter((tag) => tag.length > 0)
     .slice(0, MAX_TAGS)
     .map((tag) => tag.slice(0, MAX_TAG_LENGTH));
+  const hidden = Boolean(input.hidden);
 
   if (title.length < MIN_TITLE) {
     return {
@@ -222,6 +225,7 @@ function normalizePostInput(input: CreatePostInput): NormalizeResult {
       tags,
       image: image || undefined,
       alt: alt || undefined,
+      hidden,
     },
   };
 }
@@ -231,9 +235,20 @@ export async function listPosts(): Promise<Post[]> {
   return [...posts].sort(byNewest);
 }
 
+export async function listPublishedPosts(): Promise<Post[]> {
+  const posts = await readAll();
+  return posts.filter((post) => !post.hidden).sort(byNewest);
+}
+
 export async function getPost(slug: string): Promise<Post | null> {
   const posts = await readAll();
-  return posts.find((post) => post.slug === slug) ?? null;
+  const post = posts.find((entry) => entry.slug === slug) ?? null;
+  if (!post) return null;
+  if (post.hidden) {
+    const session = await readAdminSession();
+    if (!session) return null;
+  }
+  return post;
 }
 
 export async function createPost(
@@ -283,6 +298,7 @@ export async function createPost(
     tags: value.tags,
     image: value.image,
     alt: value.alt,
+    hidden: value.hidden,
   };
 
   const error = await persistPost(post, existing);
@@ -338,11 +354,37 @@ export async function updatePost(
     readTime: readTimeFor(value.body),
     image: value.image,
     alt: value.alt,
+    hidden: value.hidden,
   };
 
   const error = await persistPost(post, existing, slug);
   if (error) return fail(error);
   return { ok: true, slug: nextSlug };
+}
+
+export async function setPostVisibility(
+  slug: string,
+  hidden: boolean,
+): Promise<VisibilityResult> {
+  const session = await readAdminSession();
+  if (!session) {
+    return {
+      ok: false,
+      error: "You are not signed in any more. Log in again to change posts.",
+    };
+  }
+
+  const cleanSlug = String(slug ?? "").trim();
+  if (!cleanSlug) return { ok: false, error: "That post could not be found." };
+
+  const existing = await readAll();
+  const current = existing.find((post) => post.slug === cleanSlug);
+  if (!current) return { ok: false, error: "That post no longer exists." };
+
+  const post: Post = { ...current, hidden: hidden ? true : undefined };
+  const error = await persistPost(post, existing, cleanSlug);
+  if (error) return { ok: false, error };
+  return { ok: true };
 }
 
 export async function deletePost(slug: string): Promise<DeletePostResult> {

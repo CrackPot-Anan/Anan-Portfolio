@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Clock, Mail, User } from "lucide-react";
+import { Clock, Mail } from "lucide-react";
 
 import { Tag } from "@/components/site/sections";
 import { CATEGORIES, formatPostDate, type Category } from "@/lib/blog";
-import { getPostsFn } from "@/lib/blog-api";
+import { getPublicPostsFn } from "@/lib/blog-api";
 import { getHobbiesFn, getStoriesFn } from "@/lib/content-api";
 
 const TITLE = "Blogs — Abrar Anan Raiyan";
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/blogs/")({
   }),
   loader: async () => {
     const [posts, hobbies, stories] = await Promise.all([
-      getPostsFn(),
+      getPublicPostsFn(),
       getHobbiesFn(),
       getStoriesFn(),
     ]);
@@ -70,12 +70,6 @@ function Blogs() {
                 </div>
                 <div className="flex flex-col items-start gap-3 sm:items-end">
                   <p className="label-mono">{posts.length} posts</p>
-                  <Link
-                    to="/about"
-                    className="inline-flex items-center gap-2 rounded-sm border border-signal px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
-                  >
-                    <User className="h-3.5 w-3.5" /> Who's Anan
-                  </Link>
                 </div>
               </div>
 

@@ -11,6 +11,8 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  Eye,
+  EyeOff,
   ImagePlus,
   Loader2,
   LogOut,
@@ -33,6 +35,7 @@ import {
   createPostFn,
   deletePostFn,
   getPostsFn,
+  setPostVisibilityFn,
   updatePostFn,
   uploadImageFn,
 } from "@/lib/blog-api";
@@ -162,7 +165,9 @@ function Admin() {
   const [tags, setTags] = useState("");
   const [image, setImage] = useState("");
   const [alt, setAlt] = useState("");
+  const [hidden, setHidden] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [togglingSlug, setTogglingSlug] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [storyTitle, setStoryTitle] = useState("");
@@ -189,6 +194,7 @@ function Admin() {
     setTags("");
     setImage("");
     setAlt("");
+    setHidden(false);
   }
 
   const loadPosts = useCallback(async () => {
@@ -333,6 +339,7 @@ function Admin() {
     setTags(post.tags.join(", "));
     setImage(post.image ?? "");
     setAlt(post.alt ?? "");
+    setHidden(Boolean(post.hidden));
     setError(null);
     setExpandedSlug(null);
     setEditingSlug(slug);
@@ -498,6 +505,25 @@ function Admin() {
     }
   }
 
+  async function toggleVisibility(slug: string, nextHidden: boolean) {
+    setTogglingSlug(slug);
+    setError(null);
+    try {
+      const response = await setPostVisibilityFn({
+        data: { slug, hidden: nextHidden },
+      });
+      if (!response.ok) {
+        setError(response.error);
+        return;
+      }
+      await loadPosts();
+    } catch {
+      setError("Couldn't update visibility. Try again.");
+    } finally {
+      setTogglingSlug(null);
+    }
+  }
+
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPending(true);
@@ -590,6 +616,7 @@ function Admin() {
         image: image.trim() || undefined,
         alt: alt.trim() || undefined,
         slug: slug.trim() || undefined,
+        hidden,
       };
       const saved = editingSlug
         ? await updatePostFn({
@@ -904,7 +931,14 @@ function Admin() {
                             />
                           )}
                           <div className="flex flex-1 flex-col p-5 md:p-6">
-                            <p className="label-mono">{post.category}</p>
+                            <div className="flex items-center justify-between gap-3">
+                              <p className="label-mono">{post.category}</p>
+                              {post.hidden && (
+                                <span className="inline-flex items-center gap-1 rounded-full border border-muted-foreground/40 bg-muted px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                                  <EyeOff className="h-3 w-3" /> Hidden
+                                </span>
+                              )}
+                            </div>
                             <h3 className="mt-2 font-display text-xl leading-snug md:text-2xl">
                               {post.title}
                             </h3>
@@ -935,6 +969,25 @@ function Admin() {
                                 className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-signal hover:text-signal"
                               >
                                 Edit <Pencil className="h-3.5 w-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  void toggleVisibility(post.slug, !post.hidden)
+                                }
+                                disabled={togglingSlug === post.slug}
+                                className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-signal hover:text-signal disabled:opacity-60"
+                              >
+                                {togglingSlug === post.slug
+                                  ? "Saving…"
+                                  : post.hidden
+                                    ? "Show"
+                                    : "Hide"}
+                                {post.hidden ? (
+                                  <Eye className="h-3.5 w-3.5" />
+                                ) : (
+                                  <EyeOff className="h-3.5 w-3.5" />
+                                )}
                               </button>
                               <button
                                 type="button"
@@ -1338,6 +1391,64 @@ function Admin() {
                           </button>
                         );
                       })}
+                    </div>
+                  </fieldset>
+
+                  <fieldset>
+                    <legend className="label-mono mb-3">Visibility</legend>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <button
+                        type="button"
+                        onClick={() => setHidden(false)}
+                        aria-pressed={!hidden}
+                        className={`flex items-start gap-3 rounded-xl border px-4 py-3 text-left transition-colors ${
+                          !hidden
+                            ? "border-signal bg-signal/10"
+                            : "border-border bg-background hover:border-signal/60"
+                        }`}
+                      >
+                        <Eye
+                          className={`mt-0.5 h-4 w-4 ${!hidden ? "text-signal" : "text-muted-foreground"}`}
+                        />
+                        <span>
+                          <span
+                            className={`block font-mono text-xs uppercase tracking-[0.14em] ${
+                              !hidden ? "text-signal" : "text-foreground"
+                            }`}
+                          >
+                            Visible
+                          </span>
+                          <span className="mt-1 block text-xs text-muted-foreground">
+                            Shows on the public blogs page.
+                          </span>
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setHidden(true)}
+                        aria-pressed={hidden}
+                        className={`flex items-start gap-3 rounded-xl border px-4 py-3 text-left transition-colors ${
+                          hidden
+                            ? "border-signal bg-signal/10"
+                            : "border-border bg-background hover:border-signal/60"
+                        }`}
+                      >
+                        <EyeOff
+                          className={`mt-0.5 h-4 w-4 ${hidden ? "text-signal" : "text-muted-foreground"}`}
+                        />
+                        <span>
+                          <span
+                            className={`block font-mono text-xs uppercase tracking-[0.14em] ${
+                              hidden ? "text-signal" : "text-foreground"
+                            }`}
+                          >
+                            Hidden
+                          </span>
+                          <span className="mt-1 block text-xs text-muted-foreground">
+                            Kept in admin, off the public site.
+                          </span>
+                        </span>
+                      </button>
                     </div>
                   </fieldset>
 
