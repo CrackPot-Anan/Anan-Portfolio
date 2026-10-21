@@ -1,19 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Home } from "@/components/site/home-page";
+import { AUTHOR, DEFAULT_OG_IMAGE, absoluteUrl, seoHead } from "@/lib/seo";
 
-const TITLE = "Abrar Anan Raiyan — Software Project Manager & AI Enthusiast";
+const TITLE = `${AUTHOR.name} — ${AUTHOR.jobTitle}`;
 const DESCRIPTION =
   "Software project manager and AI enthusiast turning messy backlogs into shipped products — agile delivery, product ownership, and AI-driven workflows.";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-    ],
-  }),
+  head: () => {
+    const url = absoluteUrl("/");
+
+    return seoHead({
+      title: TITLE,
+      description: DESCRIPTION,
+      url,
+      image: DEFAULT_OG_IMAGE,
+      keywords: [
+        "software project manager",
+        "product owner",
+        "agile delivery",
+        "scrum",
+        "AI workflows",
+      ],
+    });
+  },
   component: () => <Home />,
 });

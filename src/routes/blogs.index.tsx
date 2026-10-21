@@ -3,29 +3,43 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, Mail } from "lucide-react";
 
 import { Tag } from "@/components/site/sections";
-import { LanguageToggle } from "@/components/site/language";
-import {
-  categoryLabel,
-  useLanguage,
-  useTranslated,
-} from "@/components/site/language-context";
 import { CATEGORIES, formatPostDate, type Category } from "@/lib/blog";
 import { getPublicPostsFn } from "@/lib/blog-api";
 import { getHobbiesFn, getStoriesFn } from "@/lib/content-api";
+import {
+  AUTHOR,
+  DEFAULT_OG_IMAGE,
+  SITE_URL,
+  absoluteUrl,
+  metaDescription,
+  seoHead,
+} from "@/lib/seo";
 
-const TITLE = "Blogs — Abrar Anan Raiyan";
-const DESCRIPTION =
-  "Notes on shipping software without chaos — agile delivery, product ownership, and AI-driven workflows.";
+const TITLE = `Blog — ${AUTHOR.name}`;
+const DESCRIPTION = metaDescription(
+  `Notes on shipping software without chaos by ${AUTHOR.name} — agile delivery, product ownership, and AI-driven workflows.`,
+);
 
 export const Route = createFileRoute("/blogs/")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-    ],
-  }),
+  head: ({ loaderData }) => {
+    const url = absoluteUrl("/blogs");
+    const posts = loaderData?.posts ?? [];
+
+    return seoHead({
+      title: TITLE,
+      description: DESCRIPTION,
+      url,
+      image: DEFAULT_OG_IMAGE,
+      keywords: [
+        "agile delivery",
+        "product ownership",
+        "project management",
+        "AI workflows",
+        "blog",
+      ],
+      jsonLd: blogSchema(posts),
+    });
+  },
   loader: async () => {
     const [posts, hobbies, stories] = await Promise.all([
       getPublicPostsFn(),
@@ -37,12 +51,32 @@ export const Route = createFileRoute("/blogs/")({
   component: Blogs,
 });
 
+function blogSchema(posts: Array<{ slug: string; title: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "@id": `${SITE_URL}/blogs#blog`,
+    url: absoluteUrl("/blogs"),
+    name: TITLE,
+    description: DESCRIPTION,
+    inLanguage: "en",
+    author: { "@id": `${SITE_URL}/#person` },
+    publisher: { "@id": `${SITE_URL}/#person` },
+    blogPost: posts.map((post) => ({
+      "@type": "BlogPosting",
+      "@id": absoluteUrl(`/blogs/${post.slug}`),
+      url: absoluteUrl(`/blogs/${post.slug}`),
+      headline: post.title,
+      author: { "@id": `${SITE_URL}/#person` },
+    })),
+  };
+}
+
 type Filter = "All" | Category;
 
 function Blogs() {
   const { posts, hobbies, stories } = Route.useLoaderData();
   const [active, setActive] = useState<Filter>("All");
-  const { lang } = useLanguage();
 
   const counts = useMemo(() => {
     const map = new Map<string, number>();
@@ -54,9 +88,6 @@ function Blogs() {
 
   const visible =
     active === "All" ? posts : posts.filter((post) => post.category === active);
-
-  const titles = useTranslated(visible.map((post) => post.title));
-  const excerpts = useTranslated(visible.map((post) => post.excerpt));
 
   const filters: Filter[] = [
     "All",
@@ -71,15 +102,16 @@ function Blogs() {
             <div className="lg:border-r lg:border-border lg:pr-10">
               <div className="mb-8 flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                  <p className="label-mono mb-3">
-                    01 <span className="text-signal">/</span> ls blog/
-                  </p>
+                  <p className="label-mono mb-3">Blogs</p>
                   <h1 className="text-4xl leading-none md:text-5xl">
                     Latest writing
                   </h1>
+                  <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                    Notes on shipping software without chaos by {AUTHOR.name} —
+                    agile delivery, product ownership, and AI-driven workflows.
+                  </p>
                 </div>
                 <div className="flex flex-col items-start gap-3 sm:items-end">
-                  <LanguageToggle />
                   <p className="label-mono">{posts.length} posts</p>
                 </div>
               </div>
@@ -113,11 +145,11 @@ function Blogs() {
 
               {posts.length === 0 ? (
                 <div className="border border-border bg-surface px-6 py-14 text-center">
-                  <p className="label-mono mb-4">
-                    <span className="text-signal">$</span> ls blog/ — 0 files
-                  </p>
+                  <h2 className="mb-3 text-xl font-semibold md:text-2xl">
+                    No posts yet
+                  </h2>
                   <p className="text-sm leading-relaxed text-muted-foreground">
-                    No posts yet. New writing will show up here.
+                    New writing will show up here.
                   </p>
                 </div>
               ) : visible.length === 0 ? (
@@ -126,7 +158,7 @@ function Blogs() {
                 </p>
               ) : (
                 <div className="space-y-px bg-border">
-                  {visible.map((post, index) => (
+                  {visible.map((post) => (
                     <article
                       key={post.slug}
                       className="grid gap-4 bg-background p-6 transition-colors hover:bg-surface md:grid-cols-[160px_1fr] md:p-7"
@@ -147,7 +179,7 @@ function Blogs() {
                       </div>
                       <div>
                         <p className="label-mono mb-2 text-signal">
-                          {categoryLabel(post.category, lang)}
+                          {post.category}
                         </p>
                         <h2 className="text-xl md:text-2xl">
                           <Link
@@ -155,11 +187,11 @@ function Blogs() {
                             params={{ slug: post.slug }}
                             className="transition-colors hover:text-signal"
                           >
-                            {titles[index] ?? post.title}
+                            {post.title}
                           </Link>
                         </h2>
                         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                          {excerpts[index] ?? post.excerpt}
+                          {post.excerpt}
                         </p>
                         {post.tags.length > 0 && (
                           <div className="mt-4 flex flex-wrap gap-2">
@@ -177,9 +209,6 @@ function Blogs() {
 
             <div className="flex flex-col gap-8 self-start lg:sticky lg:top-24 lg:pl-10">
               <div className="border border-border bg-surface p-6 md:p-7">
-                <p className="label-mono mb-4">
-                  02 <span className="text-signal">/</span> cat hobbies.md
-                </p>
                 <h2 className="text-2xl md:text-3xl">Hobbies</h2>
                 <ul className="mt-6 space-y-5">
                   {hobbies.map((hobby) => (
@@ -205,9 +234,6 @@ function Blogs() {
               </div>
 
               <div className="border border-border bg-surface p-6 md:p-7">
-                <p className="label-mono mb-4">
-                  03 <span className="text-signal">/</span> cat stories.md
-                </p>
                 <h2 className="text-2xl md:text-3xl">Stories</h2>
                 <ul className="mt-6 space-y-5">
                   {stories.map((story) => (
@@ -239,9 +265,6 @@ function Blogs() {
       <section className="border-t border-border py-20 md:py-28">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="label-mono mb-3">
-              04 <span className="text-signal">/</span> ./contact --open
-            </p>
             <h2 className="text-3xl leading-none md:text-5xl">
               Got a topic request?
             </h2>

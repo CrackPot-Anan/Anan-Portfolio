@@ -21,6 +21,8 @@ import { Route as LeadershipRouteImport } from './routes/leadership'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as BlogsIndexRouteImport } from './routes/blogs.index'
 import { Route as BlogsSlugRouteImport } from './routes/blogs.$slug'
 import { Route as HobbiesIdRouteImport } from './routes/hobbies.$id'
@@ -86,6 +88,16 @@ const ProjectsRoute = ProjectsRouteImport.update({
   path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogsIndexRoute = BlogsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -120,6 +132,8 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/products': typeof ProductsRoute
   '/projects': typeof ProjectsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blogs/$slug': typeof BlogsSlugRoute
   '/hobbies/$id': typeof HobbiesIdRoute
   '/stories/$id': typeof StoriesIdRoute
@@ -137,6 +151,8 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/products': typeof ProductsRoute
   '/projects': typeof ProjectsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blogs/$slug': typeof BlogsSlugRoute
   '/hobbies/$id': typeof HobbiesIdRoute
   '/stories/$id': typeof StoriesIdRoute
@@ -156,6 +172,8 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/products': typeof ProductsRoute
   '/projects': typeof ProjectsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blogs/$slug': typeof BlogsSlugRoute
   '/hobbies/$id': typeof HobbiesIdRoute
   '/stories/$id': typeof StoriesIdRoute
@@ -176,6 +194,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/products'
     | '/projects'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/blogs/$slug'
     | '/hobbies/$id'
     | '/stories/$id'
@@ -193,6 +213,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/products'
     | '/projects'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/blogs/$slug'
     | '/hobbies/$id'
     | '/stories/$id'
@@ -211,6 +233,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/products'
     | '/projects'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/blogs/$slug'
     | '/hobbies/$id'
     | '/stories/$id'
@@ -230,6 +254,8 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ProductsRoute: typeof ProductsRoute
   ProjectsRoute: typeof ProjectsRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   HobbiesIdRoute: typeof HobbiesIdRoute
   StoriesIdRoute: typeof StoriesIdRoute
 }
@@ -320,6 +346,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blogs/': {
       id: '/blogs/'
       path: '/'
@@ -376,6 +416,8 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ProductsRoute: ProductsRoute,
   ProjectsRoute: ProjectsRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   HobbiesIdRoute: HobbiesIdRoute,
   StoriesIdRoute: StoriesIdRoute,
 }

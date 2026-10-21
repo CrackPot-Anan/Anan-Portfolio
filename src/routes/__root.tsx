@@ -10,6 +10,13 @@ import {
 import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import {
+  AUTHOR,
+  DEFAULT_OG_IMAGE,
+  SITE_URL,
+  personSchema,
+  webSiteSchema,
+} from "@/lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -83,9 +90,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "author", content: "Abrar Anan Raiyan" },
+        { name: "author", content: AUTHOR.name },
         { property: "og:type", content: "website" },
+        { property: "og:site_name", content: AUTHOR.name },
+        { property: "og:image", content: DEFAULT_OG_IMAGE },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:creator", content: AUTHOR.name },
+        { "script:ld+json": webSiteSchema() },
+        { "script:ld+json": personSchema() },
       ],
       links: [
         {
@@ -106,6 +118,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           rel: "icon",
           href: "https://assets.abrarananraiyan.space/logos/favicon.png",
           type: "image/png",
+        },
+        {
+          rel: "sitemap",
+          type: "application/xml",
+          href: `${SITE_URL}/sitemap.xml`,
         },
       ],
     }),

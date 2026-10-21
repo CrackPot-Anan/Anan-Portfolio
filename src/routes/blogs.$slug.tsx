@@ -1,72 +1,157 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Clock } from "lucide-react";
+import { ArrowLeft, Clock, Github, Instagram, Linkedin } from "lucide-react";
 
 import { Tag } from "@/components/site/sections";
-import { LanguageToggle } from "@/components/site/language";
+import { formatPostDate, type Post } from "@/lib/blog";
+import { getPostFn, getPublicPostsFn } from "@/lib/blog-api";
 import {
-  categoryLabel,
-  useLanguage,
-  useTranslated,
-} from "@/components/site/language-context";
-import { formatPostDate } from "@/lib/blog";
-import { getPostFn } from "@/lib/blog-api";
+  AUTHOR,
+  DEFAULT_OG_IMAGE,
+  SITE_URL,
+  absoluteUrl,
+  articleDescription,
+  seoHead,
+  truncate,
+} from "@/lib/seo";
+
+const RELATED_LIMIT = 3;
 
 export const Route = createFileRoute("/blogs/$slug")({
   loader: async ({ params }) => {
-    const post = await getPostFn({ data: { slug: params.slug } });
+    const [post, posts] = await Promise.all([
+      getPostFn({ data: { slug: params.slug } }),
+      getPublicPostsFn(),
+    ]);
     if (!post) throw notFound();
-    return post;
+    return { post, posts };
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.title} — Abrar Anan Raiyan` },
-          { name: "description", content: loaderData.excerpt },
-          { property: "og:title", content: loaderData.title },
-          { property: "og:description", content: loaderData.excerpt },
-          ...(loaderData.image?.startsWith("http")
-            ? [{ property: "og:image", content: loaderData.image }]
-            : []),
-        ]
-      : [],
-  }),
+  head: ({ loaderData }) => {
+    if (!loaderData) return { meta: [] };
+    const { post } = loaderData;
+    const url = absoluteUrl(`/blogs/${post.slug}`);
+    const title = `${post.title} | ${AUTHOR.name}`;
+    const description = articleDescription(post.excerpt);
+    const image = post.image?.startsWith("http")
+      ? post.image
+      : DEFAULT_OG_IMAGE;
+
+    return seoHead({
+      title,
+      description,
+      url,
+      image,
+      imageAlt: post.alt ?? `${post.title} — ${AUTHOR.name}`,
+      type: "article",
+      keywords: [post.category, ...post.tags],
+      publishedTime: post.date,
+      modifiedTime: post.date,
+      section: post.category,
+      tags: post.tags,
+      jsonLd: blogPostingSchema(post, url, image),
+    });
+  },
   notFoundComponent: PostNotFound,
   component: BlogPost,
 });
 
+function readTimeToIso(readTime: string): string {
+  const minutes = Number(readTime.match(/\d+/)?.[0] ?? 1);
+  return `PT${minutes}M`;
+}
+
+function blogPostingSchema(
+  post: Post,
+  url: string,
+  image: string,
+): Record<string, unknown> {
+  const wordCount = post.body.split(/\s+/).filter(Boolean).length;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": `${url}#blogposting`,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
+    headline: truncate(post.title, 110),
+    name: truncate(post.title, 110),
+    description: post.excerpt,
+    image: [image],
+    datePublished: post.date,
+    dateModified: post.date,
+    inLanguage: "en",
+    isAccessibleForFree: true,
+    wordCount,
+    timeRequired: readTimeToIso(post.readTime),
+    articleSection: post.category,
+    keywords: [post.category, ...post.tags].join(", "),
+    author: {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
+      name: AUTHOR.name,
+      url: SITE_URL,
+      sameAs: AUTHOR.sameAs,
+    },
+    publisher: {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
+      name: AUTHOR.name,
+      url: SITE_URL,
+    },
+    isPartOf: { "@id": `${SITE_URL}/#website` },
+  };
+}
+
+function pickRelated(posts: Post[], current: Post): Post[] {
+  const others = posts.filter((post) => post.slug !== current.slug);
+  const scored = others.map((post) => {
+    const sharedTags = post.tags.filter((tag) =>
+      current.tags.includes(tag),
+    ).length;
+    const sameCategory = post.category === current.category ? 1 : 0;
+    return { post, score: sharedTags * 2 + sameCategory };
+  });
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, RELATED_LIMIT).map((entry) => entry.post);
+}
+
 function BlogPost() {
-  const post = Route.useLoaderData();
-  const { lang } = useLanguage();
+  const { post, posts } = Route.useLoaderData();
   const paragraphs = post.body
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.trim())
     .filter(Boolean);
-
-  const [title, excerpt] = useTranslated([post.title, post.excerpt]);
-  const translatedParagraphs = useTranslated(paragraphs);
+  const related = pickRelated(posts, post);
 
   return (
     <main id="top">
-      <article>
+      <article itemScope itemType="https://schema.org/BlogPosting">
         <header className="border-b border-border">
           <div className="mx-auto w-full max-w-3xl px-6 py-16 md:py-24">
-            <div className="flex items-center justify-between gap-4">
-              <Link
-                to="/blogs"
-                className="label-mono inline-flex items-center gap-2 transition-colors hover:text-signal"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" /> All posts
-              </Link>
-              <LanguageToggle />
-            </div>
+            <Link
+              to="/blogs"
+              className="label-mono inline-flex items-center gap-2 transition-colors hover:text-signal"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> All posts
+            </Link>
             <p className="mt-9 font-mono text-xs uppercase tracking-[0.18em] text-signal">
-              {categoryLabel(post.category, lang)}
+              {post.category}
             </p>
-            <h1 className="mt-4 text-4xl leading-[1.05] md:text-6xl">
-              {title ?? post.title}
+            <h1
+              className="mt-4 text-4xl leading-[1.05] md:text-6xl"
+              itemProp="headline"
+            >
+              {post.title}
             </h1>
             <div className="label-mono mt-7 flex flex-wrap items-center gap-x-6 gap-y-2">
-              <span>{formatPostDate(post.date)}</span>
+              <span>
+                By{" "}
+                <span className="text-foreground" itemProp="author">
+                  {AUTHOR.name}
+                </span>
+              </span>
+              <time dateTime={post.date} itemProp="datePublished">
+                {formatPostDate(post.date)}
+              </time>
               <span className="flex items-center gap-1.5">
                 <Clock className="h-3.5 w-3.5 text-signal" />
                 {post.readTime}
@@ -77,6 +162,8 @@ function BlogPost() {
                 <img
                   src={post.image}
                   alt={post.alt ?? ""}
+                  width={1672}
+                  height={941}
                   className="aspect-video w-full object-cover"
                 />
               </div>
@@ -86,11 +173,11 @@ function BlogPost() {
 
         <div className="mx-auto w-full max-w-3xl px-6 py-14 md:py-20">
           <p className="border-l-2 border-signal pl-5 text-base leading-relaxed text-muted-foreground md:text-lg">
-            {excerpt ?? post.excerpt}
+            {post.excerpt}
           </p>
 
           <div className="mt-10 space-y-6 text-base leading-8 md:text-lg">
-            {translatedParagraphs.map((paragraph, index) => (
+            {paragraphs.map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
           </div>
@@ -101,6 +188,80 @@ function BlogPost() {
                 <Tag key={tag}>{tag}</Tag>
               ))}
             </div>
+          )}
+
+          <aside className="mt-14 border border-border bg-surface p-6 md:p-7">
+            <p className="label-mono mb-4">Author</p>
+            <p className="text-base font-medium">{AUTHOR.name}</p>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {AUTHOR.jobTitle} writing about {post.category.toLowerCase()},
+              delivery, and AI-driven work.
+            </p>
+
+            <div className="mt-6 border-t border-border pt-5">
+              <p className="label-mono mb-2">More</p>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                To reach out, follow Anan on:
+              </p>
+              <div className="mt-5 flex flex-wrap gap-4">
+                <a
+                  href="https://www.linkedin.com/in/abrar-anan-raiyan/"
+                  target="_blank"
+                  rel="me noopener noreferrer"
+                  className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
+                >
+                  <Linkedin className="h-3.5 w-3.5" /> LinkedIn
+                </a>
+                <a
+                  href="https://www.instagram.com/_anan.raiyan_13/"
+                  target="_blank"
+                  rel="me noopener noreferrer"
+                  className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
+                >
+                  <Instagram className="h-3.5 w-3.5" /> Instagram
+                </a>
+                <a
+                  href="https://github.com/CrackPot-Anan"
+                  target="_blank"
+                  rel="me noopener noreferrer"
+                  className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
+                >
+                  <Github className="h-3.5 w-3.5" /> GitHub
+                </a>
+                <Link
+                  to="/about"
+                  className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
+                >
+                  About {AUTHOR.name.split(" ")[0]}
+                </Link>
+              </div>
+            </div>
+          </aside>
+
+          {related.length > 0 && (
+            <section className="mt-14 border-t border-border pt-8">
+              <h2 className="mb-6 text-xl font-semibold md:text-2xl">
+                Related to Writer
+              </h2>
+              <ul className="space-y-4">
+                {related.map((entry) => (
+                  <li key={entry.slug}>
+                    <Link
+                      to="/blogs/$slug"
+                      params={{ slug: entry.slug }}
+                      className="group block"
+                    >
+                      <span className="label-mono text-signal">
+                        {entry.category}
+                      </span>
+                      <span className="mt-1 block text-lg transition-colors group-hover:text-signal">
+                        {entry.title}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
 
           <div className="mt-14 border-t border-border pt-8">
