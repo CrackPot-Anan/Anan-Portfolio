@@ -37,7 +37,6 @@ export const Route = createFileRoute("/stories/$id")({
         ...webPageSchema({ url, name: title, description }),
         breadcrumb: breadcrumbSchema([
           { name: "Home", path: "/" },
-          { name: "Blog", path: "/blogs" },
           { name: loaderData.title, path: `/stories/${loaderData.id}` },
         ]),
       },

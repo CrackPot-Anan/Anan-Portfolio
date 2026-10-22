@@ -125,6 +125,7 @@ function blogPostingSchema(
     wordCount,
     timeRequired: readTimeToIso(post.readTime),
     articleSection: post.category,
+    articleBody: post.body,
     keywords: [post.category, ...post.tags].join(", "),
     author: {
       "@type": "Person",

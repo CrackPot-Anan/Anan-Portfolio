@@ -81,12 +81,14 @@ export function truncate(text: string, max: number): string {
   const lastSpace = slice.lastIndexOf(" ");
   const cut = lastSpace > 0 ? slice.slice(0, lastSpace) : slice;
   const words = cut.split(" ");
-  while (
-    words.length > 1 &&
-    TRAILING_STOPWORDS.has(
-      words[words.length - 1].toLowerCase().replace(/[^a-z]/g, ""),
-    )
-  ) {
+  while (words.length > 1) {
+    const last = words[words.length - 1];
+    if (
+      !last ||
+      !TRAILING_STOPWORDS.has(last.toLowerCase().replace(/[^a-z]/g, ""))
+    ) {
+      break;
+    }
     words.pop();
   }
   return `${words.join(" ")}…`;

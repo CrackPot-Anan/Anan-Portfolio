@@ -74,7 +74,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           ...INDEXABLE_ROUTES.map((route) => ({
             loc: route.path,
             lastmod:
-              route.path === "/blogs" ? (posts[0]?.date ?? stamp) : stamp,
+              route.path === "/blogs" ? (posts[0]?.date ?? stamp) : undefined,
             changefreq: route.changefreq,
             priority: route.priority.toFixed(1),
           })),
@@ -101,21 +101,19 @@ export const Route = createFileRoute("/sitemap.xml")({
               loc: `/blogs/${post.slug}`,
               lastmod: post.date,
               changefreq: "monthly",
-              priority: "0.8",
+              priority: "0.9",
               images: images.length > 0 ? images : undefined,
             };
           }),
           ...hobbies.map((hobby) => ({
             loc: `/hobbies/${hobby.id}`,
-            lastmod: stamp,
             changefreq: "yearly",
-            priority: "0.4",
+            priority: "0.3",
           })),
           ...stories.map((story) => ({
             loc: `/stories/${story.id}`,
-            lastmod: stamp,
             changefreq: "yearly",
-            priority: "0.4",
+            priority: "0.3",
           })),
         ];
 

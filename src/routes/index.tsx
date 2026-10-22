@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Home } from "@/components/site/home-page";
+import { getPublicPostSummariesFn } from "@/lib/blog-api";
 import {
   AUTHOR,
   DEFAULT_OG_IMAGE,
@@ -14,6 +15,10 @@ const DESCRIPTION =
   "Software project manager and AI enthusiast turning messy backlogs into shipped products — agile delivery, product ownership, and AI-driven workflows.";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const posts = await getPublicPostSummariesFn();
+    return { posts: posts.slice(0, 3) };
+  },
   head: () => {
     const url = absoluteUrl("/");
 
@@ -37,5 +42,10 @@ export const Route = createFileRoute("/")({
       }),
     });
   },
-  component: () => <Home />,
+  component: HomeRoute,
 });
+
+function HomeRoute() {
+  const { posts } = Route.useLoaderData();
+  return <Home posts={posts} />;
+}

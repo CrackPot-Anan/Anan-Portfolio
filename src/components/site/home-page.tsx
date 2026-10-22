@@ -19,6 +19,7 @@ import {
   stats,
 } from "@/components/site/data";
 import { Credentials } from "@/components/site/credentials";
+import { formatPostDate, type PostSummary } from "@/lib/blog";
 
 const PORTRAIT_FALLBACK =
   "data:image/svg+xml," +
@@ -26,7 +27,13 @@ const PORTRAIT_FALLBACK =
     `<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1920" viewBox="0 0 1440 1920"><rect width="1440" height="1920" fill="#1A1A1A"/><text x="720" y="960" font-family="sans-serif" font-size="72" fill="#B3B3B3" text-anchor="middle">Portrait</text></svg>`,
   );
 
-export function Home({ section }: { section?: string }) {
+export function Home({
+  section,
+  posts = [],
+}: {
+  section?: string;
+  posts?: PostSummary[];
+}) {
   useEffect(() => {
     if (!section) return;
     const timer = window.setTimeout(() => {
@@ -117,6 +124,61 @@ export function Home({ section }: { section?: string }) {
             </div>
           </div>
         </section>
+
+        {/* Latest writing */}
+        {posts.length > 0 && (
+          <Section id="writing">
+            <div className="mb-12 flex flex-col gap-4 border-b border-border pb-6 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="label-mono mb-3">Blog</p>
+                <h2 className="text-3xl leading-none md:text-5xl">
+                  Latest writing
+                </h2>
+              </div>
+              <Link
+                to="/blogs"
+                className="label-mono inline-flex items-center gap-2 text-signal transition-opacity hover:opacity-80"
+              >
+                All posts <ArrowUpRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+            <div className="space-y-px bg-border">
+              {posts.map((post) => (
+                <article
+                  key={post.slug}
+                  className="grid gap-4 bg-background p-6 transition-colors hover:bg-surface md:grid-cols-[180px_1fr] md:p-8"
+                >
+                  <div className="label-mono space-y-2 md:pt-1">
+                    <p>{formatPostDate(post.date)}</p>
+                    <p>{post.readTime}</p>
+                    <p className="text-signal">{post.category}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-xl text-foreground md:text-2xl">
+                      <Link
+                        to="/blogs/$slug"
+                        params={{ slug: post.slug }}
+                        className="transition-colors hover:text-signal"
+                      >
+                        {post.title}
+                      </Link>
+                    </h3>
+                    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                      {post.excerpt}
+                    </p>
+                    {post.tags.length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {post.tags.map((tag) => (
+                          <Tag key={tag}>{tag}</Tag>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </Section>
+        )}
 
         {/* Experience */}
         <Section id="experience">

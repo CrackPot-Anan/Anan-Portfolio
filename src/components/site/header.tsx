@@ -7,6 +7,7 @@ const nav = [
   ["/projects", "Projects"],
   ["/products", "Products"],
   ["/credentials", "Credentials"],
+  ["/blogs", "Blog"],
   ["/contact", "Contact"],
 ] as const;
 
@@ -33,7 +34,7 @@ export function SiteHeader() {
         </nav>
         <div className="flex items-center gap-2">
           <Link
-            to="/blogs"
+            to="/about"
             className="rounded-sm border px-2 py-1.5 font-mono text-[10px] uppercase tracking-[0.06em] transition-colors lg:px-2.5 lg:text-[11px] lg:tracking-[0.11em]"
             activeOptions={{ exact: true }}
             activeProps={{

@@ -4,7 +4,12 @@ import { Clock, Mail } from "lucide-react";
 
 import { BlogListSkeleton } from "@/components/site/blog-skeleton";
 import { Tag } from "@/components/site/sections";
-import { CATEGORIES, formatPostDate, type Category } from "@/lib/blog";
+import {
+  CATEGORIES,
+  formatPostDate,
+  type Category,
+  type PostSummary,
+} from "@/lib/blog";
 import { getPublicPostSummariesFn } from "@/lib/blog-api";
 import { getHobbiesFn, getStoriesFn } from "@/lib/content-api";
 import {
@@ -55,7 +60,7 @@ export const Route = createFileRoute("/blogs/")({
   component: Blogs,
 });
 
-function blogSchema(posts: Array<{ slug: string; title: string }>) {
+function blogSchema(posts: PostSummary[]) {
   return {
     "@context": "https://schema.org",
     "@type": "Blog",
@@ -66,12 +71,26 @@ function blogSchema(posts: Array<{ slug: string; title: string }>) {
     inLanguage: "en",
     author: { "@id": `${SITE_URL}/#person` },
     publisher: { "@id": `${SITE_URL}/#person` },
+    mainEntityOfPage: absoluteUrl("/blogs"),
     blogPost: posts.map((post) => ({
       "@type": "BlogPosting",
-      "@id": absoluteUrl(`/blogs/${post.slug}`),
+      "@id": `${absoluteUrl(`/blogs/${post.slug}`)}#blogposting`,
       url: absoluteUrl(`/blogs/${post.slug}`),
       headline: post.title,
+      description: post.excerpt,
+      datePublished: post.date,
+      dateModified: post.date,
+      articleSection: post.category,
+      ...(post.image
+        ? {
+            image: post.image.startsWith("http")
+              ? post.image
+              : absoluteUrl(post.image),
+          }
+        : {}),
       author: { "@id": `${SITE_URL}/#person` },
+      publisher: { "@id": `${SITE_URL}/#person` },
+      isPartOf: { "@id": `${SITE_URL}/blogs#blog` },
     })),
   };
 }
