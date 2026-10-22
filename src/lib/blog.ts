@@ -4,6 +4,7 @@ export const CATEGORIES = [
   "Storytelling",
   "Life update",
   "Newsletter",
+  "Featured",
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];
