@@ -10,7 +10,12 @@ export const getRouter = () => {
     context: { queryClient },
     scrollRestoration: true,
     defaultPreload: "intent",
-    defaultPreloadStaleTime: 0,
+    // Keep prefetched loader data warm so a click reuses it instead of
+    // firing the same request twice.
+    defaultPreloadStaleTime: 30_000,
+    // Repeat visits to a page resolve from cache instead of the server.
+    defaultStaleTime: 30_000,
+    defaultPendingMinMs: 200,
   });
 
   return router;

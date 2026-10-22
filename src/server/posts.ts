@@ -4,17 +4,22 @@ import path from "node:path";
 import {
   CATEGORIES,
   isCategory,
+  pickRelated,
+  toPostSummary,
   type Category,
   type CreatePostInput,
   type CreatePostResult,
   type DeletePostResult,
   type Post,
+  type PostSummary,
   type UpdatePostInput,
   type VisibilityResult,
 } from "@/lib/blog";
 import {
   dbEnabled,
   deletePostRow,
+  readPostBySlug,
+  readPostSummaries,
   readPosts,
   writePost,
   writePosts,
@@ -240,7 +245,35 @@ export async function listPublishedPosts(): Promise<Post[]> {
   return posts.filter((post) => !post.hidden).sort(byNewest);
 }
 
+/** Published posts without their body — everything a listing needs. */
+export async function listPublishedPostSummaries(): Promise<PostSummary[]> {
+  if (dbEnabled()) {
+    const fromDatabase = await readPostSummaries();
+    if (fromDatabase.ok && fromDatabase.value.length > 0) {
+      return fromDatabase.value;
+    }
+  }
+  const posts = await readAll();
+  return posts
+    .filter((post) => !post.hidden)
+    .sort(byNewest)
+    .map(toPostSummary);
+}
+
 export async function getPost(slug: string): Promise<Post | null> {
+  if (dbEnabled()) {
+    const fromDatabase = await readPostBySlug(slug);
+    if (fromDatabase.ok) {
+      const post = fromDatabase.value;
+      if (!post) return null;
+      if (post.hidden) {
+        const session = await readAdminSession();
+        if (!session) return null;
+      }
+      return post;
+    }
+  }
+
   const posts = await readAll();
   const post = posts.find((entry) => entry.slug === slug) ?? null;
   if (!post) return null;
@@ -249,6 +282,18 @@ export async function getPost(slug: string): Promise<Post | null> {
     if (!session) return null;
   }
   return post;
+}
+
+/** A post plus its related picks, so the client never sorts the whole corpus. */
+export async function getPostPage(
+  slug: string,
+): Promise<{ post: Post | null; related: PostSummary[] }> {
+  const [post, summaries] = await Promise.all([
+    getPost(slug),
+    listPublishedPostSummaries(),
+  ]);
+  if (!post) return { post: null, related: [] };
+  return { post, related: pickRelated(summaries, post) };
 }
 
 export async function createPost(

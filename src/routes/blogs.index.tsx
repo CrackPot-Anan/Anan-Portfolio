@@ -2,9 +2,10 @@ import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, Mail } from "lucide-react";
 
+import { BlogListSkeleton } from "@/components/site/blog-skeleton";
 import { Tag } from "@/components/site/sections";
 import { CATEGORIES, formatPostDate, type Category } from "@/lib/blog";
-import { getPublicPostsFn } from "@/lib/blog-api";
+import { getPublicPostSummariesFn } from "@/lib/blog-api";
 import { getHobbiesFn, getStoriesFn } from "@/lib/content-api";
 import {
   AUTHOR,
@@ -42,12 +43,15 @@ export const Route = createFileRoute("/blogs/")({
   },
   loader: async () => {
     const [posts, hobbies, stories] = await Promise.all([
-      getPublicPostsFn(),
+      getPublicPostSummariesFn(),
       getHobbiesFn(),
       getStoriesFn(),
     ]);
     return { posts, hobbies, stories };
   },
+  pendingComponent: BlogListPending,
+  pendingMs: 120,
+  pendingMinMs: 320,
   component: Blogs,
 });
 
@@ -73,6 +77,30 @@ function blogSchema(posts: Array<{ slug: string; title: string }>) {
 }
 
 type Filter = "All" | Category;
+
+function BlogListPending() {
+  return (
+    <main id="top">
+      <section className="border-b border-border py-14 md:py-20">
+        <div className="mx-auto w-full max-w-7xl px-6">
+          <div className="grid gap-12 lg:grid-cols-[3fr_2fr] lg:gap-0">
+            <div className="lg:border-r lg:border-border lg:pr-10">
+              <div className="mb-8 flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="label-mono mb-3">Blogs</p>
+                  <h1 className="text-4xl leading-none md:text-5xl">
+                    Latest writing
+                  </h1>
+                </div>
+              </div>
+              <BlogListSkeleton />
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
 
 function Blogs() {
   const { posts, hobbies, stories } = Route.useLoaderData();
@@ -158,7 +186,7 @@ function Blogs() {
                 </p>
               ) : (
                 <div className="space-y-px bg-border">
-                  {visible.map((post) => (
+                  {visible.map((post, index) => (
                     <article
                       key={post.slug}
                       className="grid gap-4 bg-background p-6 transition-colors hover:bg-surface md:grid-cols-[160px_1fr] md:p-7"
@@ -168,6 +196,11 @@ function Blogs() {
                           <img
                             src={post.image}
                             alt={post.alt ?? ""}
+                            width={160}
+                            height={90}
+                            loading={index === 0 ? "eager" : "lazy"}
+                            decoding="async"
+                            fetchPriority={index === 0 ? "high" : "auto"}
                             className="mb-3 aspect-video w-full rounded-xl border border-border bg-surface object-cover"
                           />
                         )}

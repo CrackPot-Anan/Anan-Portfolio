@@ -1,8 +1,11 @@
 import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
 
-import type { Post } from "@/lib/blog";
+import type { Post, PostSummary } from "@/lib/blog";
 
 const CONNECTION_KEYS = ["POSTGRES_URL", "DATABASE_URL", "POSTGRES_PRISMA_URL"];
+
+/** Distinguishes "the database answered" from "the database is unreachable". */
+export type DbResult<T> = { ok: true; value: T } | { ok: false };
 
 let client: NeonQueryFunction<false, false> | null | undefined;
 let schemaReady = false;
@@ -73,6 +76,44 @@ export async function readPosts(): Promise<Post[] | null> {
   } catch (error) {
     console.error("[posts] database read failed:", describe(error));
     return null;
+  }
+}
+
+/**
+ * Published posts without their body, newest first.
+ * The `data - 'body'` projection keeps article text off the wire for listings.
+ */
+export async function readPostSummaries(): Promise<DbResult<PostSummary[]>> {
+  const sql = getSql();
+  if (!sql) return { ok: false };
+  try {
+    await ensureSchema(sql);
+    const rows = await sql`
+      SELECT data - 'body' AS data
+      FROM posts
+      WHERE data->>'hidden' IS DISTINCT FROM 'true'
+      ORDER BY data->>'date' DESC, slug DESC
+    `;
+    return { ok: true, value: rows.map((row) => row.data as PostSummary) };
+  } catch (error) {
+    console.error("[posts] database summary read failed:", describe(error));
+    return { ok: false };
+  }
+}
+
+/** Single post by primary key, instead of scanning the whole table. */
+export async function readPostBySlug(
+  slug: string,
+): Promise<DbResult<Post | null>> {
+  const sql = getSql();
+  if (!sql) return { ok: false };
+  try {
+    await ensureSchema(sql);
+    const rows = await sql`SELECT data FROM posts WHERE slug = ${slug} LIMIT 1`;
+    return { ok: true, value: rows[0] ? (rows[0].data as Post) : null };
+  } catch (error) {
+    console.error("[posts] database read failed:", describe(error));
+    return { ok: false };
   }
 }
 

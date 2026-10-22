@@ -42,7 +42,13 @@ export const timeline = [
     logo: "https://assets.abrarananraiyan.space/logos/6sense-hq.png",
     detail:
       "Leading cross-functional delivery for web and AI products with Agile and Scrum: facilitating daily planning, shaping scope, unblocking engineering, and keeping stakeholders aligned from discovery to launch.",
-    tags: ["Agile", "Scrum", "Daily Planning", "Stakeholder Management", "Jira"],
+    tags: [
+      "Agile",
+      "Scrum",
+      "Daily Planning",
+      "Stakeholder Management",
+      "Jira",
+    ],
   },
   {
     role: "Software Support and Implementation Engineer",
@@ -122,7 +128,13 @@ export const projects = [
     kind: "HRIS Platform",
     detail:
       "Centralized HRIS platform for managing employee information, leave, attendance, compensation, performance, and other HR operations.",
-    tags: ["HRIS", "Stakeholder Management", "Daily Scrum", "SRS", "Business Analysis"],
+    tags: [
+      "HRIS",
+      "Stakeholder Management",
+      "Daily Scrum",
+      "SRS",
+      "Business Analysis",
+    ],
   },
   {
     name: "Managerium",
@@ -193,8 +205,7 @@ export const hobbies: Hobby[] = [
   {
     id: "reading",
     name: "Reading Books",
-    detail:
-      "Sci-fi, product essays, and whatever the shelf recommends next.",
+    detail: "Sci-fi, product essays, and whatever the shelf recommends next.",
     body: "Reading is where most of my thinking happens off the clock. I move between science fiction, product essays, and the occasional memoir.\n\nHalf of what I know about scoping and narrative I picked up from books, not tickets — a good chapter is just a well-sequenced backlog.",
   },
   {

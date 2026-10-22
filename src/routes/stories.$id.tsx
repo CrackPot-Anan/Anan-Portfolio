@@ -4,6 +4,15 @@ import { ArrowLeft } from "lucide-react";
 import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
 import { getStoryFn } from "@/lib/content-api";
+import {
+  AUTHOR,
+  DEFAULT_OG_IMAGE,
+  absoluteUrl,
+  breadcrumbSchema,
+  metaDescription,
+  seoHead,
+  webPageSchema,
+} from "@/lib/seo";
 
 export const Route = createFileRoute("/stories/$id")({
   loader: async ({ params }) => {
@@ -11,16 +20,29 @@ export const Route = createFileRoute("/stories/$id")({
     if (!story) throw notFound();
     return story;
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.title} — Abrar Anan Raiyan` },
-          { name: "description", content: loaderData.excerpt },
-          { property: "og:title", content: loaderData.title },
-          { property: "og:description", content: loaderData.excerpt },
-        ]
-      : [],
-  }),
+  head: ({ loaderData }) => {
+    if (!loaderData) return { meta: [] };
+    const url = absoluteUrl(`/stories/${loaderData.id}`);
+    const title = `${loaderData.title} — ${AUTHOR.name}`;
+    const description = metaDescription(loaderData.excerpt);
+
+    return seoHead({
+      title,
+      description,
+      url,
+      image: DEFAULT_OG_IMAGE,
+      imageAlt: `${loaderData.title} — ${AUTHOR.name}`,
+      keywords: [loaderData.title, "story", AUTHOR.name],
+      jsonLd: {
+        ...webPageSchema({ url, name: title, description }),
+        breadcrumb: breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blogs" },
+          { name: loaderData.title, path: `/stories/${loaderData.id}` },
+        ]),
+      },
+    });
+  },
   notFoundComponent: StoryNotFound,
   component: StoryDetail,
 });

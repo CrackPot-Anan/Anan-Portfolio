@@ -4,6 +4,15 @@ import { ArrowLeft } from "lucide-react";
 import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
 import { getHobbyFn } from "@/lib/content-api";
+import {
+  AUTHOR,
+  DEFAULT_OG_IMAGE,
+  absoluteUrl,
+  breadcrumbSchema,
+  metaDescription,
+  seoHead,
+  webPageSchema,
+} from "@/lib/seo";
 
 export const Route = createFileRoute("/hobbies/$id")({
   loader: async ({ params }) => {
@@ -11,16 +20,29 @@ export const Route = createFileRoute("/hobbies/$id")({
     if (!hobby) throw notFound();
     return hobby;
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.name} — Abrar Anan Raiyan` },
-          { name: "description", content: loaderData.detail },
-          { property: "og:title", content: loaderData.name },
-          { property: "og:description", content: loaderData.detail },
-        ]
-      : [],
-  }),
+  head: ({ loaderData }) => {
+    if (!loaderData) return { meta: [] };
+    const url = absoluteUrl(`/hobbies/${loaderData.id}`);
+    const title = `${loaderData.name} — ${AUTHOR.name}`;
+    const description = metaDescription(loaderData.detail);
+
+    return seoHead({
+      title,
+      description,
+      url,
+      image: DEFAULT_OG_IMAGE,
+      imageAlt: `${loaderData.name} — ${AUTHOR.name}`,
+      keywords: [loaderData.name, "hobbies", AUTHOR.name],
+      jsonLd: {
+        ...webPageSchema({ url, name: title, description }),
+        breadcrumb: breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blogs" },
+          { name: loaderData.name, path: `/hobbies/${loaderData.id}` },
+        ]),
+      },
+    });
+  },
   notFoundComponent: HobbyNotFound,
   component: HobbyDetail,
 });

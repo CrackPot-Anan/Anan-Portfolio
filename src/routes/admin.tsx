@@ -112,7 +112,7 @@ export const Route = createFileRoute("/admin")({
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
-      { name: "robots", content: "noindex" },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   beforeLoad: async () => {

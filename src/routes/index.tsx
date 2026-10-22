@@ -1,7 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Home } from "@/components/site/home-page";
-import { AUTHOR, DEFAULT_OG_IMAGE, absoluteUrl, seoHead } from "@/lib/seo";
+import {
+  AUTHOR,
+  DEFAULT_OG_IMAGE,
+  absoluteUrl,
+  seoHead,
+  webPageSchema,
+} from "@/lib/seo";
 
 const TITLE = `${AUTHOR.name} — ${AUTHOR.jobTitle}`;
 const DESCRIPTION =
@@ -22,7 +28,13 @@ export const Route = createFileRoute("/")({
         "agile delivery",
         "scrum",
         "AI workflows",
+        "project manager Bangladesh",
       ],
+      jsonLd: webPageSchema({
+        url,
+        name: TITLE,
+        description: DESCRIPTION,
+      }),
     });
   },
   component: () => <Home />,

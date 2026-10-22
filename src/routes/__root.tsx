@@ -111,6 +111,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           crossOrigin: "anonymous",
         },
         {
+          rel: "preconnect",
+          href: "https://assets.abrarananraiyan.space",
+          crossOrigin: "anonymous",
+        },
+        {
           rel: "stylesheet",
           href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap",
         },
@@ -124,6 +129,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           type: "application/xml",
           href: `${SITE_URL}/sitemap.xml`,
         },
+        {
+          rel: "alternate",
+          type: "text/plain",
+          href: `${SITE_URL}/llms.txt`,
+          title: "LLM context (llms.txt)",
+        },
+        {
+          rel: "alternate",
+          type: "text/plain",
+          href: `${SITE_URL}/llms-full.txt`,
+          title: "Full site text for AI crawlers",
+        },
+        { rel: "author", href: `${SITE_URL}/about` },
       ],
     }),
 

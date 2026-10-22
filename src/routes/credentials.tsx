@@ -1,18 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Home } from "@/components/site/home-page";
+import { absoluteUrl, noindexHead } from "@/lib/seo";
 
 const TITLE = "Credentials — Abrar Anan Raiyan";
 const DESCRIPTION =
   "Professional certifications in product, project delivery, and AI — verified from the issuing platforms.";
 
 export const Route = createFileRoute("/credentials")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
+  head: () =>
+    noindexHead({
+      title: TITLE,
+      description: DESCRIPTION,
+      url: absoluteUrl("/credentials"),
+    }),
   component: () => <Home section="credentials" />,
 });

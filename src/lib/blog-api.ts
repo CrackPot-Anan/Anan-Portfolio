@@ -5,6 +5,7 @@ import type {
   CreatePostResult,
   DeletePostResult,
   Post,
+  PostSummary,
   UpdatePostInput,
   UploadImageResult,
   VisibilityResult,
@@ -24,12 +25,24 @@ export const getPublicPostsFn = createServerFn({ method: "GET" }).handler(
   },
 );
 
-export const getPostFn = createServerFn({ method: "GET" })
+/** Listing payload: same posts, without the article bodies. */
+export const getPublicPostSummariesFn = createServerFn({
+  method: "GET",
+}).handler(async (): Promise<PostSummary[]> => {
+  const { listPublishedPostSummaries } = await import("@/server/posts");
+  return await listPublishedPostSummaries();
+});
+
+export const getPostPageFn = createServerFn({ method: "GET" })
   .validator((data: { slug: string }) => data)
-  .handler(async ({ data }): Promise<Post | null> => {
-    const { getPost } = await import("@/server/posts");
-    return await getPost(data.slug);
-  });
+  .handler(
+    async ({
+      data,
+    }): Promise<{ post: Post | null; related: PostSummary[] }> => {
+      const { getPostPage } = await import("@/server/posts");
+      return await getPostPage(data.slug);
+    },
+  );
 
 export const createPostFn = createServerFn({ method: "POST" })
   .validator((data: CreatePostInput) => data)

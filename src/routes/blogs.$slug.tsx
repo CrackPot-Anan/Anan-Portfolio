@@ -1,29 +1,28 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Clock, Github, Instagram, Linkedin } from "lucide-react";
 
+import { BlogPostSkeleton } from "@/components/site/blog-skeleton";
 import { Tag } from "@/components/site/sections";
 import { formatPostDate, type Post } from "@/lib/blog";
-import { getPostFn, getPublicPostsFn } from "@/lib/blog-api";
+import { getPostPageFn } from "@/lib/blog-api";
 import {
   AUTHOR,
   DEFAULT_OG_IMAGE,
   SITE_URL,
   absoluteUrl,
   articleDescription,
+  breadcrumbSchema,
   seoHead,
   truncate,
 } from "@/lib/seo";
 
-const RELATED_LIMIT = 3;
-
 export const Route = createFileRoute("/blogs/$slug")({
   loader: async ({ params }) => {
-    const [post, posts] = await Promise.all([
-      getPostFn({ data: { slug: params.slug } }),
-      getPublicPostsFn(),
-    ]);
+    const { post, related } = await getPostPageFn({
+      data: { slug: params.slug },
+    });
     if (!post) throw notFound();
-    return { post, posts };
+    return { post, related };
   },
   head: ({ loaderData }) => {
     if (!loaderData) return { meta: [] };
@@ -47,10 +46,20 @@ export const Route = createFileRoute("/blogs/$slug")({
       modifiedTime: post.date,
       section: post.category,
       tags: post.tags,
-      jsonLd: blogPostingSchema(post, url, image),
+      jsonLd: {
+        ...blogPostingSchema(post, url, image),
+        breadcrumb: breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blogs" },
+          { name: post.title, path: `/blogs/${post.slug}` },
+        ]),
+      },
     });
   },
   notFoundComponent: PostNotFound,
+  pendingComponent: BlogPostPending,
+  pendingMs: 120,
+  pendingMinMs: 320,
   component: BlogPost,
 });
 
@@ -101,26 +110,20 @@ function blogPostingSchema(
   };
 }
 
-function pickRelated(posts: Post[], current: Post): Post[] {
-  const others = posts.filter((post) => post.slug !== current.slug);
-  const scored = others.map((post) => {
-    const sharedTags = post.tags.filter((tag) =>
-      current.tags.includes(tag),
-    ).length;
-    const sameCategory = post.category === current.category ? 1 : 0;
-    return { post, score: sharedTags * 2 + sameCategory };
-  });
-  scored.sort((a, b) => b.score - a.score);
-  return scored.slice(0, RELATED_LIMIT).map((entry) => entry.post);
+function BlogPostPending() {
+  return (
+    <main id="top">
+      <BlogPostSkeleton />
+    </main>
+  );
 }
 
 function BlogPost() {
-  const { post, posts } = Route.useLoaderData();
+  const { post, related } = Route.useLoaderData();
   const paragraphs = post.body
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.trim())
     .filter(Boolean);
-  const related = pickRelated(posts, post);
 
   return (
     <main id="top">
@@ -164,6 +167,9 @@ function BlogPost() {
                   alt={post.alt ?? ""}
                   width={1672}
                   height={941}
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
                   className="aspect-video w-full object-cover"
                 />
               </div>
