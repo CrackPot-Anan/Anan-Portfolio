@@ -72,6 +72,32 @@ function resolveImage(value?: string): string | undefined {
   return value.startsWith("http") ? value : absoluteUrl(value);
 }
 
+function renderParagraph(text: string) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+
+  return parts.map((part, index) => {
+    if (index % 2 === 1 && /^https?:\/\//.test(part)) {
+      const trimmed = part.replace(/[.,;:!?)]*$/g, "");
+      const trailing = part.slice(trimmed.length);
+      return (
+        <span key={index}>
+          <a
+            href={trimmed}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-signal underline underline-offset-4 transition-colors hover:opacity-80"
+          >
+            {trimmed}
+          </a>
+          {trailing}
+        </span>
+      );
+    }
+    return <span key={index}>{part}</span>;
+  });
+}
+
 function blogPostingSchema(
   post: Post,
   url: string,
@@ -193,7 +219,7 @@ function BlogPost() {
 
           <div className="mt-10 space-y-6 text-base leading-8 md:text-lg">
             {paragraphs.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
+              <p key={index}>{renderParagraph(paragraph)}</p>
             ))}
           </div>
 
