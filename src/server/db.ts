@@ -80,8 +80,8 @@ export async function readPosts(): Promise<Post[] | null> {
 }
 
 /**
- * Published posts without their body, newest first.
- * The `data - 'body'` projection keeps article text off the wire for listings.
+ * Published posts without their body or gallery, newest first.
+ * The projections keep article text and photo lists off the wire for listings.
  */
 export async function readPostSummaries(): Promise<DbResult<PostSummary[]>> {
   const sql = getSql();
@@ -89,7 +89,7 @@ export async function readPostSummaries(): Promise<DbResult<PostSummary[]>> {
   try {
     await ensureSchema(sql);
     const rows = await sql`
-      SELECT data - 'body' AS data
+      SELECT data - 'body' - 'gallery' AS data
       FROM posts
       WHERE data->>'hidden' IS DISTINCT FROM 'true'
       ORDER BY data->>'date' DESC, slug DESC

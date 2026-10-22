@@ -78,22 +78,33 @@ export const Route = createFileRoute("/sitemap.xml")({
             changefreq: route.changefreq,
             priority: route.priority.toFixed(1),
           })),
-          ...posts.map((post) => ({
-            loc: `/blogs/${post.slug}`,
-            lastmod: post.date,
-            changefreq: "monthly",
-            priority: "0.8",
-            images: post.image
-              ? [
-                  {
-                    loc: post.image.startsWith("http")
-                      ? post.image
-                      : absoluteUrl(post.image),
-                    title: post.title,
-                  },
-                ]
-              : undefined,
-          })),
+          ...posts.map((post) => {
+            const images = [
+              ...(post.image
+                ? [
+                    {
+                      loc: post.image.startsWith("http")
+                        ? post.image
+                        : absoluteUrl(post.image),
+                      title: post.title,
+                    },
+                  ]
+                : []),
+              ...(post.gallery ?? []).map((photo) => ({
+                loc: photo.url.startsWith("http")
+                  ? photo.url
+                  : absoluteUrl(photo.url),
+                title: photo.alt ?? post.title,
+              })),
+            ];
+            return {
+              loc: `/blogs/${post.slug}`,
+              lastmod: post.date,
+              changefreq: "monthly",
+              priority: "0.8",
+              images: images.length > 0 ? images : undefined,
+            };
+          }),
           ...hobbies.map((hobby) => ({
             loc: `/hobbies/${hobby.id}`,
             lastmod: stamp,

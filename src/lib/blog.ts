@@ -9,6 +9,14 @@ export const CATEGORIES = [
 
 export type Category = (typeof CATEGORIES)[number];
 
+/** Upper bound for photos in a post's gallery. */
+export const MAX_GALLERY_PHOTOS = 12;
+
+export type GalleryPhoto = {
+  url: string;
+  alt?: string;
+};
+
 export type Post = {
   slug: string;
   title: string;
@@ -20,11 +28,15 @@ export type Post = {
   tags: string[];
   image?: string;
   alt?: string;
+  gallery?: GalleryPhoto[];
   hidden?: boolean;
 };
 
-/** A post without its body. Used for listings so we never ship article text twice. */
-export type PostSummary = Omit<Post, "body">;
+/**
+ * A post without its body or gallery. Used for listings so we never ship
+ * article text or photo lists twice.
+ */
+export type PostSummary = Omit<Post, "body" | "gallery">;
 
 export type CreatePostInput = {
   title: string;
@@ -34,6 +46,7 @@ export type CreatePostInput = {
   tags: string[];
   image?: string;
   alt?: string;
+  gallery?: GalleryPhoto[];
   slug?: string;
   hidden?: boolean;
 };

@@ -3,6 +3,7 @@ import path from "node:path";
 
 import {
   CATEGORIES,
+  MAX_GALLERY_PHOTOS,
   isCategory,
   pickRelated,
   toPostSummary,
@@ -10,6 +11,7 @@ import {
   type CreatePostInput,
   type CreatePostResult,
   type DeletePostResult,
+  type GalleryPhoto,
   type Post,
   type PostSummary,
   type UpdatePostInput,
@@ -46,6 +48,7 @@ type NormalizedInput = {
   tags: string[];
   image?: string;
   alt?: string;
+  gallery?: GalleryPhoto[];
   hidden: boolean;
 };
 
@@ -151,6 +154,58 @@ function isAcceptableImage(value: string): boolean {
   return false;
 }
 
+type GalleryResult =
+  { ok: true; value: GalleryPhoto[] } | { ok: false; error: string };
+
+/**
+ * Sanitizes the gallery: trims, drops duplicates and the cover, and caps the
+ * list at MAX_GALLERY_PHOTOS. Order is preserved because the admin sets it.
+ */
+function normalizeGallery(raw: unknown, cover: string): GalleryResult {
+  if (raw === undefined || raw === null) return { ok: true, value: [] };
+  if (!Array.isArray(raw)) {
+    return { ok: false, error: "The gallery must be a list of photos." };
+  }
+  if (raw.length > MAX_GALLERY_PHOTOS) {
+    return {
+      ok: false,
+      error: `A gallery can hold up to ${MAX_GALLERY_PHOTOS} photos.`,
+    };
+  }
+
+  const seen = new Set<string>(cover ? [cover] : []);
+  const photos: GalleryPhoto[] = [];
+
+  for (const entry of raw) {
+    const record = (entry ?? {}) as Record<string, unknown>;
+    const urlValue =
+      typeof entry === "string" ? entry : String(record.url ?? "");
+    const url = urlValue.trim();
+    if (!url || seen.has(url)) continue;
+    if (url.length > MAX_IMAGE_CHARS) {
+      return {
+        ok: false,
+        error: "A gallery photo is too large. Keep each under 1.5 MB.",
+      };
+    }
+    if (!isAcceptableImage(url)) {
+      return {
+        ok: false,
+        error:
+          "Gallery photos must be uploaded images, http(s) URLs, or /assets paths.",
+      };
+    }
+    const alt =
+      typeof record.alt === "string"
+        ? record.alt.trim().slice(0, MAX_ALT_LENGTH)
+        : "";
+    seen.add(url);
+    photos.push(alt ? { url, alt } : { url });
+  }
+
+  return { ok: true, value: photos };
+}
+
 function normalizePostInput(input: CreatePostInput): NormalizeResult {
   const title = (input.title ?? "").trim();
   const excerpt = (input.excerpt ?? "").trim();
@@ -220,6 +275,9 @@ function normalizePostInput(input: CreatePostInput): NormalizeResult {
     }
   }
 
+  const galleryResult = normalizeGallery(input.gallery, image);
+  if (!galleryResult.ok) return { ok: false, error: galleryResult.error };
+
   return {
     ok: true,
     value: {
@@ -230,6 +288,7 @@ function normalizePostInput(input: CreatePostInput): NormalizeResult {
       tags,
       image: image || undefined,
       alt: alt || undefined,
+      gallery: galleryResult.value.length > 0 ? galleryResult.value : undefined,
       hidden,
     },
   };
@@ -343,6 +402,7 @@ export async function createPost(
     tags: value.tags,
     image: value.image,
     alt: value.alt,
+    gallery: value.gallery,
     hidden: value.hidden,
   };
 
@@ -399,6 +459,7 @@ export async function updatePost(
     readTime: readTimeFor(value.body),
     image: value.image,
     alt: value.alt,
+    gallery: value.gallery,
     hidden: value.hidden,
   };
 

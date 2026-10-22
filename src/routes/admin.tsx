@@ -19,6 +19,7 @@ import {
   Pencil,
   Plus,
   Send,
+  Star,
   Trash2,
   X,
 } from "lucide-react";
@@ -26,9 +27,11 @@ import {
 import { getSessionFn, logoutFn } from "@/lib/auth";
 import {
   CATEGORIES,
+  MAX_GALLERY_PHOTOS,
   formatPostDate,
   type Category,
   type CreatePostInput,
+  type GalleryPhoto,
   type Post,
 } from "@/lib/blog";
 import {
@@ -64,6 +67,7 @@ const CATEGORY_HINTS: Record<Category, string> = {
   Storytelling: "Narratives and lived experiences",
   "Life update": "What is happening in your life",
   Newsletter: "Direct notes for your readers",
+  Featured: "Highlighted posts worth reading first",
 };
 
 const MAX_IMAGE_BYTES = 1_500_000;
@@ -165,10 +169,13 @@ function Admin() {
   const [tags, setTags] = useState("");
   const [image, setImage] = useState("");
   const [alt, setAlt] = useState("");
+  const [gallery, setGallery] = useState<GalleryPhoto[]>([]);
   const [hidden, setHidden] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
   const [togglingSlug, setTogglingSlug] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   const [storyTitle, setStoryTitle] = useState("");
   const [storyExcerpt, setStoryExcerpt] = useState("");
@@ -194,6 +201,7 @@ function Admin() {
     setTags("");
     setImage("");
     setAlt("");
+    setGallery([]);
     setHidden(false);
   }
 
@@ -339,6 +347,7 @@ function Admin() {
     setTags(post.tags.join(", "));
     setImage(post.image ?? "");
     setAlt(post.alt ?? "");
+    setGallery(post.gallery ?? []);
     setHidden(Boolean(post.hidden));
     setError(null);
     setExpandedSlug(null);
@@ -437,6 +446,105 @@ function Admin() {
     } finally {
       setUploadingImage(false);
     }
+  }
+
+  async function onPickGalleryFiles(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const files = Array.from(event.target.files ?? []);
+    event.target.value = "";
+    if (files.length === 0) return;
+
+    const room = MAX_GALLERY_PHOTOS - gallery.length;
+    if (room <= 0) {
+      setError(`The gallery already holds ${MAX_GALLERY_PHOTOS} photos.`);
+      return;
+    }
+    if (files.length > room) {
+      setError(
+        `Only ${room} more photo${room === 1 ? "" : "s"} fit in the gallery.`,
+      );
+    }
+
+    setUploadingGallery(true);
+    const uploaded: GalleryPhoto[] = [];
+    try {
+      for (const file of files.slice(0, room)) {
+        if (!file.type.startsWith("image/")) {
+          setError(`"${file.name}" is not an image file.`);
+          continue;
+        }
+        if (file.size > MAX_IMAGE_BYTES) {
+          setError(`"${file.name}" is over 1.5 MB.`);
+          continue;
+        }
+        const formData = new FormData();
+        formData.set("file", file, file.name);
+        try {
+          const result = await uploadImageFn({ data: formData });
+          if (result.ok) {
+            uploaded.push({ url: result.url });
+          } else {
+            setError(result.error);
+          }
+        } catch {
+          setError(`Couldn't upload "${file.name}". Try again.`);
+        }
+      }
+    } finally {
+      setUploadingGallery(false);
+      if (uploaded.length > 0) {
+        setGallery((current) =>
+          [...current, ...uploaded].slice(0, MAX_GALLERY_PHOTOS),
+        );
+      }
+    }
+  }
+
+  function promoteToThumbnail(url: string) {
+    const index = gallery.findIndex((photo) => photo.url === url);
+    if (index === -1) return;
+    const photo = gallery[index];
+    if (!photo) return;
+    const rest = gallery.filter((_, position) => position !== index);
+    if (image) {
+      rest.splice(index, 0, {
+        url: image,
+        alt: alt.trim() || undefined,
+      });
+    }
+    setGallery(rest);
+    setImage(photo.url);
+    setAlt(photo.alt ?? "");
+    setError(null);
+  }
+
+  function removeGalleryPhoto(url: string) {
+    setGallery((current) => current.filter((photo) => photo.url !== url));
+  }
+
+  function updateGalleryAlt(url: string, value: string) {
+    setGallery((current) =>
+      current.map((photo) =>
+        photo.url === url
+          ? { url: photo.url, alt: value.slice(0, 200) }
+          : photo,
+      ),
+    );
+  }
+
+  function moveGalleryPhoto(index: number, offset: -1 | 1) {
+    setGallery((current) => {
+      const target = index + offset;
+      if (target < 0 || target >= current.length) return current;
+      const photo = current[index];
+      const swap = current[target];
+      if (!photo || !swap) return current;
+      const next = [...current];
+      next[index] = swap;
+      next[target] = photo;
+      return next;
+    });
   }
 
   async function onPickTravelFile(event: React.ChangeEvent<HTMLInputElement>) {
@@ -615,6 +723,7 @@ function Admin() {
           .filter(Boolean),
         image: image.trim() || undefined,
         alt: alt.trim() || undefined,
+        gallery: gallery.length > 0 ? gallery : undefined,
         slug: slug.trim() || undefined,
         hidden,
       };
@@ -1575,6 +1684,122 @@ function Admin() {
                         type="file"
                         accept={IMAGE_ACCEPT}
                         onChange={onPickFile}
+                        className="hidden"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="label-mono mb-3">
+                      Gallery{" "}
+                      <span className="normal-case text-muted-foreground">
+                        (optional · shown at the end of the post)
+                      </span>
+                    </p>
+                    <div className="rounded-2xl border border-border bg-background p-4">
+                      {gallery.length > 0 && (
+                        <ul className="mb-4 space-y-3">
+                          {gallery.map((photo, index) => (
+                            <li
+                              key={photo.url}
+                              className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-3 sm:flex-row"
+                            >
+                              <img
+                                src={photo.url}
+                                alt={photo.alt ?? ""}
+                                className="h-24 w-full shrink-0 rounded-lg border border-border object-cover sm:w-36"
+                              />
+                              <div className="flex min-w-0 flex-1 flex-col gap-2">
+                                <input
+                                  type="text"
+                                  value={photo.alt ?? ""}
+                                  onChange={(event) =>
+                                    updateGalleryAlt(
+                                      photo.url,
+                                      event.target.value,
+                                    )
+                                  }
+                                  maxLength={200}
+                                  placeholder={`Alt text for photo ${index + 1}`}
+                                  aria-label={`Alt text for gallery photo ${index + 1}`}
+                                  className="w-full rounded-full border border-border bg-background px-4 py-2 font-mono text-xs text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-signal"
+                                />
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      promoteToThumbnail(photo.url)
+                                    }
+                                    className="inline-flex items-center gap-1.5 rounded-full border border-signal/60 bg-signal/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground"
+                                  >
+                                    <Star className="h-3 w-3" /> Use as
+                                    thumbnail
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => moveGalleryPhoto(index, -1)}
+                                    disabled={index === 0}
+                                    aria-label={`Move photo ${index + 1} earlier`}
+                                    className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-signal hover:text-signal disabled:cursor-not-allowed disabled:opacity-40"
+                                  >
+                                    <ChevronUp className="h-3.5 w-3.5" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => moveGalleryPhoto(index, 1)}
+                                    disabled={index === gallery.length - 1}
+                                    aria-label={`Move photo ${index + 1} later`}
+                                    className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-signal hover:text-signal disabled:cursor-not-allowed disabled:opacity-40"
+                                  >
+                                    <ChevronDown className="h-3.5 w-3.5" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      removeGalleryPhoto(photo.url)
+                                    }
+                                    className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-destructive hover:text-destructive"
+                                  >
+                                    <Trash2 className="h-3 w-3" /> Remove
+                                  </button>
+                                </div>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      <div className="flex flex-wrap items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => galleryInputRef.current?.click()}
+                          disabled={
+                            uploadingGallery ||
+                            gallery.length >= MAX_GALLERY_PHOTOS
+                          }
+                          className="inline-flex items-center gap-2 rounded-full border border-signal/60 bg-signal/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal hover:text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {uploadingGallery ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : (
+                            <ImagePlus className="h-3.5 w-3.5" />
+                          )}
+                          {uploadingGallery
+                            ? "Uploading…"
+                            : gallery.length > 0
+                              ? "Add more photos"
+                              : "Choose photos"}
+                        </button>
+                        <p className="font-mono text-[11px] text-muted-foreground">
+                          {gallery.length} of {MAX_GALLERY_PHOTOS} · PNG, JPEG,
+                          WebP or GIF · up to 1.5 MB each
+                        </p>
+                      </div>
+                      <input
+                        ref={galleryInputRef}
+                        type="file"
+                        accept={IMAGE_ACCEPT}
+                        multiple
+                        onChange={onPickGalleryFiles}
                         className="hidden"
                       />
                     </div>

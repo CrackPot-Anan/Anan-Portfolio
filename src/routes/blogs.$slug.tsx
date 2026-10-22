@@ -30,9 +30,7 @@ export const Route = createFileRoute("/blogs/$slug")({
     const url = absoluteUrl(`/blogs/${post.slug}`);
     const title = `${post.title} | ${AUTHOR.name}`;
     const description = articleDescription(post.excerpt);
-    const image = post.image?.startsWith("http")
-      ? post.image
-      : DEFAULT_OG_IMAGE;
+    const image = resolveImage(post.image) ?? DEFAULT_OG_IMAGE;
 
     return seoHead({
       title,
@@ -68,12 +66,21 @@ function readTimeToIso(readTime: string): string {
   return `PT${minutes}M`;
 }
 
+/** Uploaded photos are absolute; bundled /assets paths need the site origin. */
+function resolveImage(value?: string): string | undefined {
+  if (!value) return undefined;
+  return value.startsWith("http") ? value : absoluteUrl(value);
+}
+
 function blogPostingSchema(
   post: Post,
   url: string,
   image: string,
 ): Record<string, unknown> {
   const wordCount = post.body.split(/\s+/).filter(Boolean).length;
+  const galleryImages = (post.gallery ?? [])
+    .map((photo) => resolveImage(photo.url))
+    .filter((entry): entry is string => Boolean(entry));
 
   return {
     "@context": "https://schema.org",
@@ -84,7 +91,7 @@ function blogPostingSchema(
     headline: truncate(post.title, 110),
     name: truncate(post.title, 110),
     description: post.excerpt,
-    image: [image],
+    image: [image, ...galleryImages],
     datePublished: post.date,
     dateModified: post.date,
     inLanguage: "en",
@@ -120,6 +127,8 @@ function BlogPostPending() {
 
 function BlogPost() {
   const { post, related } = Route.useLoaderData();
+  const gallery = post.gallery ?? [];
+  const fitFirstWide = gallery.length % 2 === 1;
   const paragraphs = post.body
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.trim())
@@ -194,6 +203,40 @@ function BlogPost() {
                 <Tag key={tag}>{tag}</Tag>
               ))}
             </div>
+          )}
+
+          {gallery.length > 0 && (
+            <section
+              aria-labelledby="post-gallery"
+              className="mt-12 border-t border-border pt-8"
+            >
+              <h2 id="post-gallery" className="label-mono mb-5">
+                Gallery
+              </h2>
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {gallery.map((photo, index) => {
+                  const wide = index === 0 && fitFirstWide;
+                  return (
+                    <li
+                      key={photo.url}
+                      className={`overflow-hidden rounded-xl border border-border bg-surface ${
+                        wide ? "sm:col-span-2" : ""
+                      }`}
+                    >
+                      <img
+                        src={photo.url}
+                        alt={photo.alt ?? `${post.title} — photo ${index + 1}`}
+                        loading="lazy"
+                        decoding="async"
+                        className={`w-full object-cover ${
+                          wide ? "aspect-[16/9]" : "aspect-[4/3]"
+                        }`}
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
           )}
 
           <aside className="mt-14 border border-border bg-surface p-6 md:p-7">
