@@ -265,53 +265,55 @@ function BlogPost() {
             </section>
           )}
 
-          <aside className="mt-14 border border-border bg-surface p-6 md:p-7">
-            <p className="label-mono mb-4">Author</p>
-            <p className="text-base font-medium">{AUTHOR.name}</p>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {AUTHOR.jobTitle} writing about {post.category.toLowerCase()},
-              delivery, and AI-driven work.
-            </p>
-
-            <div className="mt-6 border-t border-border pt-5">
-              <p className="label-mono mb-2">More</p>
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                To reach out, follow Anan on:
+          {post.category !== "Featured" && (
+            <aside className="mt-14 border border-border bg-surface p-6 md:p-7">
+              <p className="label-mono mb-4">Author</p>
+              <p className="text-base font-medium">{AUTHOR.name}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {AUTHOR.jobTitle} writing about {post.category.toLowerCase()},
+                delivery, and AI-driven work.
               </p>
-              <div className="mt-5 flex flex-wrap gap-4">
-                <a
-                  href="https://www.linkedin.com/in/abrar-anan-raiyan/"
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
-                >
-                  <Linkedin className="h-3.5 w-3.5" /> LinkedIn
-                </a>
-                <a
-                  href="https://www.instagram.com/_anan.raiyan_13/"
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
-                >
-                  <Instagram className="h-3.5 w-3.5" /> Instagram
-                </a>
-                <a
-                  href="https://github.com/CrackPot-Anan"
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
-                >
-                  <Github className="h-3.5 w-3.5" /> GitHub
-                </a>
-                <Link
-                  to="/about"
-                  className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
-                >
-                  About {AUTHOR.name.split(" ")[0]}
-                </Link>
+
+              <div className="mt-6 border-t border-border pt-5">
+                <p className="label-mono mb-2">More</p>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  To reach out, follow Anan on:
+                </p>
+                <div className="mt-5 flex flex-wrap gap-4">
+                  <a
+                    href="https://www.linkedin.com/in/abrar-anan-raiyan/"
+                    target="_blank"
+                    rel="me noopener noreferrer"
+                    className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
+                  >
+                    <Linkedin className="h-3.5 w-3.5" /> LinkedIn
+                  </a>
+                  <a
+                    href="https://www.instagram.com/_anan.raiyan_13/"
+                    target="_blank"
+                    rel="me noopener noreferrer"
+                    className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
+                  >
+                    <Instagram className="h-3.5 w-3.5" /> Instagram
+                  </a>
+                  <a
+                    href="https://github.com/CrackPot-Anan"
+                    target="_blank"
+                    rel="me noopener noreferrer"
+                    className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
+                  >
+                    <Github className="h-3.5 w-3.5" /> GitHub
+                  </a>
+                  <Link
+                    to="/about"
+                    className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-signal"
+                  >
+                    About {AUTHOR.name.split(" ")[0]}
+                  </Link>
+                </div>
               </div>
-            </div>
-          </aside>
+            </aside>
+          )}
 
           {related.length > 0 && (
             <section className="mt-14 border-t border-border pt-8">
